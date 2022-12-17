@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnicornOne.ScriptableObjects;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace UnicornOne.Ecs.Services
 {
@@ -13,6 +14,7 @@ namespace UnicornOne.Ecs.Services
         private readonly Level _level;
 
         public GameObject Prefab { get { return _level.Prefab; } }
+        public NavMeshData NavMeshData { get { return _level.NavMeshData; } }
 
         public LevelService(Level level)
         {

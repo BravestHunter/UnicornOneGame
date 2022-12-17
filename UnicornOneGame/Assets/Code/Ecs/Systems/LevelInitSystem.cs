@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnicornOne.Ecs.Services;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace UnicornOne.Ecs.Systems
 {
@@ -16,7 +17,11 @@ namespace UnicornOne.Ecs.Systems
 
         public void Init(IEcsSystems systems)
         {
-            GameObject.Instantiate(_levelService.Value.Prefab);
+            GameObject levelGameObject = GameObject.Instantiate(_levelService.Value.Prefab);
+
+            EcsWorld world = systems.GetWorld();
+
+            NavMesh.AddNavMeshData(_levelService.Value.NavMeshData);
         }
     }
 }

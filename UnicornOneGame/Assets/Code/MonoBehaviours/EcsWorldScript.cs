@@ -14,6 +14,7 @@ namespace UnicornOne.MonoBehaviours
     {
         [SerializeField] private Level Level;
         [SerializeField] private Hero Hero;
+        [SerializeField] private Mob Enemy;
 
         private EcsWorld _world;
         private IEcsSystems _systems;
@@ -22,13 +23,16 @@ namespace UnicornOne.MonoBehaviours
         {
             _world = new EcsWorld();
 
+            // TODO: combine all these services with init data into one?
             LevelService levelService = new LevelService(Level);
             HeroService heroService = new HeroService(Hero);
+            MobService mobService = new MobService(Enemy);
 
             _systems = new EcsSystems(_world);
             _systems.Add(new LevelInitSystem());
             _systems.Add(new HeroInitSystem());
-            _systems.Inject(levelService, heroService);
+            _systems.Add(new EnemySpawnSystem());
+            _systems.Inject(levelService, heroService, mobService);
             _systems.Init();
         }
 

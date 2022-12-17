@@ -4,14 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.AI;
 
 namespace UnicornOne.ScriptableObjects
 {
-    [CreateAssetMenu(fileName = "Level", menuName = "Custom/Level")]
-    internal class Level : ScriptableObject
+    [CreateAssetMenu(fileName = "Mob", menuName = "Custom/Mob")]
+    internal class Mob : ScriptableObject
     {
         public GameObject Prefab;
-        public NavMeshData NavMeshData;
     }
 }

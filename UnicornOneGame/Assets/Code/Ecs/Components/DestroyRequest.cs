@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UnicornOne.Ecs.Systems
+namespace UnicornOne.Ecs.Components
 {
-    internal class InputSystem
+    internal struct DestroyRequest
     {
     }
 }

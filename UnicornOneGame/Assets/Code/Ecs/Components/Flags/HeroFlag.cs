@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using UnityEngine;
 
-namespace UnicornOne.Ecs.Components
+namespace UnicornOne.Ecs.Components.Flags
 {
-    internal struct GameObjectRefComponent
+    internal struct HeroFlag
     {
-        public GameObject GameObject;
     }
 }

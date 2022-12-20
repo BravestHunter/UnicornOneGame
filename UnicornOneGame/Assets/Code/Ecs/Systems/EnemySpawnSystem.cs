@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnicornOne.Ecs.Components;
 using UnicornOne.Ecs.Components.Flags;
+using UnicornOne.Ecs.Components.Refs;
 using UnicornOne.Ecs.Services;
 using UnityEngine;
 

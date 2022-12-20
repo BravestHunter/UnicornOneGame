@@ -13,6 +13,7 @@ namespace UnicornOne.Ecs.Services
         private readonly Hero _hero;
 
         public GameObject Prefab { get { return _hero.Prefab; } }
+        public float MovingSpeed { get { return _hero.MovingSpeed; } }
 
         public HeroService(Hero hero)
         {

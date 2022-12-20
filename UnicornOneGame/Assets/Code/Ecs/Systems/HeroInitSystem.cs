@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using UnicornOne.Ecs.Components;
 using UnicornOne.Ecs.Components.AI;
 using UnicornOne.Ecs.Components.Flags;
+using UnicornOne.Ecs.Components.Refs;
 using UnicornOne.Ecs.Services;
 using UnityEngine;
 using UnityEngine.AI;
@@ -27,6 +28,9 @@ namespace UnicornOne.Ecs.Systems
         private void SpawnHero(EcsWorld world)
         {
             var heroGameObject = GameObject.Instantiate(_heroService.Value.Prefab);
+            var animator = heroGameObject.GetComponentInChildren<Animator>();
+            animator.fireEvents = false;
+            animator.applyRootMotion = false;
             var navigationAgent = heroGameObject.GetComponent<NavMeshAgent>();
 
             var entity = world.NewEntity();
@@ -34,12 +38,20 @@ namespace UnicornOne.Ecs.Systems
             var heroFlagPool = world.GetPool<HeroFlag>();
             heroFlagPool.Add(entity);
 
+            var moveParametersPool = world.GetPool<MoveParametersComponent>();
+            ref var moveParametersComponent = ref moveParametersPool.Add(entity);
+            moveParametersComponent.Speed = _heroService.Value.MovingSpeed;
+
             var aiBehaviorPool = world.GetPool<AiBehaviorComponent>();
             aiBehaviorPool.Add(entity);
 
             var gameObjectRefPool = world.GetPool<GameObjectRefComponent>();
             ref var gameObjectRefComponent = ref gameObjectRefPool.Add(entity);
             gameObjectRefComponent.GameObject = heroGameObject;
+
+            var animatorRefPool = world.GetPool<AnimatorRefComponent>();
+            ref var animatorRefComponent = ref animatorRefPool.Add(entity);
+            animatorRefComponent.Animator = animator;
 
             var navigationAgentRefPool = world.GetPool<NavigationAgentRefComponent>();
             ref var navigationAgentRefComponent = ref navigationAgentRefPool.Add(entity);

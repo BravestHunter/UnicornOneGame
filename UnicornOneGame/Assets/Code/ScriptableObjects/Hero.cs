@@ -11,5 +11,7 @@ namespace UnicornOne.ScriptableObjects
     internal class Hero : ScriptableObject
     {
         public GameObject Prefab;
+
+        public float MovingSpeed;
     }
 }

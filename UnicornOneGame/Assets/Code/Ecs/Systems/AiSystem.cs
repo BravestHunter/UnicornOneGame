@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using UnicornOne.Ecs.Components;
 using UnicornOne.Ecs.Components.AI;
 using UnicornOne.Ecs.Components.Flags;
+using UnicornOne.Ecs.Components.Refs;
 using UnityEngine;
 
 namespace UnicornOne.Ecs.Systems
@@ -27,6 +28,7 @@ namespace UnicornOne.Ecs.Systems
                     .Filter<AiBehaviorComponent>()
                     .Inc<GameObjectRefComponent>()
                     .Inc<NavigationAgentRefComponent>()
+                    .Inc<MoveParametersComponent>()
                     .End();
             }
 
@@ -52,6 +54,7 @@ namespace UnicornOne.Ecs.Systems
             var navigationAgentRefPool = world.GetPool<NavigationAgentRefComponent>();
             var heroFlagPool = world.GetPool<HeroFlag>();
             var DestroyRequestPool = world.GetPool<DestroyRequest>();
+            var moveParametersPool = world.GetPool<MoveParametersComponent>();
 
             Dictionary<int, Vector3> heroPositions = null;
             Dictionary<int, Vector3> enemyPositions = null;
@@ -96,8 +99,11 @@ namespace UnicornOne.Ecs.Systems
                             ref var targetAiComponent = ref targetAiPool.Add(entity);
                             targetAiComponent.Target = world.PackEntity(closestTarget.Key);
 
+                            ref var moveParametersComponent = ref moveParametersPool.Get(entity);
+
                             aiBehaviorComponent.State = AiBehaviorComponent.HeroAiState.WalkingToTarget;
                             ref var navigationAgentRefComponent = ref navigationAgentRefPool.Get(entity);
+                            navigationAgentRefComponent.Agent.speed = moveParametersComponent.Speed;
                             navigationAgentRefComponent.Agent.destination = closestTarget.Value;
                         }
                         break;
@@ -125,8 +131,10 @@ namespace UnicornOne.Ecs.Systems
                             
                             targetAiPool.Del(entity);
 
-                            ref var navigationAgentRefComponent = ref navigationAgentRefPool.Get(entity);
+                            ref var moveParametersComponent = ref moveParametersPool.Get(entity);
 
+                            ref var navigationAgentRefComponent = ref navigationAgentRefPool.Get(entity);
+                            navigationAgentRefComponent.Agent.speed = moveParametersComponent.Speed;
                             navigationAgentRefComponent.Agent.destination = position;
                         }
                         break;

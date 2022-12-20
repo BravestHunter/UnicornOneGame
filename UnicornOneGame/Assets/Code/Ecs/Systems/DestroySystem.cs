@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnicornOne.Ecs.Components;
+using UnicornOne.Ecs.Components.Refs;
 using UnityEngine;
 
 namespace UnicornOne.Ecs.Systems

@@ -38,9 +38,9 @@ namespace UnicornOne.Ecs.Systems
             var heroFlagPool = world.GetPool<HeroFlag>();
             heroFlagPool.Add(entity);
 
-            var moveParametersPool = world.GetPool<MoveParametersComponent>();
-            ref var moveParametersComponent = ref moveParametersPool.Add(entity);
-            moveParametersComponent.Speed = _heroService.Value.MovingSpeed;
+            var navigationPool = world.GetPool<NavigationComponent>();
+            ref var navigationComponent = ref navigationPool.Add(entity);
+            navigationComponent.MovementSpeed = _heroService.Value.MovingSpeed;
 
             var aiBehaviorPool = world.GetPool<AiBehaviorComponent>();
             aiBehaviorPool.Add(entity);

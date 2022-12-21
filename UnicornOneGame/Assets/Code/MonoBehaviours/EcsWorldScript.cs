@@ -33,6 +33,7 @@ namespace UnicornOne.MonoBehaviours
             _systems.Add(new HeroInitSystem());
             _systems.Add(new EnemySpawnSystem());
             _systems.Add(new AiSystem());
+            _systems.Add(new NavigationSystem());
             _systems.Add(new AnimationSystem());
             _systems.Add(new DestroySystem());
             _systems.Inject(levelService, heroService, mobService);

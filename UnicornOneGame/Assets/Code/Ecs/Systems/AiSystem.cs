@@ -28,7 +28,7 @@ namespace UnicornOne.Ecs.Systems
                     .Filter<AiBehaviorComponent>()
                     .Inc<GameObjectRefComponent>()
                     .Inc<NavigationAgentRefComponent>()
-                    .Inc<MoveParametersComponent>()
+                    .Inc<NavigationComponent>()
                     .End();
             }
 
@@ -51,10 +51,9 @@ namespace UnicornOne.Ecs.Systems
             var aiBehaviorPool = world.GetPool<AiBehaviorComponent>();
             var targetAiPool = world.GetPool<TargetAiComponent>();
             var gameObjectRefPool = world.GetPool<GameObjectRefComponent>();
-            var navigationAgentRefPool = world.GetPool<NavigationAgentRefComponent>();
             var heroFlagPool = world.GetPool<HeroFlag>();
             var DestroyRequestPool = world.GetPool<DestroyRequest>();
-            var moveParametersPool = world.GetPool<MoveParametersComponent>();
+            var navigationPool = world.GetPool<NavigationComponent>();
 
             Dictionary<int, Vector3> heroPositions = null;
             Dictionary<int, Vector3> enemyPositions = null;
@@ -99,12 +98,10 @@ namespace UnicornOne.Ecs.Systems
                             ref var targetAiComponent = ref targetAiPool.Add(entity);
                             targetAiComponent.Target = world.PackEntity(closestTarget.Key);
 
-                            ref var moveParametersComponent = ref moveParametersPool.Get(entity);
+                            ref var navigationComponent = ref navigationPool.Get(entity);
+                            navigationComponent.DestionationPosition = closestTarget.Value;
 
                             aiBehaviorComponent.State = AiBehaviorComponent.HeroAiState.WalkingToTarget;
-                            ref var navigationAgentRefComponent = ref navigationAgentRefPool.Get(entity);
-                            navigationAgentRefComponent.Agent.speed = moveParametersComponent.Speed;
-                            navigationAgentRefComponent.Agent.destination = closestTarget.Value;
                         }
                         break;
 
@@ -126,16 +123,13 @@ namespace UnicornOne.Ecs.Systems
                                     continue;
                                 }
                             }
-
-                            aiBehaviorComponent.State = AiBehaviorComponent.HeroAiState.SearchingForTarget;
                             
                             targetAiPool.Del(entity);
 
-                            ref var moveParametersComponent = ref moveParametersPool.Get(entity);
+                            ref var navigationComponent = ref navigationPool.Get(entity);
+                            navigationComponent.DestionationPosition = position;
 
-                            ref var navigationAgentRefComponent = ref navigationAgentRefPool.Get(entity);
-                            navigationAgentRefComponent.Agent.speed = moveParametersComponent.Speed;
-                            navigationAgentRefComponent.Agent.destination = position;
+                            aiBehaviorComponent.State = AiBehaviorComponent.HeroAiState.SearchingForTarget;
                         }
                         break;
                 }

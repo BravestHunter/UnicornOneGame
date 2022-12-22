@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UnicornOne.Ecs.Components.AI
+namespace UnicornOne.Ecs.Components
 {
-    internal struct TargetAiComponent
+    internal struct TargetComponent
     {
-        public EcsPackedEntity Target;
+        public EcsPackedEntity TargetEntity;
     }
 }

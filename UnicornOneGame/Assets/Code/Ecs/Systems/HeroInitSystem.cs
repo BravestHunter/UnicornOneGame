@@ -38,12 +38,14 @@ namespace UnicornOne.Ecs.Systems
             var heroFlagPool = world.GetPool<HeroFlag>();
             heroFlagPool.Add(entity);
 
+            var meleeAtackParametersPool = world.GetPool<MeleeAtackParametersComponent>();
+            ref var meleeAtackParametersComponent = ref meleeAtackParametersPool.Add(entity);
+            meleeAtackParametersComponent.Damage = _heroService.Value.AttackDamage;
+            meleeAtackParametersComponent.Range = _heroService.Value.AttackRange;
+
             var navigationPool = world.GetPool<NavigationComponent>();
             ref var navigationComponent = ref navigationPool.Add(entity);
             navigationComponent.MovementSpeed = _heroService.Value.MovingSpeed;
-
-            var aiBehaviorPool = world.GetPool<AiBehaviorComponent>();
-            aiBehaviorPool.Add(entity);
 
             var gameObjectRefPool = world.GetPool<GameObjectRefComponent>();
             ref var gameObjectRefComponent = ref gameObjectRefPool.Add(entity);
@@ -56,6 +58,10 @@ namespace UnicornOne.Ecs.Systems
             var navigationAgentRefPool = world.GetPool<NavigationAgentRefComponent>();
             ref var navigationAgentRefComponent = ref navigationAgentRefPool.Add(entity);
             navigationAgentRefComponent.Agent = navigationAgent;
+
+            var meleeFighterBehaviorAiPool = world.GetPool<MeleeFighterBehaviorAiComponent>();
+            ref var meleeFighterBehaviorAiComponent = ref meleeFighterBehaviorAiPool.Add(entity);
+            meleeFighterBehaviorAiComponent.CurrentState = MeleeFighterBehaviorAiComponent.State.SearchForTarget;
         }
     }
 }

@@ -6,14 +6,15 @@ using System.Threading.Tasks;
 
 namespace UnicornOne.Ecs.Components.AI
 {
-    internal struct AiBehaviorComponent
+    internal struct MeleeFighterBehaviorAiComponent
     {
-        public enum HeroAiState
+        public enum State
         {
-            SearchingForTarget,
-            WalkingToTarget
+            SearchForTarget,
+            MoveToTarget,
+            AttackTarget
         }
 
-        public HeroAiState State;
+        public State CurrentState;
     }
 }

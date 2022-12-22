@@ -11,5 +11,7 @@ namespace UnicornOne.ScriptableObjects
     internal class Mob : ScriptableObject
     {
         public GameObject Prefab;
+
+        public int Health;
     }
 }

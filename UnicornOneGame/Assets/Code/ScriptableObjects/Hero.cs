@@ -13,5 +13,9 @@ namespace UnicornOne.ScriptableObjects
         public GameObject Prefab;
 
         public float MovingSpeed;
+
+        public int AttackDamage;
+        public float AttackRange;
+        public float AttackDelay;
     }
 }

@@ -53,6 +53,11 @@ namespace UnicornOne.Ecs.Systems
             var enemyFlagPool = world.GetPool<EnemyFlag>();
             enemyFlagPool.Add(entity);
 
+            var healthPool = world.GetPool<HealthComponent>();
+            ref var healthComponent = ref healthPool.Add(entity);
+            healthComponent.MaxHealth = _mobService.Value.MaxHealth;
+            healthComponent.CurrentHealth = healthComponent.MaxHealth;
+
             var gameObjectRefPool = world.GetPool<GameObjectRefComponent>();
             ref var gameObjectRefComponent = ref gameObjectRefPool.Add(entity);
             gameObjectRefComponent.GameObject = enemyGameObject;

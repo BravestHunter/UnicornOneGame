@@ -13,6 +13,7 @@ namespace UnicornOne.Ecs.Services
         private readonly Mob _enemy;
 
         public GameObject EnemyPrefab { get { return _enemy.Prefab; } }
+        public int MaxHealth { get { return _enemy.Health; } }
 
         public MobService(Mob enemy)
         {

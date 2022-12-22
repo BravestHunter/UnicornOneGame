@@ -14,135 +14,153 @@ namespace UnicornOne.Ecs.Systems
 {
     internal class AiSystem : IEcsRunSystem
     {
-        private EcsFilter _aiFilter;
-        private EcsFilter _heroObjectsFilter;
-        private EcsFilter _enemyObjectsFilter;
+        private EcsFilter _meleeHeroFilter;
+        private EcsFilter _enemyFilter;
 
         public void Run(IEcsSystems systems)
         {
             var world = systems.GetWorld();
 
-            if (_aiFilter == null)
+            if (_meleeHeroFilter == null)
             {
-                _aiFilter = world
-                    .Filter<AiBehaviorComponent>()
-                    .Inc<GameObjectRefComponent>()
-                    .Inc<NavigationAgentRefComponent>()
+                _meleeHeroFilter = world
+                    .Filter<HeroFlag>()
+                    .Inc<MeleeFighterBehaviorAiComponent>()
+                    .Inc<MeleeAtackParametersComponent>()
                     .Inc<NavigationComponent>()
+                    .Inc<GameObjectRefComponent>()
                     .End();
             }
 
-            if (_heroObjectsFilter == null)
-            {
-                _heroObjectsFilter = world
-                    .Filter<GameObjectRefComponent>()
-                    .Inc<HeroFlag>()
-                    .End();
-            }
-
-            if (_enemyObjectsFilter == null)
-            {
-                _enemyObjectsFilter = world
-                    .Filter<GameObjectRefComponent>()
-                    .Inc<EnemyFlag>()
-                    .End();
-            }
-
-            var aiBehaviorPool = world.GetPool<AiBehaviorComponent>();
-            var targetAiPool = world.GetPool<TargetAiComponent>();
-            var gameObjectRefPool = world.GetPool<GameObjectRefComponent>();
-            var heroFlagPool = world.GetPool<HeroFlag>();
-            var DestroyRequestPool = world.GetPool<DestroyRequest>();
+            var meleeFighterBehaviorAiPool = world.GetPool<MeleeFighterBehaviorAiComponent>();
+            var meleeAtackParametersPool = world.GetPool<MeleeAtackParametersComponent>();
             var navigationPool = world.GetPool<NavigationComponent>();
+            var gameObjectRefPool = world.GetPool<GameObjectRefComponent>();
 
-            Dictionary<int, Vector3> heroPositions = null;
+            var targetPool = world.GetPool<TargetComponent>();
+            var attackAnimationRequestPool = world.GetPool<AttackAnimationRequest>();
+            var attackPool = world.GetPool<AttackComponent>();
+
             Dictionary<int, Vector3> enemyPositions = null;
 
-            foreach (var entity in _aiFilter)
+            foreach (var entity in _meleeHeroFilter)
             {
-                ref var aiBehaviorComponent = ref aiBehaviorPool.Get(entity);
+                ref var meleeFighterBehaviorAiComponent = ref meleeFighterBehaviorAiPool.Get(entity);
+                ref var meleeAtackParametersComponent = ref meleeAtackParametersPool.Get(entity);
+                ref var navigationComponent = ref navigationPool.Get(entity);
                 ref var gameObjectRefComponent = ref gameObjectRefPool.Get(entity);
 
-                Vector3 position = gameObjectRefComponent.GameObject.transform.position;
-                bool isHero = heroFlagPool.Has(entity);
+                Vector3 entityPosition = gameObjectRefComponent.GameObject.transform.position;
 
-                switch (aiBehaviorComponent.State)
+                switch (meleeFighterBehaviorAiComponent.CurrentState)
                 {
-                    case AiBehaviorComponent.HeroAiState.SearchingForTarget:
+                    case MeleeFighterBehaviorAiComponent.State.SearchForTarget:
                         {
-                            Dictionary<int, Vector3> targets;
-                            if (isHero)
+                            if (enemyPositions == null)
                             {
-                                if (enemyPositions == null)
-                                {
-                                    enemyPositions = CollectPositions(world, _enemyObjectsFilter);
-                                }
-                                targets = enemyPositions;
-                            }
-                            else
-                            {
-                                if (heroPositions == null)
-                                {
-                                    heroPositions = CollectPositions(world, _heroObjectsFilter);
-                                }
-                                targets = heroPositions;
+                                enemyPositions = GetEnemyPositions(world);
                             }
 
-                            if (targets.Count == 0)
+                            if (enemyPositions.Count == 0)
                             {
                                 continue;
                             }
 
-                            var closestTarget = targets.OrderBy(pair => (position - pair.Value).sqrMagnitude).First();
+                            var closestTarget = enemyPositions.OrderBy(pair => (entityPosition - pair.Value).sqrMagnitude).First();
 
-                            ref var targetAiComponent = ref targetAiPool.Add(entity);
-                            targetAiComponent.Target = world.PackEntity(closestTarget.Key);
+                            // Update components
+                            {
+                                meleeFighterBehaviorAiComponent.CurrentState = MeleeFighterBehaviorAiComponent.State.MoveToTarget;
 
-                            ref var navigationComponent = ref navigationPool.Get(entity);
-                            navigationComponent.DestionationPosition = closestTarget.Value;
+                                navigationComponent.DestionationPosition = closestTarget.Value;
 
-                            aiBehaviorComponent.State = AiBehaviorComponent.HeroAiState.WalkingToTarget;
+                                ref var targetComponent = ref targetPool.Add(entity);
+                                targetComponent.TargetEntity = world.PackEntity(closestTarget.Key);
+                            }
+
+                            break;
                         }
-                        break;
 
-                    case AiBehaviorComponent.HeroAiState.WalkingToTarget:
+                    case MeleeFighterBehaviorAiComponent.State.MoveToTarget:
                         {
-                            ref var targetAiComponent = ref targetAiPool.Get(entity);
+                            ref var targetComponent = ref targetPool.Get(entity);
 
                             int targetEntity;
-                            if (targetAiComponent.Target.Unpack(world, out targetEntity))
+                            if (targetComponent.TargetEntity.Unpack(world, out targetEntity))
                             {
-                                Vector3 targetGameObjectPosition = gameObjectRefPool.Get(targetEntity).GameObject.transform.position;
+                                Vector3 targetEntityPosition = gameObjectRefPool.Get(targetEntity).GameObject.transform.position;
 
-                                if ((targetGameObjectPosition - position).sqrMagnitude <= 0.1f)
+                                if ((targetEntityPosition - entityPosition).magnitude > meleeAtackParametersComponent.Range)
                                 {
-                                    DestroyRequestPool.Add(targetEntity);
-                                }
-                                else
-                                {
+                                    // Still moving to target
                                     continue;
                                 }
                             }
-                            
-                            targetAiPool.Del(entity);
+                            else
+                            {
+                                // Target is missing, search for new one
+                                meleeFighterBehaviorAiComponent.CurrentState = MeleeFighterBehaviorAiComponent.State.SearchForTarget;
+                                targetPool.Del(entity);
+                            }
 
-                            ref var navigationComponent = ref navigationPool.Get(entity);
-                            navigationComponent.DestionationPosition = position;
+                            // Update components
+                            {
+                                meleeFighterBehaviorAiComponent.CurrentState = MeleeFighterBehaviorAiComponent.State.AttackTarget;
 
-                            aiBehaviorComponent.State = AiBehaviorComponent.HeroAiState.SearchingForTarget;
+                                navigationComponent.DestionationPosition = entityPosition;
+                            }
+
+                            break;
                         }
-                        break;
+
+                    case MeleeFighterBehaviorAiComponent.State.AttackTarget:
+                        {
+                            ref var targetComponent = ref targetPool.Get(entity);
+
+                            int targetEntity;
+                            if (targetComponent.TargetEntity.Unpack(world, out targetEntity))
+                            {
+                                if (Time.timeSinceLevelLoad - meleeAtackParametersComponent.LastAttackTime >= 1.0f)
+                                {
+                                    meleeAtackParametersComponent.LastAttackTime = Time.timeSinceLevelLoad;
+
+                                    attackAnimationRequestPool.Add(entity);
+
+                                    var attackEntity = world.NewEntity();
+                                    ref var attackComponent = ref attackPool.Add(attackEntity);
+                                    attackComponent.Damage = meleeAtackParametersComponent.Damage;
+                                    ref var attackTargetComponent = ref targetPool.Add(attackEntity);
+                                    attackTargetComponent.TargetEntity = world.PackEntity(targetEntity);
+                                }
+                            }
+                            else
+                            {
+                                meleeFighterBehaviorAiComponent.CurrentState = MeleeFighterBehaviorAiComponent.State.SearchForTarget;
+
+                                targetPool.Del(entity);
+                            }
+
+                            break;
+                        }
                 }
             }
         }
 
-        private Dictionary<int, Vector3> CollectPositions(EcsWorld world, EcsFilter filter)
+        private Dictionary<int, Vector3> GetEnemyPositions(EcsWorld world)
         {
+            if (_enemyFilter == null)
+            {
+                _enemyFilter = world
+                    .Filter<EnemyFlag>()
+                    .Inc<GameObjectRefComponent>()
+                    .End();
+            }
+
             Dictionary<int, Vector3> positions = new Dictionary<int, Vector3>();
 
             var gameObjectRefPool = world.GetPool<GameObjectRefComponent>();
 
-            foreach (var entity in filter)
+            foreach (var entity in _enemyFilter)
             {
                 ref var gameObjectRefComponent = ref gameObjectRefPool.Get(entity);
 

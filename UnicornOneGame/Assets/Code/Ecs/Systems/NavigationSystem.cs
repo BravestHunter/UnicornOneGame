@@ -33,8 +33,8 @@ namespace UnicornOne.Ecs.Systems
                 ref var navigationAgentRefComponent = ref navigationAgentRefPool.Get(entity);
                 ref var navigationComponent = ref navigationPool.Get(entity);
 
-                navigationAgentRefComponent.Agent.destination = navigationComponent.DestionationPosition;
                 navigationAgentRefComponent.Agent.speed = navigationComponent.MovementSpeed;
+                navigationAgentRefComponent.Agent.SetDestination(navigationComponent.DestionationPosition);
             }
         }
     }

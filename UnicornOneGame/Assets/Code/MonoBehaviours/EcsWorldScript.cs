@@ -16,6 +16,8 @@ namespace UnicornOne.MonoBehaviours
         [SerializeField] private Hero Hero;
         [SerializeField] private Mob Enemy;
 
+        [SerializeField] private Camera Camera;
+
         private EcsWorld _world;
         private IEcsSystems _systems;
 
@@ -28,6 +30,8 @@ namespace UnicornOne.MonoBehaviours
             HeroService heroService = new HeroService(Hero);
             MobService mobService = new MobService(Enemy);
 
+            var cameraService = new CameraService(Camera);
+
             _systems = new EcsSystems(_world);
             _systems.Add(new LevelInitSystem());
             _systems.Add(new HeroInitSystem());
@@ -35,10 +39,11 @@ namespace UnicornOne.MonoBehaviours
             _systems.Add(new AiSystem());
             _systems.Add(new NavigationSystem());
             _systems.Add(new AnimationSystem());
-            _systems.Add(new AttackSystem());
+            _systems.Add(new DamageSystem());
+            _systems.Add(new CameraMoveSystem());
             _systems.Add(new DeathSystem());
             _systems.Add(new DestroySystem());
-            _systems.Inject(levelService, heroService, mobService);
+            _systems.Inject(levelService, heroService, mobService, cameraService);
             _systems.Init();
         }
 

@@ -8,7 +8,7 @@ using UnicornOne.Ecs.Components;
 
 namespace UnicornOne.Ecs.Systems
 {
-    internal class AttackSystem : IEcsRunSystem
+    internal class DamageSystem : IEcsRunSystem
     {
         EcsFilter _attackFilter;
 
@@ -19,18 +19,18 @@ namespace UnicornOne.Ecs.Systems
             if (_attackFilter == null)
             {
                 _attackFilter = world
-                    .Filter<AttackComponent>()
+                    .Filter<DamageComponent>()
                     .Inc<TargetComponent>()
                     .End();
             }
 
-            var attackPool = world.GetPool<AttackComponent>();
+            var damagePool = world.GetPool<DamageComponent>();
             var targetPool = world.GetPool<TargetComponent>();
             var healthPool = world.GetPool<HealthComponent>();
 
             foreach (var entity in _attackFilter)
             {
-                ref var attackComponent = ref attackPool.Get(entity);
+                ref var damageComponent = ref damagePool.Get(entity);
                 ref var targetComponent = ref targetPool.Get(entity);
 
                 int targetEntity;
@@ -40,7 +40,7 @@ namespace UnicornOne.Ecs.Systems
                     {
                         ref var healthComponent = ref healthPool.Get(targetEntity);
 
-                        healthComponent.CurrentHealth -= attackComponent.Damage;
+                        healthComponent.CurrentHealth -= damageComponent.Damage;
                     }
                 }
 

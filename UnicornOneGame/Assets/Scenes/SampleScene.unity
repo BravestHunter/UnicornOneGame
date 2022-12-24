@@ -348,3 +348,4 @@ MonoBehaviour:
   Level: {fileID: 11400000, guid: f24d6eafe2a5b6b4083a35786d99be31, type: 2}
   Hero: {fileID: 11400000, guid: a138c87886c7e914fb2c3a1b3000e5d0, type: 2}
   Enemy: {fileID: 11400000, guid: 2fe9a33e0cb722947b7578e63c7b0ca3, type: 2}
+  Camera: {fileID: 963194227}

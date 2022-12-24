@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace UnicornOne.Ecs.Components
 {
-    internal struct AttackComponent
+    internal struct DamageComponent
     {
         public int Damage;
     }

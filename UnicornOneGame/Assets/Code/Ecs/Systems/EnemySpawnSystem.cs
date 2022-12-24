@@ -15,7 +15,7 @@ namespace UnicornOne.Ecs.Systems
 {
     internal class EnemySpawnSystem : IEcsRunSystem
     {
-        private const int MaxEnemyCount = 10;
+        private const int MaxEnemyCount = 100;
 
         private readonly EcsCustomInject<MobService> _mobService;
         private EcsFilter _enemyFilter;
@@ -43,7 +43,7 @@ namespace UnicornOne.Ecs.Systems
             // TODO: Use objects pooling
 
             var enemyGameObject = GameObject.Instantiate(_mobService.Value.EnemyPrefab);
-            Vector2 randomPosition = UnityEngine.Random.insideUnitCircle * 20.0f;
+            Vector2 randomPosition = UnityEngine.Random.insideUnitCircle * 60.0f;
             float randomAngle = UnityEngine.Random.Range(0.0f, 360.0f);
             enemyGameObject.transform.position = new Vector3(randomPosition.x, 0.0f, randomPosition.y);
             enemyGameObject.transform.rotation = Quaternion.Euler(0.0f, randomAngle, 0.0f);

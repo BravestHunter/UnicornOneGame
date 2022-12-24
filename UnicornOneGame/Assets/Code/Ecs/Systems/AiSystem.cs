@@ -39,7 +39,7 @@ namespace UnicornOne.Ecs.Systems
 
             var targetPool = world.GetPool<TargetComponent>();
             var attackAnimationRequestPool = world.GetPool<AttackAnimationRequest>();
-            var attackPool = world.GetPool<AttackComponent>();
+            var damagePool = world.GetPool<DamageComponent>();
 
             Dictionary<int, Vector3> enemyPositions = null;
 
@@ -127,8 +127,8 @@ namespace UnicornOne.Ecs.Systems
                                     attackAnimationRequestPool.Add(entity);
 
                                     var attackEntity = world.NewEntity();
-                                    ref var attackComponent = ref attackPool.Add(attackEntity);
-                                    attackComponent.Damage = meleeAtackParametersComponent.Damage;
+                                    ref var damageComponent = ref damagePool.Add(attackEntity);
+                                    damageComponent.Damage = meleeAtackParametersComponent.Damage;
                                     ref var attackTargetComponent = ref targetPool.Add(attackEntity);
                                     attackTargetComponent.TargetEntity = world.PackEntity(targetEntity);
                                 }

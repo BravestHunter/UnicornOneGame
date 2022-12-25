@@ -38,8 +38,8 @@ namespace UnicornOne.Ecs.Systems
             var gameObjectRefPool = world.GetPool<GameObjectRefComponent>();
 
             var targetPool = world.GetPool<TargetComponent>();
-            var attackAnimationRequestPool = world.GetPool<AttackAnimationRequest>();
-            var damagePool = world.GetPool<DamageComponent>();
+            var attackRequestPool = world.GetPool<AttackRequest>();
+            var attackFlagPool = world.GetPool<AttackFlag>();
 
             Dictionary<int, Vector3> enemyPositions = null;
 
@@ -117,27 +117,33 @@ namespace UnicornOne.Ecs.Systems
                         {
                             ref var targetComponent = ref targetPool.Get(entity);
 
-                            int targetEntity;
-                            if (targetComponent.TargetEntity.Unpack(world, out targetEntity))
+                            if (attackFlagPool.Has(entity)) // Attack is happening
                             {
-                                if (Time.timeSinceLevelLoad - meleeAtackParametersComponent.LastAttackTime >= 1.0f)
-                                {
-                                    meleeAtackParametersComponent.LastAttackTime = Time.timeSinceLevelLoad;
-
-                                    attackAnimationRequestPool.Add(entity);
-
-                                    var attackEntity = world.NewEntity();
-                                    ref var damageComponent = ref damagePool.Add(attackEntity);
-                                    damageComponent.Damage = meleeAtackParametersComponent.Damage;
-                                    ref var attackTargetComponent = ref targetPool.Add(attackEntity);
-                                    attackTargetComponent.TargetEntity = world.PackEntity(targetEntity);
-                                }
+                                break;
                             }
-                            else
+
+                            int targetEntity;
+                            if (!targetComponent.TargetEntity.Unpack(world, out targetEntity))
                             {
                                 meleeFighterBehaviorAiComponent.CurrentState = MeleeFighterBehaviorAiComponent.State.SearchForTarget;
-
                                 targetPool.Del(entity);
+
+                                break;
+                            }
+
+                            Vector3 targetEntityPosition = gameObjectRefPool.Get(targetEntity).GameObject.transform.position;
+                            if ((entityPosition - targetEntityPosition).magnitude > meleeAtackParametersComponent.Range)
+                            {
+                                meleeFighterBehaviorAiComponent.CurrentState = MeleeFighterBehaviorAiComponent.State.MoveToTarget;
+
+                                break;
+                            }
+
+                            if (Time.timeSinceLevelLoad - meleeAtackParametersComponent.LastAttackTime >= 1.0f)
+                            {
+                                meleeAtackParametersComponent.LastAttackTime = Time.timeSinceLevelLoad;
+
+                                attackRequestPool.Add(entity);
                             }
 
                             break;

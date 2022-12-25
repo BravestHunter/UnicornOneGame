@@ -10,6 +10,7 @@ using UnicornOne.Ecs.Components.AI;
 using UnicornOne.Ecs.Components.Flags;
 using UnicornOne.Ecs.Components.Refs;
 using UnicornOne.Ecs.Services;
+using UnicornOne.MonoBehaviours;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -29,8 +30,10 @@ namespace UnicornOne.Ecs.Systems
         {
             var heroGameObject = GameObject.Instantiate(_heroService.Value.Prefab);
             var animator = heroGameObject.GetComponentInChildren<Animator>();
-            animator.fireEvents = false;
+            animator.fireEvents = true;
             animator.applyRootMotion = false;
+            var animationEventHandler = heroGameObject.GetComponentInChildren<AnimationEventHandler>();
+            animationEventHandler.Clean();
             var navigationAgent = heroGameObject.GetComponent<NavMeshAgent>();
 
             var entity = world.NewEntity();
@@ -54,6 +57,10 @@ namespace UnicornOne.Ecs.Systems
             var animatorRefPool = world.GetPool<AnimatorRefComponent>();
             ref var animatorRefComponent = ref animatorRefPool.Add(entity);
             animatorRefComponent.Animator = animator;
+
+            var animationEventHandlerRefPool = world.GetPool<AnimationEventHandlerRefComponent>();
+            ref var animationEventHandlerRefComponent = ref animationEventHandlerRefPool.Add(entity);
+            animationEventHandlerRefComponent.AnimationEventHandler = animationEventHandler;
 
             var navigationAgentRefPool = world.GetPool<NavigationAgentRefComponent>();
             ref var navigationAgentRefComponent = ref navigationAgentRefPool.Add(entity);

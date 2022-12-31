@@ -6,11 +6,8 @@ using System.Threading.Tasks;
 
 namespace UnicornOne.Ecs.Components
 {
-    internal struct MeleeAtackParametersComponent
+    internal struct AttackRechargeComponent
     {
-        public int Damage;
-        public float Range;
-
         public float LastAttackTime;
     }
 }

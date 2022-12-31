@@ -47,10 +47,11 @@ namespace UnicornOne.Ecs.Systems
             var heroFlagPool = world.GetPool<HeroFlag>();
             heroFlagPool.Add(entity);
 
-            var meleeAtackParametersPool = world.GetPool<MeleeAtackParametersComponent>();
-            ref var meleeAtackParametersComponent = ref meleeAtackParametersPool.Add(entity);
-            meleeAtackParametersComponent.Damage = heroInfo.AttackDamage;
-            meleeAtackParametersComponent.Range = heroInfo.AttackRange;
+            var atackParametersPool = world.GetPool<AtackParametersComponent>();
+            ref var atackParametersComponent = ref atackParametersPool.Add(entity);
+            atackParametersComponent.Damage = heroInfo.AttackDamage;
+            atackParametersComponent.Range = heroInfo.AttackRange;
+            atackParametersComponent.AttackRechargeTime = heroInfo.AttackRechargeTime;
 
             var navigationPool = world.GetPool<NavigationComponent>();
             ref var navigationComponent = ref navigationPool.Add(entity);

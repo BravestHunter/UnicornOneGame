@@ -26,27 +26,28 @@ namespace UnicornOne.Ecs.Systems
                 _meleeHeroFilter = world
                     .Filter<HeroFlag>()
                     .Inc<MeleeFighterBehaviorAiComponent>()
-                    .Inc<MeleeAtackParametersComponent>()
+                    .Inc<AtackParametersComponent>()
                     .Inc<NavigationComponent>()
                     .Inc<GameObjectRefComponent>()
                     .End();
             }
 
             var meleeFighterBehaviorAiPool = world.GetPool<MeleeFighterBehaviorAiComponent>();
-            var meleeAtackParametersPool = world.GetPool<MeleeAtackParametersComponent>();
+            var atackParametersPool = world.GetPool<AtackParametersComponent>();
             var navigationPool = world.GetPool<NavigationComponent>();
             var gameObjectRefPool = world.GetPool<GameObjectRefComponent>();
 
             var targetPool = world.GetPool<TargetComponent>();
             var attackRequestPool = world.GetPool<AttackRequest>();
             var attackFlagPool = world.GetPool<AttackFlag>();
+            var attackRechargePool = world.GetPool<AttackRechargeComponent>();
 
             Dictionary<int, Vector3> enemyPositions = null;
 
             foreach (var entity in _meleeHeroFilter)
             {
                 ref var meleeFighterBehaviorAiComponent = ref meleeFighterBehaviorAiPool.Get(entity);
-                ref var meleeAtackParametersComponent = ref meleeAtackParametersPool.Get(entity);
+                ref var atackParametersComponent = ref atackParametersPool.Get(entity);
                 ref var navigationComponent = ref navigationPool.Get(entity);
                 ref var gameObjectRefComponent = ref gameObjectRefPool.Get(entity);
 
@@ -96,7 +97,7 @@ namespace UnicornOne.Ecs.Systems
                             {
                                 Vector3 targetEntityPosition = gameObjectRefPool.Get(targetEntity).GameObject.transform.position;
 
-                                if ((targetEntityPosition - entityPosition).magnitude > meleeAtackParametersComponent.Range)
+                                if ((targetEntityPosition - entityPosition).magnitude > atackParametersComponent.Range)
                                 {
                                     // Still moving to target
                                     continue;
@@ -121,19 +122,22 @@ namespace UnicornOne.Ecs.Systems
 
                     case MeleeFighterBehaviorAiComponent.State.AttackTarget:
                         {
-                            if (attackFlagPool.Has(entity)) // Attack is happening
+                            // Case: Attack is happening
+                            if (attackFlagPool.Has(entity))
                             {
                                 break;
                             }
 
+                            // Case: No target
                             if (!targetPool.Has(entity))
                             {
                                 meleeFighterBehaviorAiComponent.CurrentState = MeleeFighterBehaviorAiComponent.State.SearchForTarget;
+
                                 break;
                             }
 
+                            // Case: Target is not alive
                             ref var targetComponent = ref targetPool.Get(entity);
-
                             int targetEntity;
                             if (!targetComponent.TargetEntity.Unpack(world, out targetEntity))
                             {
@@ -143,20 +147,23 @@ namespace UnicornOne.Ecs.Systems
                                 break;
                             }
 
+                            // Case: Target is too far
                             Vector3 targetEntityPosition = gameObjectRefPool.Get(targetEntity).GameObject.transform.position;
-                            if ((entityPosition - targetEntityPosition).magnitude > meleeAtackParametersComponent.Range)
+                            if ((entityPosition - targetEntityPosition).magnitude > atackParametersComponent.Range)
                             {
                                 meleeFighterBehaviorAiComponent.CurrentState = MeleeFighterBehaviorAiComponent.State.MoveToTarget;
 
                                 break;
                             }
 
-                            if (Time.timeSinceLevelLoad - meleeAtackParametersComponent.LastAttackTime >= 1.0f)
+                            // Case: Attack recharge is happening
+                            if (attackRechargePool.Has(entity))
                             {
-                                meleeAtackParametersComponent.LastAttackTime = Time.timeSinceLevelLoad;
-
-                                attackRequestPool.Add(entity);
+                                break;
                             }
+
+                            // Case: Start attack
+                            attackRequestPool.Add(entity);
 
                             break;
                         }

@@ -75,7 +75,7 @@ namespace UnicornOne.Ecs.Systems
                         continue;
                     }
 
-                    if (currentState.IsName("Idle") || currentState.IsName("Movement Blend")) // Attack
+                    if (currentState.IsName("Idle") || currentState.IsName("Movement Blend")) // Attack is finished
                     {
                         attackAnimationFlagPool.Del(entity);
                     }

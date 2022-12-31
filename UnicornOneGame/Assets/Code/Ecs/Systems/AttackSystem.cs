@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using UnicornOne.Ecs.Components;
 using UnicornOne.Ecs.Components.Flags;
 using UnicornOne.Ecs.Components.Refs;
+using UnityEngine;
 
 namespace UnicornOne.Ecs.Systems
 {
@@ -37,10 +38,14 @@ namespace UnicornOne.Ecs.Systems
             }
 
             var attackFlagPool = world.GetPool<AttackFlag>();
+            var attackRechargePool = world.GetPool<AttackRechargeComponent>();
 
             foreach (var entity in _attackFinishFilter)
             {
                 attackFlagPool.Del(entity);
+
+                ref var attackRechargeComponent = ref attackRechargePool.Add(entity);
+                attackRechargeComponent.LastAttackTime = Time.timeSinceLevelLoad;
             }
         }
 
@@ -99,19 +104,19 @@ namespace UnicornOne.Ecs.Systems
                 _hitFilter = world
                     .Filter<HitRequest>()
                     .Inc<TargetComponent>()
-                    .Inc<MeleeAtackParametersComponent>()
+                    .Inc<AtackParametersComponent>()
                     .End();
             }
 
             var hitRequestPool = world.GetPool<HitRequest>();
             var targetPool = world.GetPool<TargetComponent>();
-            var meleeAtackParametersPool = world.GetPool<MeleeAtackParametersComponent>();
+            var atackParametersPool = world.GetPool<AtackParametersComponent>();
             var damagePool = world.GetPool<DamageComponent>();
 
             foreach (var entity in _hitFilter)
             {
                 ref var targetComponent = ref targetPool.Get(entity);
-                ref var meleeAtackParametersComponent = ref meleeAtackParametersPool.Get(entity);
+                ref var atackParametersComponent = ref atackParametersPool.Get(entity);
 
                 {
                     var damageEntity = world.NewEntity();
@@ -120,7 +125,7 @@ namespace UnicornOne.Ecs.Systems
                     damageTargetComponent.TargetEntity = targetComponent.TargetEntity;
 
                     ref var damageComponent = ref damagePool.Add(damageEntity);
-                    damageComponent.Damage = meleeAtackParametersComponent.Damage;
+                    damageComponent.Damage = atackParametersComponent.Damage;
                 }
 
                 hitRequestPool.Del(entity);

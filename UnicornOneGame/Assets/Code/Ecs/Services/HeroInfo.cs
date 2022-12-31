@@ -16,7 +16,7 @@ namespace UnicornOne.Ecs.Services
         public float MovingSpeed => _hero.MovingSpeed;
         public int AttackDamage => _hero.AttackDamage;
         public float AttackRange => _hero.AttackRange;
-        public float AttackDelay => _hero.AttackDelay;
+        public float AttackRechargeTime => _hero.AttackRechargeTime;
 
         public HeroInfo(Hero hero)
         {

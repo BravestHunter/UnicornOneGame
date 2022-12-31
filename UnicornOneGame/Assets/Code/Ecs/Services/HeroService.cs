@@ -10,17 +10,13 @@ namespace UnicornOne.Ecs.Services
 {
     internal class HeroService
     {
-        private readonly Hero _hero;
+        private readonly List<HeroInfo> _heroes;
 
-        public GameObject Prefab { get { return _hero.Prefab; } }
-        public float MovingSpeed { get { return _hero.MovingSpeed; } }
-        public int AttackDamage { get { return _hero.AttackDamage; } }
-        public float AttackRange { get { return _hero.AttackRange; } }
-        public float AttackDelay { get { return _hero.AttackDelay; } }
+        public IEnumerable<HeroInfo> Heroes => _heroes;
 
-        public HeroService(Hero hero)
+        public HeroService(IEnumerable<Hero> heroes)
         {
-            _hero = hero;
+            _heroes = heroes.Select(hero => new HeroInfo(hero)).ToList();
         }
     }
 }

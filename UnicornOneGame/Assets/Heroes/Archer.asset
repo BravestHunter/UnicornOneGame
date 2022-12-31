@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ba329fb5ae607eb43ba94c994cb4c854, type: 3}
-  m_Name: Warrior
+  m_Name: Archer
   m_EditorClassIdentifier: 
-  Prefab: {fileID: 6718588461118902311, guid: c2031e0c70152804ebf0539d753900b3, type: 3}
+  Prefab: {fileID: 7520341672977643540, guid: 022a51728dfb6e24881904aefa443960, type: 3}
   MovingSpeed: 6
-  AttackDamage: 20
-  AttackRange: 2
-  AttackDelay: 2
+  AttackDamage: 10
+  AttackRange: 10
+  AttackDelay: 5

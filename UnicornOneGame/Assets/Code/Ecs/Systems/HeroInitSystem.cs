@@ -23,14 +23,17 @@ namespace UnicornOne.Ecs.Systems
         public void Init(IEcsSystems systems)
         {
             var world = systems.GetWorld();
-            SpawnHero(world, new Vector3(-10.0f, 0.0f, 0.0f));
-            SpawnHero(world, new Vector3(0.0f, 0.0f, 10.0f));
-            SpawnHero(world, new Vector3(10.0f, 0.0f, 0.0f));
+
+            foreach (HeroInfo heroInfo in _heroService.Value.Heroes)
+            {
+                Vector2 position = UnityEngine.Random.insideUnitCircle * 10.0f;
+                SpawnHero(heroInfo, world, new Vector3(position.x, 0.0f, position.y));
+            }
         }
 
-        private void SpawnHero(EcsWorld world ,Vector3 position)
+        private void SpawnHero(HeroInfo heroInfo, EcsWorld world, Vector3 position)
         {
-            var heroGameObject = GameObject.Instantiate(_heroService.Value.Prefab);
+            var heroGameObject = GameObject.Instantiate(heroInfo.Prefab);
             heroGameObject.transform.position = position;
             var animator = heroGameObject.GetComponentInChildren<Animator>();
             animator.fireEvents = true;
@@ -46,12 +49,12 @@ namespace UnicornOne.Ecs.Systems
 
             var meleeAtackParametersPool = world.GetPool<MeleeAtackParametersComponent>();
             ref var meleeAtackParametersComponent = ref meleeAtackParametersPool.Add(entity);
-            meleeAtackParametersComponent.Damage = _heroService.Value.AttackDamage;
-            meleeAtackParametersComponent.Range = _heroService.Value.AttackRange;
+            meleeAtackParametersComponent.Damage = heroInfo.AttackDamage;
+            meleeAtackParametersComponent.Range = heroInfo.AttackRange;
 
             var navigationPool = world.GetPool<NavigationComponent>();
             ref var navigationComponent = ref navigationPool.Add(entity);
-            navigationComponent.MovementSpeed = _heroService.Value.MovingSpeed;
+            navigationComponent.MovementSpeed = heroInfo.MovingSpeed;
 
             var gameObjectRefPool = world.GetPool<GameObjectRefComponent>();
             ref var gameObjectRefComponent = ref gameObjectRefPool.Add(entity);

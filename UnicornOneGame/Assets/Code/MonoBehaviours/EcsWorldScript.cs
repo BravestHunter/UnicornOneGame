@@ -13,7 +13,7 @@ namespace UnicornOne.MonoBehaviours
     public class EcsWorldScript : MonoBehaviour
     {
         [SerializeField] private Level Level;
-        [SerializeField] private Hero Hero;
+        [SerializeField] private List<Hero> Heroes;
         [SerializeField] private Mob Enemy;
 
         [SerializeField] private Camera Camera;
@@ -27,7 +27,7 @@ namespace UnicornOne.MonoBehaviours
 
             // TODO: combine all these services with init data into one?
             LevelService levelService = new LevelService(Level);
-            HeroService heroService = new HeroService(Hero);
+            HeroService heroService = new HeroService(Heroes);
             MobService mobService = new MobService(Enemy);
 
             var cameraService = new CameraService(Camera);

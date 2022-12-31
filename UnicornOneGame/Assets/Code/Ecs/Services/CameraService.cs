@@ -9,6 +9,8 @@ namespace UnicornOne.Ecs.Services
 {
     internal class CameraService
     {
+        private const float MinCameraDistance = 20.0f;
+
         private readonly Camera _camera;
 
         public CameraService(Camera camera)
@@ -26,6 +28,8 @@ namespace UnicornOne.Ecs.Services
             float distance = cameraDistance * objectSize / cameraView; // Combined wanted distance from the object
 
             //distance += 0.5f * objectSize; // Estimated offset from the center to the outside of the object (no need for now)
+
+            distance = Math.Max(MinCameraDistance, distance); // Min distance
 
             _camera.transform.position = bounds.center - distance * _camera.transform.forward;
         }

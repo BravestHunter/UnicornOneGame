@@ -83,6 +83,12 @@ namespace UnicornOne.Ecs.Systems
 
                     case MeleeFighterBehaviorAiComponent.State.MoveToTarget:
                         {
+                            if (!targetPool.Has(entity))
+                            {
+                                meleeFighterBehaviorAiComponent.CurrentState = MeleeFighterBehaviorAiComponent.State.SearchForTarget;
+                                break;
+                            }
+
                             ref var targetComponent = ref targetPool.Get(entity);
 
                             int targetEntity;
@@ -115,12 +121,18 @@ namespace UnicornOne.Ecs.Systems
 
                     case MeleeFighterBehaviorAiComponent.State.AttackTarget:
                         {
-                            ref var targetComponent = ref targetPool.Get(entity);
-
                             if (attackFlagPool.Has(entity)) // Attack is happening
                             {
                                 break;
                             }
+
+                            if (!targetPool.Has(entity))
+                            {
+                                meleeFighterBehaviorAiComponent.CurrentState = MeleeFighterBehaviorAiComponent.State.SearchForTarget;
+                                break;
+                            }
+
+                            ref var targetComponent = ref targetPool.Get(entity);
 
                             int targetEntity;
                             if (!targetComponent.TargetEntity.Unpack(world, out targetEntity))

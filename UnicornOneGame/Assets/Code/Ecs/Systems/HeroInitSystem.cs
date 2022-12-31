@@ -23,12 +23,15 @@ namespace UnicornOne.Ecs.Systems
         public void Init(IEcsSystems systems)
         {
             var world = systems.GetWorld();
-            SpawnHero(world); // Just one hero for now
+            SpawnHero(world, new Vector3(-10.0f, 0.0f, 0.0f));
+            SpawnHero(world, new Vector3(0.0f, 0.0f, 10.0f));
+            SpawnHero(world, new Vector3(10.0f, 0.0f, 0.0f));
         }
 
-        private void SpawnHero(EcsWorld world)
+        private void SpawnHero(EcsWorld world ,Vector3 position)
         {
             var heroGameObject = GameObject.Instantiate(_heroService.Value.Prefab);
+            heroGameObject.transform.position = position;
             var animator = heroGameObject.GetComponentInChildren<Animator>();
             animator.fireEvents = true;
             animator.applyRootMotion = false;

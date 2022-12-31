@@ -41,9 +41,21 @@ namespace UnicornOne.Ecs.Systems
 
             if (heroPositions.Count > 0)
             {
-                Vector3 center = heroPositions.Aggregate((s, p) => s += p) / heroPositions.Count;
-                _cameraService.Value.SetCameraPosition(center);
+                var bounds = GetBounds(heroPositions);
+                _cameraService.Value.MoveToFitBounds(bounds);
             }
+        }
+
+        private Bounds GetBounds(IEnumerable<Vector3> positions)
+        {
+            Bounds bounds = new Bounds();
+
+            foreach (Vector3 position in positions)
+            {
+                bounds.Encapsulate(position);
+            }
+
+            return bounds;
         }
     }
 }

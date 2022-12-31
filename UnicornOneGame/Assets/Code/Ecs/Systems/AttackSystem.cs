@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnicornOne.Ecs.Components;
 using UnicornOne.Ecs.Components.Flags;
+using UnicornOne.Ecs.Components.Refs;
 
 namespace UnicornOne.Ecs.Systems
 {
@@ -49,6 +50,8 @@ namespace UnicornOne.Ecs.Systems
             {
                 _attackRequestFilter = world
                     .Filter<AttackRequest>()
+                    .Inc<TargetComponent>()
+                    .Inc<GameObjectRefComponent>()
                     .Exc<AttackFlag>()
                     .End();
             }
@@ -64,11 +67,23 @@ namespace UnicornOne.Ecs.Systems
             var attackRequestPool = world.GetPool<AttackRequest>();
             var attackFlagPool = world.GetPool<AttackFlag>();
             var attackAnimationRequestPool = world.GetPool<AttackAnimationRequest>();
+            var targetPool = world.GetPool<TargetComponent>();
+            var gameObjectRefPool = world.GetPool<GameObjectRefComponent>();
 
             foreach (var entity in _attackRequestFilter)
             {
-                attackAnimationRequestPool.Add(entity);
                 attackFlagPool.Add(entity);
+                attackAnimationRequestPool.Add(entity);
+
+                ref var targetComponent = ref targetPool.Get(entity);
+                ref var gameObjectRefComponent = ref gameObjectRefPool.Get(entity);
+
+                int targetEntity;
+                if (targetComponent.TargetEntity.Unpack(world, out targetEntity))
+                {
+                    gameObjectRefComponent.GameObject.transform.LookAt(gameObjectRefPool.Get(targetEntity).GameObject.transform.position);
+                }
+
             }
 
             foreach (var entity in _busyAttackRequestFilter)

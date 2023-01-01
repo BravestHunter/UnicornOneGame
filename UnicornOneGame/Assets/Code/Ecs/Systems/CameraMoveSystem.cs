@@ -50,6 +50,13 @@ namespace UnicornOne.Ecs.Systems
         {
             Bounds bounds = new Bounds();
 
+            if (positions.Count() == 0)
+            {
+                return bounds;
+            }
+
+            bounds.SetMinMax(positions.First(), positions.First());
+
             foreach (Vector3 position in positions)
             {
                 bounds.Encapsulate(position);

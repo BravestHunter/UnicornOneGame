@@ -42,6 +42,7 @@ namespace UnicornOne.Ecs.Systems
             var navigationPool = world.GetPool<NavigationComponent>();
             var attackAnimationRequestPool = world.GetPool<AttackAnimationRequest>();
             var attackAnimationFlagPool = world.GetPool<AttackAnimationFlag>();
+            var standPool = world.GetPool<StandFlag>();
 
             foreach (var entity in _meleeHeroFilter)
             {
@@ -52,9 +53,6 @@ namespace UnicornOne.Ecs.Systems
 
                 if (attackAnimationRequestPool.Has(entity))
                 {
-                    animatorRefComponent.Animator.SetBool("Moving", false);
-                    animatorRefComponent.Animator.SetFloat("Velocity", 0.0f);
-
                     animatorRefComponent.Animator.SetInteger("Trigger Number", 2);
                     animatorRefComponent.Animator.SetTrigger("Trigger");
 
@@ -81,8 +79,16 @@ namespace UnicornOne.Ecs.Systems
                     }
                 }
 
-                animatorRefComponent.Animator.SetBool("Moving", true);
-                animatorRefComponent.Animator.SetFloat("Velocity", navigationComponent.MovementSpeed);
+                if (!standPool.Has(entity))
+                {
+                    animatorRefComponent.Animator.SetBool("Moving", true);
+                    animatorRefComponent.Animator.SetFloat("Velocity", navigationComponent.MovementSpeed);
+                }
+                else
+                {
+                    animatorRefComponent.Animator.SetBool("Moving", false);
+                    animatorRefComponent.Animator.SetFloat("Velocity", 0.0f);
+                }
             }
         }
 

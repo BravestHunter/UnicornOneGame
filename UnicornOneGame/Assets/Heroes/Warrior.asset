@@ -16,4 +16,4 @@ MonoBehaviour:
   MovingSpeed: 6
   AttackDamage: 10
   AttackRange: 2
-  AttackRechargeTime: 2
+  AttackRechargeTime: 1

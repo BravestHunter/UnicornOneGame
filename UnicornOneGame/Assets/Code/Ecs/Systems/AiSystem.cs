@@ -36,11 +36,11 @@ namespace UnicornOne.Ecs.Systems
             var atackParametersPool = world.GetPool<AtackParametersComponent>();
             var navigationPool = world.GetPool<NavigationComponent>();
             var gameObjectRefPool = world.GetPool<GameObjectRefComponent>();
-
             var targetPool = world.GetPool<TargetComponent>();
             var attackRequestPool = world.GetPool<AttackRequest>();
             var attackFlagPool = world.GetPool<AttackFlag>();
             var attackRechargePool = world.GetPool<AttackRechargeComponent>();
+            var standPool = world.GetPool<StandFlag>();
 
             Dictionary<int, Vector3> enemyPositions = null;
 
@@ -62,60 +62,61 @@ namespace UnicornOne.Ecs.Systems
                                 enemyPositions = GetEnemyPositions(world);
                             }
 
+                            // Case: No enemies
                             if (enemyPositions.Count == 0)
                             {
                                 continue;
                             }
 
+                            // Case: Set the closest enemy as target
+                            meleeFighterBehaviorAiComponent.CurrentState = MeleeFighterBehaviorAiComponent.State.MoveToTarget;
+
                             var closestTarget = enemyPositions.OrderBy(pair => (entityPosition - pair.Value).sqrMagnitude).First();
-
-                            // Update components
-                            {
-                                meleeFighterBehaviorAiComponent.CurrentState = MeleeFighterBehaviorAiComponent.State.MoveToTarget;
-
-                                navigationComponent.DestionationPosition = closestTarget.Value;
-
-                                ref var targetComponent = ref targetPool.Add(entity);
-                                targetComponent.TargetEntity = world.PackEntity(closestTarget.Key);
-                            }
+                            ref var targetComponent = ref targetPool.Add(entity);
+                            targetComponent.TargetEntity = world.PackEntity(closestTarget.Key);
 
                             break;
                         }
 
                     case MeleeFighterBehaviorAiComponent.State.MoveToTarget:
                         {
+                            // Case: No target
                             if (!targetPool.Has(entity))
                             {
                                 meleeFighterBehaviorAiComponent.CurrentState = MeleeFighterBehaviorAiComponent.State.SearchForTarget;
                                 break;
                             }
 
+                            // Case: Target is not alive
                             ref var targetComponent = ref targetPool.Get(entity);
-
                             int targetEntity;
-                            if (targetComponent.TargetEntity.Unpack(world, out targetEntity))
-                            {
-                                Vector3 targetEntityPosition = gameObjectRefPool.Get(targetEntity).GameObject.transform.position;
-
-                                if ((targetEntityPosition - entityPosition).magnitude > atackParametersComponent.Range)
-                                {
-                                    // Still moving to target
-                                    continue;
-                                }
-                            }
-                            else
+                            if (!targetComponent.TargetEntity.Unpack(world, out targetEntity))
                             {
                                 // Target is missing, search for new one
                                 meleeFighterBehaviorAiComponent.CurrentState = MeleeFighterBehaviorAiComponent.State.SearchForTarget;
                                 targetPool.Del(entity);
                             }
 
-                            // Update components
+                            // Case: Too far from target, keep moving
+                            Vector3 targetEntityPosition = gameObjectRefPool.Get(targetEntity).GameObject.transform.position;
+                            if ((targetEntityPosition - entityPosition).magnitude > atackParametersComponent.Range)
                             {
-                                meleeFighterBehaviorAiComponent.CurrentState = MeleeFighterBehaviorAiComponent.State.AttackTarget;
+                                navigationComponent.DestionationPosition = targetEntityPosition;
 
+                                if (standPool.Has(entity))
+                                {
+                                    standPool.Del(entity);
+                                }
+
+                                break;
+                            }
+                            else
+                            {
                                 navigationComponent.DestionationPosition = entityPosition;
                             }
+
+                            // Case: Reached target point
+                            meleeFighterBehaviorAiComponent.CurrentState = MeleeFighterBehaviorAiComponent.State.AttackTarget;
 
                             break;
                         }
@@ -154,6 +155,12 @@ namespace UnicornOne.Ecs.Systems
                                 meleeFighterBehaviorAiComponent.CurrentState = MeleeFighterBehaviorAiComponent.State.MoveToTarget;
 
                                 break;
+                            }
+
+                            // Hero should stand now
+                            if (!standPool.Has(entity))
+                            {
+                                standPool.Add(entity);
                             }
 
                             // Case: Attack recharge is happening

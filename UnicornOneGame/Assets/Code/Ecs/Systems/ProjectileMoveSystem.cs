@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using UnicornOne.Ecs.Components.Refs;
 using UnicornOne.Ecs.Components;
 using UnityEngine;
-using UnicornOne.Assets.Code.Ecs.Systems;
 
 namespace UnicornOne.Ecs.Systems
 {

@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace UnicornOne.Ecs.Components
 {
-    internal struct AtackParametersComponent
+    internal struct ProjectileParametersComponent
     {
         public int Damage;
-        public float Range;
-        public float AttackRechargeTime;
+        public float MoveSpeed;
     }
 }

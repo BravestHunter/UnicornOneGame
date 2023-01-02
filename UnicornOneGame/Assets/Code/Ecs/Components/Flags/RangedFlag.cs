@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace UnicornOne.Ecs.Components.Flags
 {
-    internal struct ProjectileFlag
+    internal struct RangedFlag
     {
     }
 }

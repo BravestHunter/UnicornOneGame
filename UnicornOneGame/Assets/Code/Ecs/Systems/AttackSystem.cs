@@ -1,4 +1,5 @@
 ﻿using Leopotam.EcsLite;
+using Leopotam.EcsLite.Di;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,16 +8,20 @@ using System.Threading.Tasks;
 using UnicornOne.Ecs.Components;
 using UnicornOne.Ecs.Components.Flags;
 using UnicornOne.Ecs.Components.Refs;
+using UnicornOne.Ecs.Services;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
 
 namespace UnicornOne.Ecs.Systems
 {
     internal class AttackSystem : IEcsRunSystem
     {
+        private readonly EcsCustomInject<ProjectileService> _projectileService;
+
+        private EcsFilter _attackFinishFilter;
         private EcsFilter _attackRequestFilter;
         private EcsFilter _busyAttackRequestFilter;
         private EcsFilter _hitFilter;
-        private EcsFilter _attackFinishFilter;
 
         public void Run(IEcsSystems systems)
         {
@@ -24,7 +29,8 @@ namespace UnicornOne.Ecs.Systems
 
             ProcessAttackFinish(world);
             ProcessAttackRequest(world);
-            ProcessHit(world);
+            CleanBusyAttackRequests(world);
+            ProcessHits(world);
         }
 
         private void ProcessAttackFinish(EcsWorld world)
@@ -61,14 +67,6 @@ namespace UnicornOne.Ecs.Systems
                     .End();
             }
 
-            if (_busyAttackRequestFilter == null)
-            {
-                _busyAttackRequestFilter = world
-                    .Filter<AttackRequest>()
-                    .Inc<AttackFlag>()
-                    .End();
-            }
-
             var attackRequestPool = world.GetPool<AttackRequest>();
             var attackFlagPool = world.GetPool<AttackFlag>();
             var attackAnimationRequestPool = world.GetPool<AttackAnimationRequest>();
@@ -89,7 +87,21 @@ namespace UnicornOne.Ecs.Systems
                     gameObjectRefComponent.GameObject.transform.LookAt(gameObjectRefPool.Get(targetEntity).GameObject.transform.position);
                 }
 
+                attackRequestPool.Del(entity);
             }
+        }
+
+        private void CleanBusyAttackRequests(EcsWorld world)
+        {
+            if (_busyAttackRequestFilter == null)
+            {
+                _busyAttackRequestFilter = world
+                    .Filter<AttackRequest>()
+                    .Inc<AttackFlag>()
+                    .End();
+            }
+
+            var attackRequestPool = world.GetPool<AttackRequest>();
 
             foreach (var entity in _busyAttackRequestFilter)
             {
@@ -97,7 +109,7 @@ namespace UnicornOne.Ecs.Systems
             }
         }
 
-        private void ProcessHit(EcsWorld world)
+        private void ProcessHits(EcsWorld world)
         {
             if (_hitFilter == null)
             {
@@ -105,6 +117,7 @@ namespace UnicornOne.Ecs.Systems
                     .Filter<HitRequest>()
                     .Inc<TargetComponent>()
                     .Inc<AtackParametersComponent>()
+                    .Inc<GameObjectRefComponent>()
                     .End();
             }
 
@@ -112,12 +125,36 @@ namespace UnicornOne.Ecs.Systems
             var targetPool = world.GetPool<TargetComponent>();
             var atackParametersPool = world.GetPool<AtackParametersComponent>();
             var damagePool = world.GetPool<DamageComponent>();
+            var rangedFlagPool = world.GetPool<RangedFlag>();
+            var projectileParametersPool = world.GetPool<ProjectileParametersComponent>();
+            var gameObjectRefPool = world.GetPool<GameObjectRefComponent>();
 
             foreach (var entity in _hitFilter)
             {
-                ref var targetComponent = ref targetPool.Get(entity);
-                ref var atackParametersComponent = ref atackParametersPool.Get(entity);
+                var targetComponent = targetPool.Get(entity);
+                var atackParametersComponent = atackParametersPool.Get(entity);
+                var gameObjectRefComponent = gameObjectRefPool.Get(entity);
 
+                if (rangedFlagPool.Has(entity))
+                {
+                    // Spawn projectile
+                    var projectileEntity = world.NewEntity();
+
+                    ref var projectileTargetComponent = ref targetPool.Add(projectileEntity);
+                    projectileTargetComponent.TargetEntity = targetComponent.TargetEntity;
+
+                    ref var projectileParametersComponent = ref projectileParametersPool.Add(projectileEntity);
+                    projectileParametersComponent.Damage = atackParametersComponent.Damage;
+                    projectileParametersComponent.MoveSpeed = _projectileService.Value.MoveSpeed;
+
+                    var projectileGameObject = GameObject.Instantiate(_projectileService.Value.Prefab);
+                    projectileGameObject.transform.position = gameObjectRefComponent.GameObject.transform.position + Vector3.up * 1.65f + gameObjectRefComponent.GameObject.transform.forward * 1.0f;
+                    projectileGameObject.transform.rotation = gameObjectRefComponent.GameObject.transform.rotation;
+
+                    ref var projectileGameObjectRefComponent = ref gameObjectRefPool.Add(projectileEntity);
+                    projectileGameObjectRefComponent.GameObject = projectileGameObject;
+                }
+                else
                 {
                     var damageEntity = world.NewEntity();
 

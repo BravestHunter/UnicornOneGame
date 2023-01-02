@@ -17,3 +17,4 @@ MonoBehaviour:
   AttackDamage: 10
   AttackRange: 10
   AttackRechargeTime: 2
+  IsRanged: 1

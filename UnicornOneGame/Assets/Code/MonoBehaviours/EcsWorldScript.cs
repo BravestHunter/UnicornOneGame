@@ -2,6 +2,7 @@ using Leopotam.EcsLite;
 using Leopotam.EcsLite.Di;
 using System.Collections;
 using System.Collections.Generic;
+using UnicornOne.Assets.Code.Ecs.Systems;
 using UnicornOne.Ecs;
 using UnicornOne.Ecs.Services;
 using UnicornOne.Ecs.Systems;
@@ -21,6 +22,7 @@ namespace UnicornOne.MonoBehaviours
 
         private EcsWorld _world;
         private IEcsSystems _systems;
+        private IEcsSystems _fixedUpdateSystems;
 
         private void Start()
         {
@@ -29,6 +31,7 @@ namespace UnicornOne.MonoBehaviours
             // TODO: combine all these services with init data into one?
             LevelService levelService = new LevelService(Level);
             HeroService heroService = new HeroService(Heroes);
+            ProjectileService projectileService = new ProjectileService(Projectile);
             MobService mobService = new MobService(Enemy);
 
             var cameraService = new CameraService(Camera);
@@ -40,14 +43,19 @@ namespace UnicornOne.MonoBehaviours
             _systems.Add(new AttackRechargeSystem());
             _systems.Add(new AiSystem());
             _systems.Add(new AttackSystem());
+            _systems.Add(new ProjectileHitSystem());
             _systems.Add(new NavigationSystem());
             _systems.Add(new AnimationSystem());
             _systems.Add(new DamageSystem());
             _systems.Add(new CameraMoveSystem());
             _systems.Add(new DeathSystem());
             _systems.Add(new DestroySystem());
-            _systems.Inject(levelService, heroService, mobService, cameraService);
+            _systems.Inject(levelService, heroService, projectileService, mobService, cameraService);
             _systems.Init();
+
+            _fixedUpdateSystems = new EcsSystems(_world);
+            _fixedUpdateSystems.Add(new ProjectileMoveSystem());
+            _fixedUpdateSystems.Init();
         }
 
         private void Update()
@@ -55,9 +63,15 @@ namespace UnicornOne.MonoBehaviours
             _systems.Run();
         }
 
+        private void FixedUpdate()
+        {
+            _fixedUpdateSystems.Run();
+        }
+
         private void OnDestroy()
         {
             _systems?.Destroy();
+            _fixedUpdateSystems?.Destroy();
             _world?.Destroy();
         }
     }

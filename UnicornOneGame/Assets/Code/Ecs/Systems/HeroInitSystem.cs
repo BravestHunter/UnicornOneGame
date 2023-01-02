@@ -53,6 +53,12 @@ namespace UnicornOne.Ecs.Systems
             atackParametersComponent.Range = heroInfo.AttackRange;
             atackParametersComponent.AttackRechargeTime = heroInfo.AttackRechargeTime;
 
+            if (heroInfo.IsRanged)
+            {
+                var rangedFlagPool = world.GetPool<RangedFlag>();
+                rangedFlagPool.Add(entity);
+            }
+
             var navigationPool = world.GetPool<NavigationComponent>();
             ref var navigationComponent = ref navigationPool.Add(entity);
             navigationComponent.MovementSpeed = heroInfo.MovingSpeed;

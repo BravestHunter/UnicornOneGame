@@ -5,9 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnicornOne.Ecs.Components;
-using UnicornOne.Ecs.Components.AI;
-using UnicornOne.Ecs.Components.Flags;
-using UnicornOne.Ecs.Components.Refs;
 using UnityEngine;
 
 namespace UnicornOne.Ecs.Systems
@@ -25,17 +22,17 @@ namespace UnicornOne.Ecs.Systems
             {
                 _meleeHeroFilter = world
                     .Filter<HeroFlag>()
-                    .Inc<MeleeFighterBehaviorAiComponent>()
+                    .Inc<HeroBehaviorAiComponent>()
                     .Inc<AtackParametersComponent>()
                     .Inc<NavigationComponent>()
-                    .Inc<GameObjectRefComponent>()
+                    .Inc<GameObjectUnityRefComponent>()
                     .End();
             }
 
-            var meleeFighterBehaviorAiPool = world.GetPool<MeleeFighterBehaviorAiComponent>();
+            var heroBehaviorAiPool = world.GetPool<HeroBehaviorAiComponent>();
             var atackParametersPool = world.GetPool<AtackParametersComponent>();
             var navigationPool = world.GetPool<NavigationComponent>();
-            var gameObjectRefPool = world.GetPool<GameObjectRefComponent>();
+            var gameObjectRefPool = world.GetPool<GameObjectUnityRefComponent>();
             var targetPool = world.GetPool<TargetComponent>();
             var attackRequestPool = world.GetPool<AttackRequest>();
             var attackFlagPool = world.GetPool<AttackFlag>();
@@ -46,7 +43,7 @@ namespace UnicornOne.Ecs.Systems
 
             foreach (var entity in _meleeHeroFilter)
             {
-                ref var meleeFighterBehaviorAiComponent = ref meleeFighterBehaviorAiPool.Get(entity);
+                ref var meleeFighterBehaviorAiComponent = ref heroBehaviorAiPool.Get(entity);
                 ref var atackParametersComponent = ref atackParametersPool.Get(entity);
                 ref var navigationComponent = ref navigationPool.Get(entity);
                 ref var gameObjectRefComponent = ref gameObjectRefPool.Get(entity);
@@ -55,7 +52,7 @@ namespace UnicornOne.Ecs.Systems
 
                 switch (meleeFighterBehaviorAiComponent.CurrentState)
                 {
-                    case MeleeFighterBehaviorAiComponent.State.SearchForTarget:
+                    case HeroBehaviorAiComponent.State.SearchForTarget:
                         {
                             if (enemyPositions == null)
                             {
@@ -69,7 +66,7 @@ namespace UnicornOne.Ecs.Systems
                             }
 
                             // Case: Set the closest enemy as target
-                            meleeFighterBehaviorAiComponent.CurrentState = MeleeFighterBehaviorAiComponent.State.MoveToTarget;
+                            meleeFighterBehaviorAiComponent.CurrentState = HeroBehaviorAiComponent.State.MoveToTarget;
 
                             var closestTarget = enemyPositions.OrderBy(pair => (entityPosition - pair.Value).sqrMagnitude).First();
                             ref var targetComponent = ref targetPool.Add(entity);
@@ -78,12 +75,12 @@ namespace UnicornOne.Ecs.Systems
                             break;
                         }
 
-                    case MeleeFighterBehaviorAiComponent.State.MoveToTarget:
+                    case HeroBehaviorAiComponent.State.MoveToTarget:
                         {
                             // Case: No target
                             if (!targetPool.Has(entity))
                             {
-                                meleeFighterBehaviorAiComponent.CurrentState = MeleeFighterBehaviorAiComponent.State.SearchForTarget;
+                                meleeFighterBehaviorAiComponent.CurrentState = HeroBehaviorAiComponent.State.SearchForTarget;
                                 break;
                             }
 
@@ -93,7 +90,7 @@ namespace UnicornOne.Ecs.Systems
                             if (!targetComponent.TargetEntity.Unpack(world, out targetEntity))
                             {
                                 // Target is missing, search for new one
-                                meleeFighterBehaviorAiComponent.CurrentState = MeleeFighterBehaviorAiComponent.State.SearchForTarget;
+                                meleeFighterBehaviorAiComponent.CurrentState = HeroBehaviorAiComponent.State.SearchForTarget;
                                 targetPool.Del(entity);
                             }
 
@@ -116,12 +113,12 @@ namespace UnicornOne.Ecs.Systems
                             }
 
                             // Case: Reached target point
-                            meleeFighterBehaviorAiComponent.CurrentState = MeleeFighterBehaviorAiComponent.State.AttackTarget;
+                            meleeFighterBehaviorAiComponent.CurrentState = HeroBehaviorAiComponent.State.AttackTarget;
 
                             break;
                         }
 
-                    case MeleeFighterBehaviorAiComponent.State.AttackTarget:
+                    case HeroBehaviorAiComponent.State.AttackTarget:
                         {
                             // Case: Attack is happening
                             if (attackFlagPool.Has(entity))
@@ -132,7 +129,7 @@ namespace UnicornOne.Ecs.Systems
                             // Case: No target
                             if (!targetPool.Has(entity))
                             {
-                                meleeFighterBehaviorAiComponent.CurrentState = MeleeFighterBehaviorAiComponent.State.SearchForTarget;
+                                meleeFighterBehaviorAiComponent.CurrentState = HeroBehaviorAiComponent.State.SearchForTarget;
 
                                 break;
                             }
@@ -142,7 +139,7 @@ namespace UnicornOne.Ecs.Systems
                             int targetEntity;
                             if (!targetComponent.TargetEntity.Unpack(world, out targetEntity))
                             {
-                                meleeFighterBehaviorAiComponent.CurrentState = MeleeFighterBehaviorAiComponent.State.SearchForTarget;
+                                meleeFighterBehaviorAiComponent.CurrentState = HeroBehaviorAiComponent.State.SearchForTarget;
                                 targetPool.Del(entity);
 
                                 break;
@@ -152,7 +149,7 @@ namespace UnicornOne.Ecs.Systems
                             Vector3 targetEntityPosition = gameObjectRefPool.Get(targetEntity).GameObject.transform.position;
                             if ((entityPosition - targetEntityPosition).magnitude > atackParametersComponent.Range)
                             {
-                                meleeFighterBehaviorAiComponent.CurrentState = MeleeFighterBehaviorAiComponent.State.MoveToTarget;
+                                meleeFighterBehaviorAiComponent.CurrentState = HeroBehaviorAiComponent.State.MoveToTarget;
 
                                 break;
                             }
@@ -184,13 +181,13 @@ namespace UnicornOne.Ecs.Systems
             {
                 _enemyFilter = world
                     .Filter<EnemyFlag>()
-                    .Inc<GameObjectRefComponent>()
+                    .Inc<GameObjectUnityRefComponent>()
                     .End();
             }
 
             Dictionary<int, Vector3> positions = new Dictionary<int, Vector3>();
 
-            var gameObjectRefPool = world.GetPool<GameObjectRefComponent>();
+            var gameObjectRefPool = world.GetPool<GameObjectUnityRefComponent>();
 
             foreach (var entity in _enemyFilter)
             {

@@ -6,9 +6,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnicornOne.Ecs.Components;
-using UnicornOne.Ecs.Components.AI;
-using UnicornOne.Ecs.Components.Flags;
-using UnicornOne.Ecs.Components.Refs;
 using UnicornOne.Ecs.Services;
 using UnicornOne.MonoBehaviours;
 using UnityEngine;
@@ -63,25 +60,25 @@ namespace UnicornOne.Ecs.Systems
             ref var navigationComponent = ref navigationPool.Add(entity);
             navigationComponent.MovementSpeed = heroInfo.MovingSpeed;
 
-            var gameObjectRefPool = world.GetPool<GameObjectRefComponent>();
+            var gameObjectRefPool = world.GetPool<GameObjectUnityRefComponent>();
             ref var gameObjectRefComponent = ref gameObjectRefPool.Add(entity);
             gameObjectRefComponent.GameObject = heroGameObject;
 
-            var animatorRefPool = world.GetPool<AnimatorRefComponent>();
+            var animatorRefPool = world.GetPool<AnimatorUnityRefComponent>();
             ref var animatorRefComponent = ref animatorRefPool.Add(entity);
             animatorRefComponent.Animator = animator;
 
-            var animationEventHandlerRefPool = world.GetPool<AnimationEventHandlerRefComponent>();
+            var animationEventHandlerRefPool = world.GetPool<AnimationEventHandlerUnityRefComponent>();
             ref var animationEventHandlerRefComponent = ref animationEventHandlerRefPool.Add(entity);
             animationEventHandlerRefComponent.AnimationEventHandler = animationEventHandler;
 
-            var navigationAgentRefPool = world.GetPool<NavigationAgentRefComponent>();
+            var navigationAgentRefPool = world.GetPool<NavigationAgentUnityRefComponent>();
             ref var navigationAgentRefComponent = ref navigationAgentRefPool.Add(entity);
             navigationAgentRefComponent.Agent = navigationAgent;
 
-            var meleeFighterBehaviorAiPool = world.GetPool<MeleeFighterBehaviorAiComponent>();
-            ref var meleeFighterBehaviorAiComponent = ref meleeFighterBehaviorAiPool.Add(entity);
-            meleeFighterBehaviorAiComponent.CurrentState = MeleeFighterBehaviorAiComponent.State.SearchForTarget;
+            var heroBehaviorAiPool = world.GetPool<HeroBehaviorAiComponent>();
+            ref var heroBehaviorAiComponent = ref heroBehaviorAiPool.Add(entity);
+            heroBehaviorAiComponent.CurrentState = HeroBehaviorAiComponent.State.SearchForTarget;
         }
     }
 }

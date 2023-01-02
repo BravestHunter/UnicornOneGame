@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UnicornOne.Ecs.Components.AI
+namespace UnicornOne.Ecs.Components
 {
-    internal struct MeleeFighterBehaviorAiComponent
+    internal struct HeroBehaviorAiComponent
     {
         public enum State
         {

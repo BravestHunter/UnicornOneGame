@@ -5,9 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnicornOne.Ecs.Components;
-using UnicornOne.Ecs.Components.AI;
-using UnicornOne.Ecs.Components.Flags;
-using UnicornOne.Ecs.Components.Refs;
 using UnityEngine;
 
 namespace UnicornOne.Ecs.Systems
@@ -31,14 +28,14 @@ namespace UnicornOne.Ecs.Systems
             {
                 _meleeHeroFilter = world
                     .Filter<HeroFlag>()
-                    .Inc<AnimatorRefComponent>()
-                    .Inc<AnimationEventHandlerRefComponent>()
-                    .Inc<MeleeFighterBehaviorAiComponent>()
+                    .Inc<AnimatorUnityRefComponent>()
+                    .Inc<AnimationEventHandlerUnityRefComponent>()
+                    .Inc<HeroBehaviorAiComponent>()
                     .Inc<NavigationComponent>()
                     .End();
             }
 
-            var animatorRefPool = world.GetPool<AnimatorRefComponent>();
+            var animatorRefPool = world.GetPool<AnimatorUnityRefComponent>();
             var navigationPool = world.GetPool<NavigationComponent>();
             var attackAnimationRequestPool = world.GetPool<AttackAnimationRequest>();
             var attackAnimationFlagPool = world.GetPool<AttackAnimationFlag>();
@@ -97,11 +94,11 @@ namespace UnicornOne.Ecs.Systems
             if (_animationEventFilter == null)
             {
                 _animationEventFilter = world
-                    .Filter<AnimationEventHandlerRefComponent>()
+                    .Filter<AnimationEventHandlerUnityRefComponent>()
                     .End();
             }
 
-            var animationEventHandlerRefPool = world.GetPool<AnimationEventHandlerRefComponent>();
+            var animationEventHandlerRefPool = world.GetPool<AnimationEventHandlerUnityRefComponent>();
             var hitRequestPool = world.GetPool<HitRequest>();
 
             foreach (var entity in _animationEventFilter)

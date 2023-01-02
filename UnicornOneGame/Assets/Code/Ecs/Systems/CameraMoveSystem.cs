@@ -5,8 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using UnicornOne.Ecs.Components.Flags;
-using UnicornOne.Ecs.Components.Refs;
+using UnicornOne.Ecs.Components;
 using UnicornOne.Ecs.Services;
 using UnityEngine;
 
@@ -26,11 +25,11 @@ namespace UnicornOne.Ecs.Systems
             {
                 _heroFilter = world
                     .Filter<HeroFlag>()
-                    .Inc<GameObjectRefComponent>()
+                    .Inc<GameObjectUnityRefComponent>()
                     .End();
             }
 
-            var gameObjectRefPool = world.GetPool<GameObjectRefComponent>();
+            var gameObjectRefPool = world.GetPool<GameObjectUnityRefComponent>();
 
             List<Vector3> heroPositions = new List<Vector3>();
             foreach (var entity in _heroFilter)

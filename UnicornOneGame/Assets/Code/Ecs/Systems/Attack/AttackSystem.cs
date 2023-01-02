@@ -6,8 +6,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnicornOne.Ecs.Components;
-using UnicornOne.Ecs.Components.Flags;
-using UnicornOne.Ecs.Components.Refs;
 using UnicornOne.Ecs.Services;
 using UnityEngine;
 using static UnityEngine.EventSystems.EventTrigger;
@@ -62,7 +60,7 @@ namespace UnicornOne.Ecs.Systems
                 _attackRequestFilter = world
                     .Filter<AttackRequest>()
                     .Inc<TargetComponent>()
-                    .Inc<GameObjectRefComponent>()
+                    .Inc<GameObjectUnityRefComponent>()
                     .Exc<AttackFlag>()
                     .End();
             }
@@ -71,7 +69,7 @@ namespace UnicornOne.Ecs.Systems
             var attackFlagPool = world.GetPool<AttackFlag>();
             var attackAnimationRequestPool = world.GetPool<AttackAnimationRequest>();
             var targetPool = world.GetPool<TargetComponent>();
-            var gameObjectRefPool = world.GetPool<GameObjectRefComponent>();
+            var gameObjectRefPool = world.GetPool<GameObjectUnityRefComponent>();
 
             foreach (var entity in _attackRequestFilter)
             {
@@ -117,7 +115,7 @@ namespace UnicornOne.Ecs.Systems
                     .Filter<HitRequest>()
                     .Inc<TargetComponent>()
                     .Inc<AtackParametersComponent>()
-                    .Inc<GameObjectRefComponent>()
+                    .Inc<GameObjectUnityRefComponent>()
                     .End();
             }
 
@@ -127,7 +125,7 @@ namespace UnicornOne.Ecs.Systems
             var damagePool = world.GetPool<DamageComponent>();
             var rangedFlagPool = world.GetPool<RangedFlag>();
             var projectileParametersPool = world.GetPool<ProjectileParametersComponent>();
-            var gameObjectRefPool = world.GetPool<GameObjectRefComponent>();
+            var gameObjectRefPool = world.GetPool<GameObjectUnityRefComponent>();
 
             foreach (var entity in _hitFilter)
             {

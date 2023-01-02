@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnicornOne.Ecs.Components;
-using UnicornOne.Ecs.Components.Refs;
 
 namespace UnicornOne.Ecs.Systems
 {
@@ -20,12 +19,12 @@ namespace UnicornOne.Ecs.Systems
             if (_filter == null)
             {
                 _filter = world
-                    .Filter<NavigationAgentRefComponent>()
+                    .Filter<NavigationAgentUnityRefComponent>()
                     .Inc<NavigationComponent>()
                     .End();
             }
 
-            var navigationAgentRefPool = world.GetPool<NavigationAgentRefComponent>();
+            var navigationAgentRefPool = world.GetPool<NavigationAgentUnityRefComponent>();
             var navigationPool = world.GetPool<NavigationComponent>();
 
             foreach (var entity in _filter)

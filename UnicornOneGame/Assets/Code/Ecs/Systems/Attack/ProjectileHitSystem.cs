@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnicornOne.Ecs.Components;
-using UnicornOne.Ecs.Components.Refs;
 using UnityEngine;
 
 namespace UnicornOne.Assets.Code.Ecs.Systems
@@ -25,13 +24,13 @@ namespace UnicornOne.Assets.Code.Ecs.Systems
                 _filter = world
                     .Filter<ProjectileParametersComponent>()
                     .Inc<TargetComponent>()
-                    .Inc<GameObjectRefComponent>()
+                    .Inc<GameObjectUnityRefComponent>()
                     .End();
             }
 
             var projectileParametersPool = world.GetPool<ProjectileParametersComponent>();
             var targetPool = world.GetPool<TargetComponent>();
-            var gameObjectRefPool = world.GetPool<GameObjectRefComponent>();
+            var gameObjectRefPool = world.GetPool<GameObjectUnityRefComponent>();
             var damagePool = world.GetPool<DamageComponent>();
             var destroyRequestPool = world.GetPool<DestroyRequest>();
 

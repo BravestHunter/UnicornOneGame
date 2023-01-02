@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using UnicornOne.MonoBehaviours;
 
-namespace UnicornOne.Ecs.Components.Refs
+namespace UnicornOne.Ecs.Components
 {
-    internal struct AnimationEventHandlerRefComponent
+    internal struct AnimationEventHandlerUnityRefComponent
     {
         public AnimationEventHandler AnimationEventHandler;
     }

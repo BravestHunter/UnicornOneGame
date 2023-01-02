@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UnicornOne.Ecs.Components.Flags
+namespace UnicornOne.Ecs.Components
 {
     internal struct AttackFlag
     {

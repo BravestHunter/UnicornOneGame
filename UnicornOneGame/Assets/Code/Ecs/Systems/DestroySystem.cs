@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnicornOne.Ecs.Components;
-using UnicornOne.Ecs.Components.Refs;
 using UnityEngine;
 
 namespace UnicornOne.Ecs.Systems
@@ -25,7 +24,7 @@ namespace UnicornOne.Ecs.Systems
                     .End();
             }
 
-            var gameObjectRefPool = world.GetPool<GameObjectRefComponent>();
+            var gameObjectRefPool = world.GetPool<GameObjectUnityRefComponent>();
 
             foreach (var entity in _destroyRequestFilter)
             {

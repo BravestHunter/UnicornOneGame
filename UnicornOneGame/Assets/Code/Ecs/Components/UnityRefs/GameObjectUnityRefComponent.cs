@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace UnicornOne.Ecs.Components.Refs
+namespace UnicornOne.Ecs.Components
 {
-    internal struct GameObjectRefComponent
+    internal struct GameObjectUnityRefComponent
     {
         public GameObject GameObject;
     }

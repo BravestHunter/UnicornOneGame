@@ -6,8 +6,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnicornOne.Ecs.Components;
-using UnicornOne.Ecs.Components.Flags;
-using UnicornOne.Ecs.Components.Refs;
 using UnicornOne.Ecs.Services;
 using UnityEngine;
 
@@ -58,7 +56,7 @@ namespace UnicornOne.Ecs.Systems
             healthComponent.MaxHealth = _mobService.Value.MaxHealth;
             healthComponent.CurrentHealth = healthComponent.MaxHealth;
 
-            var gameObjectRefPool = world.GetPool<GameObjectRefComponent>();
+            var gameObjectRefPool = world.GetPool<GameObjectUnityRefComponent>();
             ref var gameObjectRefComponent = ref gameObjectRefPool.Add(entity);
             gameObjectRefComponent.GameObject = enemyGameObject;
         }

@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine.AI;
 
-namespace UnicornOne.Ecs.Components.Refs
+namespace UnicornOne.Ecs.Components
 {
-    internal struct NavigationAgentRefComponent
+    internal struct NavigationAgentUnityRefComponent
     {
         public NavMeshAgent Agent;
     }

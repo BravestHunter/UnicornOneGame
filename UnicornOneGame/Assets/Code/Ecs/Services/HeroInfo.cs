@@ -18,6 +18,7 @@ namespace UnicornOne.Ecs.Services
         public float AttackRange => _hero.AttackRange;
         public float AttackRechargeTime => _hero.AttackRechargeTime;
         public bool IsRanged => _hero.IsRanged;
+        public bool HasAttackEffect => _hero.AttackEffect != null;
 
         public HeroInfo(Hero hero)
         {

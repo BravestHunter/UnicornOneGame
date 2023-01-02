@@ -19,5 +19,6 @@ namespace UnicornOne.ScriptableObjects
         public float AttackRechargeTime;
 
         public bool IsRanged;
+        public Effect AttackEffect;
     }
 }

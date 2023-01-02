@@ -56,6 +56,12 @@ namespace UnicornOne.Ecs.Systems
                 rangedFlagPool.Add(entity);
             }
 
+            if (heroInfo.HasAttackEffect)
+            {
+                var hasAttackEffectFlagPool = world.GetPool<HasAttackEffectFlag>();
+                hasAttackEffectFlagPool.Add(entity);
+            }
+
             var navigationPool = world.GetPool<NavigationComponent>();
             ref var navigationComponent = ref navigationPool.Add(entity);
             navigationComponent.MovementSpeed = heroInfo.MovingSpeed;

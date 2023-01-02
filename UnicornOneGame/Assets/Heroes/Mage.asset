@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Prefab: {fileID: 9186795781410484748, guid: ed57daa7d9c63b647a8685c2a2e3c201, type: 3}
   MovingSpeed: 6
-  AttackDamage: 5
-  AttackRange: 2
-  AttackRechargeTime: 0.5
+  AttackDamage: 20
+  AttackRange: 10
+  AttackRechargeTime: 4
   IsRanged: 0
+  AttackEffect: {fileID: 11400000, guid: 82b5ee4fd8febf64f89416f00e2547ef, type: 2}

@@ -15,8 +15,9 @@ namespace UnicornOne.MonoBehaviours
     {
         [SerializeField] private Level Level;
         [SerializeField] private List<Hero> Heroes;
-        [SerializeField] private Projectile Projectile;
         [SerializeField] private Mob Enemy;
+        [SerializeField] private Projectile Projectile;
+        [SerializeField] private Effect Effect;
 
         [SerializeField] private Camera Camera;
 
@@ -29,10 +30,11 @@ namespace UnicornOne.MonoBehaviours
             _world = new EcsWorld();
 
             // TODO: combine all these services with init data into one?
-            LevelService levelService = new LevelService(Level);
-            HeroService heroService = new HeroService(Heroes);
-            ProjectileService projectileService = new ProjectileService(Projectile);
-            MobService mobService = new MobService(Enemy);
+            var levelService = new LevelService(Level);
+            var heroService = new HeroService(Heroes);
+            var mobService = new MobService(Enemy);
+            var projectileService = new ProjectileService(Projectile);
+            var effectService = new EffectService(Effect);
 
             var cameraService = new CameraService(Camera);
 
@@ -43,6 +45,7 @@ namespace UnicornOne.MonoBehaviours
             _systems.Add(new AttackRechargeSystem());
             _systems.Add(new AiSystem());
             _systems.Add(new AttackSystem());
+            _systems.Add(new EffectSystem());
             _systems.Add(new ProjectileHitSystem());
             _systems.Add(new NavigationSystem());
             _systems.Add(new AnimationSystem());
@@ -50,7 +53,7 @@ namespace UnicornOne.MonoBehaviours
             _systems.Add(new CameraMoveSystem());
             _systems.Add(new DeathSystem());
             _systems.Add(new DestroySystem());
-            _systems.Inject(levelService, heroService, projectileService, mobService, cameraService);
+            _systems.Inject(levelService, heroService, mobService, projectileService, effectService, cameraService);
             _systems.Init();
 
             _fixedUpdateSystems = new EcsSystems(_world);

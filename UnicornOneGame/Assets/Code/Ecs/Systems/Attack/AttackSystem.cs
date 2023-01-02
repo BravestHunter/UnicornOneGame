@@ -1,4 +1,5 @@
-﻿using Leopotam.EcsLite;
+﻿using DigitalRuby.LightningBolt;
+using Leopotam.EcsLite;
 using Leopotam.EcsLite.Di;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ namespace UnicornOne.Ecs.Systems
     internal class AttackSystem : IEcsRunSystem
     {
         private readonly EcsCustomInject<ProjectileService> _projectileService;
+        private readonly EcsCustomInject<EffectService> _effectService;
 
         private EcsFilter _attackFinishFilter;
         private EcsFilter _attackRequestFilter;
@@ -127,11 +129,21 @@ namespace UnicornOne.Ecs.Systems
             var projectileParametersPool = world.GetPool<ProjectileParametersComponent>();
             var gameObjectRefPool = world.GetPool<GameObjectUnityRefComponent>();
 
+            var hasAttackEffectFlagPool = world.GetPool<HasAttackEffectFlag>();
+            var effectFlagPool = world.GetPool<EffectFlag>();
+            var effectLifeSpanPool = world.GetPool<EffectLifeSpanComponent>();
+
             foreach (var entity in _hitFilter)
             {
                 var targetComponent = targetPool.Get(entity);
                 var atackParametersComponent = atackParametersPool.Get(entity);
                 var gameObjectRefComponent = gameObjectRefPool.Get(entity);
+
+                int targetEntity;
+                if (!targetComponent.TargetEntity.Unpack(world, out targetEntity))
+                {
+                    continue;
+                }
 
                 if (rangedFlagPool.Has(entity))
                 {
@@ -161,6 +173,31 @@ namespace UnicornOne.Ecs.Systems
 
                     ref var damageComponent = ref damagePool.Add(damageEntity);
                     damageComponent.Damage = atackParametersComponent.Damage;
+                }
+
+                if (hasAttackEffectFlagPool.Has(entity))
+                {
+                    var effectEntity = world.NewEntity();
+
+                    effectFlagPool.Add(effectEntity);
+
+                    ref var effectLifeSpanComponent = ref effectLifeSpanPool.Add(effectEntity);
+                    effectLifeSpanComponent.LifeSpan = 0.25f;
+                    effectLifeSpanComponent.CreationTime = Time.timeSinceLevelLoad;
+
+                    var effectGameObject = GameObject.Instantiate(_effectService.Value.Prefab);
+
+                    ref var projectileGameObjectRefComponent = ref gameObjectRefPool.Add(effectEntity);
+                    projectileGameObjectRefComponent.GameObject = effectGameObject;
+
+                    Vector3 entityPosition = gameObjectRefComponent.GameObject.transform.position + Vector3.up * 1.65f + gameObjectRefComponent.GameObject.transform.forward * 1.0f;
+                    Vector3 targetEntityPosition = gameObjectRefPool.Get(targetEntity).GameObject.transform.position + Vector3.up * 1.65f;
+
+                    LightningBoltScript script = effectGameObject.GetComponent<LightningBoltScript>();
+                    script.StartObject = null;
+                    script.StartPosition = entityPosition;
+                    script.EndObject = null;
+                    script.EndPosition = targetEntityPosition;
                 }
 
                 hitRequestPool.Del(entity);

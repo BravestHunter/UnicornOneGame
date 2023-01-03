@@ -104,6 +104,7 @@ namespace UnicornOne.Ecs.Systems
                             if (!targetPool.Has(entity))
                             {
                                 meleeFighterBehaviorAiComponent.CurrentState = HeroBehaviorAiComponent.State.SearchForTarget;
+
                                 break;
                             }
 
@@ -115,6 +116,8 @@ namespace UnicornOne.Ecs.Systems
                                 // Target is missing, search for new one
                                 meleeFighterBehaviorAiComponent.CurrentState = HeroBehaviorAiComponent.State.SearchForTarget;
                                 targetPool.Del(entity);
+
+                                break;
                             }
 
                             // Case: Too far from target, keep moving

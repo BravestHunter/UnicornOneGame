@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Cactus
   m_EditorClassIdentifier: 
   Prefab: {fileID: 1268516079989756, guid: 5c243d3591422814a81656730b54873b, type: 3}
-  Health: 16
+  Health: 50

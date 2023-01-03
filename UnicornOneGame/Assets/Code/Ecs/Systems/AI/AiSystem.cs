@@ -11,16 +11,19 @@ namespace UnicornOne.Ecs.Systems
 {
     internal class AiSystem : IEcsRunSystem
     {
-        private EcsFilter _meleeHeroFilter;
+        private EcsFilter _squadLeaderFilter;
+        private EcsFilter _heroFilter;
         private EcsFilter _enemyFilter;
 
         public void Run(IEcsSystems systems)
         {
             var world = systems.GetWorld();
 
-            if (_meleeHeroFilter == null)
+            TargetComponent? squadLeaderTargetComponent = GetSquadLeaderTarget(world);
+
+            if (_heroFilter == null)
             {
-                _meleeHeroFilter = world
+                _heroFilter = world
                     .Filter<HeroFlag>()
                     .Inc<HeroBehaviorAiComponent>()
                     .Inc<AtackParametersComponent>()
@@ -38,10 +41,11 @@ namespace UnicornOne.Ecs.Systems
             var attackFlagPool = world.GetPool<AttackFlag>();
             var attackRechargePool = world.GetPool<AttackRechargeComponent>();
             var standPool = world.GetPool<StandFlag>();
+            var squadLeaderFlagPool = world.GetPool<SquadLeaderFlag>();
 
             Dictionary<int, Vector3> enemyPositions = null;
 
-            foreach (var entity in _meleeHeroFilter)
+            foreach (var entity in _heroFilter)
             {
                 ref var meleeFighterBehaviorAiComponent = ref heroBehaviorAiPool.Get(entity);
                 ref var atackParametersComponent = ref atackParametersPool.Get(entity);
@@ -54,23 +58,42 @@ namespace UnicornOne.Ecs.Systems
                 {
                     case HeroBehaviorAiComponent.State.SearchForTarget:
                         {
-                            if (enemyPositions == null)
+                            bool isSquadLeader = squadLeaderFlagPool.Has(entity);
+
+                            if (isSquadLeader)
                             {
-                                enemyPositions = GetEnemyPositions(world);
-                            }
+                                if (enemyPositions == null)
+                                {
+                                    enemyPositions = GetEnemyPositions(world);
+                                }
 
-                            // Case: No enemies
-                            if (enemyPositions.Count == 0)
+                                // Case: No enemies
+                                if (enemyPositions.Count == 0)
+                                {
+                                    break;
+                                }
+
+                                // Case: Set the closest enemy as target
+                                meleeFighterBehaviorAiComponent.CurrentState = HeroBehaviorAiComponent.State.MoveToTarget;
+
+                                var closestTarget = enemyPositions.OrderBy(pair => (entityPosition - pair.Value).sqrMagnitude).First();
+                                ref var targetComponent = ref targetPool.Add(entity);
+                                targetComponent.TargetEntity = world.PackEntity(closestTarget.Key);
+                            }
+                            else
                             {
-                                continue;
+                                // Case: Squad leader has no target
+                                if (squadLeaderTargetComponent == null)
+                                {
+                                    break;
+                                }
+
+                                // Case: Set target of squad leader
+                                meleeFighterBehaviorAiComponent.CurrentState = HeroBehaviorAiComponent.State.MoveToTarget;
+
+                                ref var targetComponent = ref targetPool.Add(entity);
+                                targetComponent.TargetEntity = squadLeaderTargetComponent.Value.TargetEntity;
                             }
-
-                            // Case: Set the closest enemy as target
-                            meleeFighterBehaviorAiComponent.CurrentState = HeroBehaviorAiComponent.State.MoveToTarget;
-
-                            var closestTarget = enemyPositions.OrderBy(pair => (entityPosition - pair.Value).sqrMagnitude).First();
-                            ref var targetComponent = ref targetPool.Add(entity);
-                            targetComponent.TargetEntity = world.PackEntity(closestTarget.Key);
 
                             break;
                         }
@@ -173,6 +196,28 @@ namespace UnicornOne.Ecs.Systems
                         }
                 }
             }
+        }
+
+        private TargetComponent? GetSquadLeaderTarget(EcsWorld world)
+        {
+            if (_squadLeaderFilter == null)
+            {
+                _squadLeaderFilter = world
+                    .Filter<SquadLeaderFlag>()
+                    .Inc<TargetComponent>()
+                    .End();
+            }
+
+            TargetComponent? target = null;
+
+            var targetPool = world.GetPool<TargetComponent>();
+
+            foreach (var entity in _squadLeaderFilter)
+            {
+                target = targetPool.Get(entity);
+            }
+
+            return target;
         }
 
         private Dictionary<int, Vector3> GetEnemyPositions(EcsWorld world)

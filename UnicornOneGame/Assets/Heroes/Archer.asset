@@ -15,6 +15,7 @@ MonoBehaviour:
   Prefab: {fileID: 7520341672977643540, guid: 022a51728dfb6e24881904aefa443960, type: 3}
   MovingSpeed: 6
   AttackDamage: 10
-  AttackRange: 10
+  AttackRange: 15
   AttackRechargeTime: 2
   IsRanged: 1
+  AttackEffect: {fileID: 0}

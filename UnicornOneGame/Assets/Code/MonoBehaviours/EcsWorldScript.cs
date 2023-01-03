@@ -18,12 +18,14 @@ namespace UnicornOne.MonoBehaviours
         [SerializeField] private Mob Enemy;
         [SerializeField] private Projectile Projectile;
         [SerializeField] private Effect Effect;
-
         [SerializeField] private Camera Camera;
 
         private EcsWorld _world;
         private IEcsSystems _systems;
-        private IEcsSystems _fixedUpdateSystems;
+
+#if UNITY_EDITOR
+        private IEcsSystems _debugSystems;
+#endif
 
         private void Start()
         {
@@ -35,7 +37,6 @@ namespace UnicornOne.MonoBehaviours
             var mobService = new MobService(Enemy);
             var projectileService = new ProjectileService(Projectile);
             var effectService = new EffectService(Effect);
-
             var cameraService = new CameraService(Camera);
 
             _systems = new EcsSystems(_world);
@@ -46,6 +47,7 @@ namespace UnicornOne.MonoBehaviours
             _systems.Add(new AiSystem());
             _systems.Add(new AttackSystem());
             _systems.Add(new EffectSystem());
+            _systems.Add(new ProjectileMoveSystem());
             _systems.Add(new ProjectileHitSystem());
             _systems.Add(new NavigationSystem());
             _systems.Add(new AnimationSystem());
@@ -56,25 +58,31 @@ namespace UnicornOne.MonoBehaviours
             _systems.Inject(levelService, heroService, mobService, projectileService, effectService, cameraService);
             _systems.Init();
 
-            _fixedUpdateSystems = new EcsSystems(_world);
-            _fixedUpdateSystems.Add(new ProjectileMoveSystem());
-            _fixedUpdateSystems.Init();
+#if UNITY_EDITOR
+            _debugSystems = new EcsSystems(_world);
+            _debugSystems.Add(new Leopotam.EcsLite.UnityEditor.EcsWorldDebugSystem());
+            _debugSystems.Add(new TargetDebugSystem());
+            _debugSystems.Init();
+#endif
         }
 
         private void Update()
         {
             _systems.Run();
-        }
 
-        private void FixedUpdate()
-        {
-            _fixedUpdateSystems.Run();
+#if UNITY_EDITOR
+            _debugSystems.Run();
+#endif
         }
 
         private void OnDestroy()
         {
             _systems?.Destroy();
-            _fixedUpdateSystems?.Destroy();
+
+#if UNITY_EDITOR
+            _debugSystems?.Destroy();
+#endif
+            
             _world?.Destroy();
         }
     }

@@ -21,18 +21,15 @@ namespace UnicornOne.Ecs.Systems
         {
             var world = systems.GetWorld();
 
-            bool squadLeader = true;
             foreach (HeroInfo heroInfo in _heroService.Value.Heroes)
             {
                 Vector2 position = UnityEngine.Random.insideUnitCircle * 10.0f;
 
-                SpawnHero(heroInfo, world, new Vector3(position.x, 0.0f, position.y), squadLeader);
-
-                squadLeader = false;
+                SpawnHero(heroInfo, world, new Vector3(position.x, 0.0f, position.y));
             }
         }
 
-        private void SpawnHero(HeroInfo heroInfo, EcsWorld world, Vector3 position, bool isSquadLeader)
+        private void SpawnHero(HeroInfo heroInfo, EcsWorld world, Vector3 position)
         {
             var heroGameObject = GameObject.Instantiate(heroInfo.Prefab);
             heroGameObject.transform.position = position;
@@ -89,12 +86,6 @@ namespace UnicornOne.Ecs.Systems
             var heroBehaviorAiPool = world.GetPool<HeroBehaviorAiComponent>();
             ref var heroBehaviorAiComponent = ref heroBehaviorAiPool.Add(entity);
             heroBehaviorAiComponent.CurrentState = HeroBehaviorAiComponent.State.SearchForTarget;
-
-            if (isSquadLeader)
-            {
-                var squadLeaderFlagPool = world.GetPool<SquadLeaderFlag>();
-                squadLeaderFlagPool.Add(entity);
-            }
         }
     }
 }

@@ -11,15 +11,14 @@ namespace UnicornOne.Ecs.Systems
 {
     internal class AiSystem : IEcsRunSystem
     {
-        private EcsFilter _squadLeaderFilter;
+        private EcsFilter _squadAiFilter;
         private EcsFilter _heroFilter;
-        private EcsFilter _enemyFilter;
 
         public void Run(IEcsSystems systems)
         {
             var world = systems.GetWorld();
 
-            TargetComponent? squadLeaderTargetComponent = GetSquadLeaderTarget(world);
+            TargetComponent? squadTargetComponent = GetSquadTarget(world);
 
             if (_heroFilter == null)
             {
@@ -41,9 +40,6 @@ namespace UnicornOne.Ecs.Systems
             var attackFlagPool = world.GetPool<AttackFlag>();
             var attackRechargePool = world.GetPool<AttackRechargeComponent>();
             var standPool = world.GetPool<StandFlag>();
-            var squadLeaderFlagPool = world.GetPool<SquadLeaderFlag>();
-
-            Dictionary<int, Vector3> enemyPositions = null;
 
             foreach (var entity in _heroFilter)
             {
@@ -58,42 +54,17 @@ namespace UnicornOne.Ecs.Systems
                 {
                     case HeroBehaviorAiComponent.State.SearchForTarget:
                         {
-                            bool isSquadLeader = squadLeaderFlagPool.Has(entity);
-
-                            if (isSquadLeader)
+                            // Case: Squad leader has no target
+                            if (squadTargetComponent == null)
                             {
-                                if (enemyPositions == null)
-                                {
-                                    enemyPositions = GetEnemyPositions(world);
-                                }
-
-                                // Case: No enemies
-                                if (enemyPositions.Count == 0)
-                                {
-                                    break;
-                                }
-
-                                // Case: Set the closest enemy as target
-                                meleeFighterBehaviorAiComponent.CurrentState = HeroBehaviorAiComponent.State.MoveToTarget;
-
-                                var closestTarget = enemyPositions.OrderBy(pair => (entityPosition - pair.Value).sqrMagnitude).First();
-                                ref var targetComponent = ref targetPool.Add(entity);
-                                targetComponent.TargetEntity = world.PackEntity(closestTarget.Key);
+                                break;
                             }
-                            else
-                            {
-                                // Case: Squad leader has no target
-                                if (squadLeaderTargetComponent == null)
-                                {
-                                    break;
-                                }
 
-                                // Case: Set target of squad leader
-                                meleeFighterBehaviorAiComponent.CurrentState = HeroBehaviorAiComponent.State.MoveToTarget;
+                            // Case: Set target of squad leader
+                            meleeFighterBehaviorAiComponent.CurrentState = HeroBehaviorAiComponent.State.MoveToTarget;
 
-                                ref var targetComponent = ref targetPool.Add(entity);
-                                targetComponent.TargetEntity = squadLeaderTargetComponent.Value.TargetEntity;
-                            }
+                            ref var targetComponent = ref targetPool.Add(entity);
+                            targetComponent.TargetEntity = squadTargetComponent.Value.TargetEntity;
 
                             break;
                         }
@@ -201,12 +172,12 @@ namespace UnicornOne.Ecs.Systems
             }
         }
 
-        private TargetComponent? GetSquadLeaderTarget(EcsWorld world)
+        private TargetComponent? GetSquadTarget(EcsWorld world)
         {
-            if (_squadLeaderFilter == null)
+            if (_squadAiFilter == null)
             {
-                _squadLeaderFilter = world
-                    .Filter<SquadLeaderFlag>()
+                _squadAiFilter = world
+                    .Filter<SquadAiFlag>()
                     .Inc<TargetComponent>()
                     .End();
             }
@@ -215,36 +186,12 @@ namespace UnicornOne.Ecs.Systems
 
             var targetPool = world.GetPool<TargetComponent>();
 
-            foreach (var entity in _squadLeaderFilter)
+            foreach (var entity in _squadAiFilter)
             {
                 target = targetPool.Get(entity);
             }
 
             return target;
-        }
-
-        private Dictionary<int, Vector3> GetEnemyPositions(EcsWorld world)
-        {
-            if (_enemyFilter == null)
-            {
-                _enemyFilter = world
-                    .Filter<EnemyFlag>()
-                    .Inc<GameObjectUnityRefComponent>()
-                    .End();
-            }
-
-            Dictionary<int, Vector3> positions = new Dictionary<int, Vector3>();
-
-            var gameObjectRefPool = world.GetPool<GameObjectUnityRefComponent>();
-
-            foreach (var entity in _enemyFilter)
-            {
-                ref var gameObjectRefComponent = ref gameObjectRefPool.Get(entity);
-
-                positions.Add(entity, gameObjectRefComponent.GameObject.transform.position);
-            }
-
-            return positions;
         }
     }
 }

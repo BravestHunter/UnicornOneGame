@@ -44,6 +44,7 @@ namespace UnicornOne.MonoBehaviours
             _systems.Add(new HeroInitSystem());
             _systems.Add(new EnemySpawnSystem());
             _systems.Add(new AttackRechargeSystem());
+            _systems.Add(new SquadAiSystem());
             _systems.Add(new AiSystem());
             _systems.Add(new AttackSystem());
             _systems.Add(new EffectSystem());

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace UnicornOne.Ecs.Components
 {
-    internal struct SquadLeaderFlag
+    internal struct SquadAiFlag
     {
     }
 }

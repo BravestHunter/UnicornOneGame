@@ -28,6 +28,9 @@ namespace UnicornOne.Ecs.Systems
             var targetPool = world.GetPool<TargetComponent>();
             var gameObjectUnityRefPool = world.GetPool<GameObjectUnityRefComponent>();
 
+            var heroFlagPool = world.GetPool<HeroFlag>();
+            var enemyFlagPool = world.GetPool<EnemyFlag>();
+
             foreach (var entity in _filter)
             {
                 var targetComponent = targetPool.Get(entity);
@@ -41,7 +44,18 @@ namespace UnicornOne.Ecs.Systems
                 Vector3 from = gameObjectUnityRefPool.Get(entity).GameObject.transform.position;
                 Vector3 to = gameObjectUnityRefPool.Get(targetEntity).GameObject.transform.position;
 
-                Debug.DrawLine(from, to, Color.green);
+                if (heroFlagPool.Has(entity))
+                {
+                    Debug.DrawLine(from, to, Color.green);
+                }
+                else if (enemyFlagPool.Has(entity))
+                {
+                    Debug.DrawLine(from, to, Color.red);
+                }
+                else
+                {
+                    Debug.DrawLine(from, to, Color.blue);
+                }
             }
         }
     }

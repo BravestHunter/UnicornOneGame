@@ -15,7 +15,7 @@ namespace UnicornOne.MonoBehaviours
     {
         [SerializeField] private Level Level;
         [SerializeField] private List<Hero> Heroes;
-        [SerializeField] private Mob Enemy;
+        [SerializeField] private Enemy Enemy;
         [SerializeField] private Projectile Projectile;
         [SerializeField] private Effect Effect;
         [SerializeField] private Camera Camera;
@@ -45,7 +45,8 @@ namespace UnicornOne.MonoBehaviours
             _systems.Add(new EnemySpawnSystem());
             _systems.Add(new AttackRechargeSystem());
             _systems.Add(new SquadAiSystem());
-            _systems.Add(new AiSystem());
+            _systems.Add(new HeroAiSystem());
+            _systems.Add(new EnemyAiSystem());
             _systems.Add(new AttackSystem());
             _systems.Add(new EffectSystem());
             _systems.Add(new ProjectileMoveSystem());

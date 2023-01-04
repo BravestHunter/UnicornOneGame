@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace UnicornOne.Ecs.Systems
 {
-    internal class AiSystem : IEcsRunSystem
+    internal class HeroAiSystem : IEcsRunSystem
     {
         private EcsFilter _squadAiFilter;
         private EcsFilter _heroFilter;

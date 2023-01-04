@@ -7,8 +7,8 @@ using UnityEngine;
 
 namespace UnicornOne.ScriptableObjects
 {
-    [CreateAssetMenu(fileName = "Mob", menuName = "Custom/Mob")]
-    internal class Mob : ScriptableObject
+    [CreateAssetMenu(fileName = "Enemy", menuName = "Custom/Enemy")]
+    internal class Enemy : ScriptableObject
     {
         public GameObject Prefab;
 

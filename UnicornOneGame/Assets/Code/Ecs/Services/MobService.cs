@@ -10,12 +10,12 @@ namespace UnicornOne.Ecs.Services
 {
     internal class MobService
     {
-        private readonly Mob _enemy;
+        private readonly Enemy _enemy;
 
         public GameObject EnemyPrefab { get { return _enemy.Prefab; } }
         public int MaxHealth { get { return _enemy.Health; } }
 
-        public MobService(Mob enemy)
+        public MobService(Enemy enemy)
         {
             _enemy = enemy;
         }

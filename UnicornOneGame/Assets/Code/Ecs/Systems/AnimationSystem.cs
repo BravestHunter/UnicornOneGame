@@ -27,10 +27,8 @@ namespace UnicornOne.Ecs.Systems
             if (_meleeHeroFilter == null)
             {
                 _meleeHeroFilter = world
-                    .Filter<HeroFlag>()
-                    .Inc<AnimatorUnityRefComponent>()
+                    .Filter<AnimatorUnityRefComponent>()
                     .Inc<AnimationEventHandlerUnityRefComponent>()
-                    .Inc<HeroBehaviorAiComponent>()
                     .Inc<NavigationComponent>()
                     .End();
             }
@@ -40,6 +38,8 @@ namespace UnicornOne.Ecs.Systems
             var attackAnimationRequestPool = world.GetPool<AttackAnimationRequest>();
             var attackAnimationFlagPool = world.GetPool<AttackAnimationFlag>();
             var standPool = world.GetPool<StandFlag>();
+
+            var enemyFlagPool = world.GetPool<EnemyFlag>();
 
             foreach (var entity in _meleeHeroFilter)
             {

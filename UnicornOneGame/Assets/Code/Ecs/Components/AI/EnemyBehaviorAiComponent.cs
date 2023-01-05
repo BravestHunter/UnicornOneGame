@@ -11,7 +11,8 @@ namespace UnicornOne.Ecs.Components
         public enum State
         {
             SearchForTarget,
-            MoveToTarget
+            MoveToTarget,
+            AttackTarget
         }
 
         public State CurrentState;

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnicornOne.Ecs.Components;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
 
 namespace UnicornOne.Ecs.Systems
 {
@@ -34,12 +35,18 @@ namespace UnicornOne.Ecs.Systems
             var targetPool = world.GetPool<TargetComponent>();
             var standPool = world.GetPool<StandFlag>();
 
+            var attackFlagPool = world.GetPool<AttackFlag>();
+            var atackParametersPool = world.GetPool<AtackParametersComponent>();
+            var attackRechargePool = world.GetPool<AttackRechargeComponent>();
+            var attackRequestPool = world.GetPool<AttackRequest>();
+
             Dictionary<int, Vector3> heroPositions = null;
 
             foreach (var entity in _enemyAiFilter)
             {
                 ref var enemyBehaviorAiComponent = ref enemyBehaviorAiPool.Get(entity);
-                ref var gameObjectRefComponent = ref gameObjectRefPool.Get(entity);
+                var gameObjectRefComponent = gameObjectRefPool.Get(entity);
+                var atackParametersComponent = atackParametersPool.Get(entity);
 
                 Vector3 entityPosition = gameObjectRefComponent.GameObject.transform.position;
 
@@ -52,11 +59,13 @@ namespace UnicornOne.Ecs.Systems
                                 heroPositions = GetHeroPositions(world);
                             }
 
+                            // Case: No possible targets
                             if (heroPositions.Count == 0)
                             {
                                 break;
                             }
 
+                            // Case: Set closest hero as target
                             var closestTarget = heroPositions.OrderBy(pair => (entityPosition - pair.Value).sqrMagnitude).First();
 
                             enemyBehaviorAiComponent.CurrentState = EnemyBehaviorAiComponent.State.MoveToTarget;
@@ -92,7 +101,7 @@ namespace UnicornOne.Ecs.Systems
 
                             // Case: Too far from target, keep moving
                             Vector3 targetEntityPosition = gameObjectRefPool.Get(targetEntity).GameObject.transform.position;
-                            if ((targetEntityPosition - entityPosition).magnitude > 1.5f)
+                            if ((targetEntityPosition - entityPosition).magnitude > atackParametersComponent.Range)
                             {
                                 navigationComponent.DestionationPosition = targetEntityPosition;
 
@@ -107,6 +116,63 @@ namespace UnicornOne.Ecs.Systems
                             {
                                 navigationComponent.DestionationPosition = entityPosition;
                             }
+
+                            // Case: Reached target point
+                            enemyBehaviorAiComponent.CurrentState = EnemyBehaviorAiComponent.State.AttackTarget;
+
+                            break;
+                        }
+
+                    case EnemyBehaviorAiComponent.State.AttackTarget:
+                        {
+                            // Case: Attack is happening
+                            if (attackFlagPool.Has(entity))
+                            {
+                                break;
+                            }
+
+                            // Case: No target
+                            if (!targetPool.Has(entity))
+                            {
+                                enemyBehaviorAiComponent.CurrentState = EnemyBehaviorAiComponent.State.SearchForTarget;
+
+                                break;
+                            }
+
+                            // Case: Target is not alive
+                            ref var targetComponent = ref targetPool.Get(entity);
+                            int targetEntity;
+                            if (!targetComponent.TargetEntity.Unpack(world, out targetEntity))
+                            {
+                                enemyBehaviorAiComponent.CurrentState = EnemyBehaviorAiComponent.State.SearchForTarget;
+                                targetPool.Del(entity);
+
+                                break;
+                            }
+
+                            // Case: Target is too far
+                            Vector3 targetEntityPosition = gameObjectRefPool.Get(targetEntity).GameObject.transform.position;
+                            if ((entityPosition - targetEntityPosition).magnitude > atackParametersComponent.Range)
+                            {
+                                enemyBehaviorAiComponent.CurrentState = EnemyBehaviorAiComponent.State.MoveToTarget;
+
+                                break;
+                            }
+
+                            // Hero should stand now
+                            if (!standPool.Has(entity))
+                            {
+                                standPool.Add(entity);
+                            }
+
+                            // Case: Attack recharge is happening
+                            if (attackRechargePool.Has(entity))
+                            {
+                                break;
+                            }
+
+                            // Case: Start attack
+                            attackRequestPool.Add(entity);
 
                             break;
                         }

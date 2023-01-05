@@ -91,6 +91,12 @@ namespace UnicornOne.Ecs.Systems
             healthComponent.MaxHealth = _mobService.Value.MaxHealth;
             healthComponent.CurrentHealth = healthComponent.MaxHealth;
 
+            var atackParametersPool = world.GetPool<AtackParametersComponent>();
+            ref var atackParametersComponent = ref atackParametersPool.Add(entity);
+            atackParametersComponent.Damage = 5;
+            atackParametersComponent.Range = 1.5f;
+            atackParametersComponent.AttackRechargeTime = 1.5f;
+
             var navigationPool = world.GetPool<NavigationComponent>();
             ref var navigationComponent = ref navigationPool.Add(entity);
             navigationComponent.MovementSpeed = 0.5f;

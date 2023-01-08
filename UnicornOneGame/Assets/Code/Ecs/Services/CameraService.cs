@@ -13,6 +13,9 @@ namespace UnicornOne.Ecs.Services
 
         private readonly Camera _camera;
 
+        public Camera Camera => _camera;
+        public Vector3 CameraPosition => _camera.transform.position;
+
         public CameraService(Camera camera)
         {
             _camera = camera;

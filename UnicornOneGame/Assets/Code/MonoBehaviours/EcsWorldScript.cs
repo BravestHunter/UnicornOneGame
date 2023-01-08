@@ -19,6 +19,7 @@ namespace UnicornOne.MonoBehaviours
         [SerializeField] private Projectile Projectile;
         [SerializeField] private Effect Effect;
         [SerializeField] private Camera Camera;
+        [SerializeField] private GameObject Label3D;
 
         private EcsWorld _world;
         private IEcsSystems _systems;
@@ -38,6 +39,7 @@ namespace UnicornOne.MonoBehaviours
             var projectileService = new ProjectileService(Projectile);
             var effectService = new EffectService(Effect);
             var cameraService = new CameraService(Camera);
+            var uiService = new UIService(Label3D);
 
             _systems = new EcsSystems(_world);
             _systems.Add(new LevelInitSystem());
@@ -55,9 +57,10 @@ namespace UnicornOne.MonoBehaviours
             _systems.Add(new AnimationSystem());
             _systems.Add(new DamageSystem());
             _systems.Add(new CameraMoveSystem());
+            _systems.Add(new LifetimeSystem());
             _systems.Add(new DeathSystem());
             _systems.Add(new DestroySystem());
-            _systems.Inject(levelService, heroService, mobService, projectileService, effectService, cameraService);
+            _systems.Inject(levelService, heroService, mobService, projectileService, effectService, cameraService, uiService);
             _systems.Init();
 
 #if UNITY_EDITOR

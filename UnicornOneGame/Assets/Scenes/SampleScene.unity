@@ -421,3 +421,4 @@ MonoBehaviour:
   Projectile: {fileID: 11400000, guid: 9153e23b61846254cb90836fc72c5e5a, type: 2}
   Effect: {fileID: 11400000, guid: 82b5ee4fd8febf64f89416f00e2547ef, type: 2}
   Camera: {fileID: 963194227}
+  Label3D: {fileID: 3878117087197096768, guid: 8a8268fed4c109343a93beb363071cd6, type: 3}

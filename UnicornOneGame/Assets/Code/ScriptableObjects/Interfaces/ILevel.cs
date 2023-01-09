@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnicornOne.ScriptableObjects.Data;
+using UnityEngine;
 using UnityEngine.AI;
 
 namespace UnicornOne.ScriptableObjects.Interfaces
@@ -12,5 +13,6 @@ namespace UnicornOne.ScriptableObjects.Interfaces
     {
         PrefabInfo PrefabInfo { get; }
         NavMeshData NavMeshData { get; }
+        public Vector3[] EnemySpawnPositions { get; }
     }
 }

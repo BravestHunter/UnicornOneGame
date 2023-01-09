@@ -12,7 +12,7 @@ namespace UnicornOne.Ecs.Services
 {
     internal class LevelService
     {
-        public ILevel Level;
+        public ILevel Level { get; }
 
         public LevelService(Level level)
         {

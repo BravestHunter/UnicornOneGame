@@ -66,7 +66,10 @@ namespace UnicornOne.Ecs.Systems
                             }
 
                             // Case: Set closest hero as target
-                            var closestTarget = heroPositions.OrderBy(pair => (entityPosition - pair.Value).sqrMagnitude).First();
+                            //var closestTarget = heroPositions.OrderBy(pair => (entityPosition - pair.Value).sqrMagnitude).First();
+
+                            // Case: Set first hero as target
+                            var closestTarget = heroPositions.First();
 
                             enemyBehaviorAiComponent.CurrentState = EnemyBehaviorAiComponent.State.MoveToTarget;
                             ref var targetComponent = ref targetPool.Add(entity);

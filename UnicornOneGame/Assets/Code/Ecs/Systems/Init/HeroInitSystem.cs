@@ -46,6 +46,11 @@ namespace UnicornOne.Ecs.Systems
             var heroFlagPool = world.GetPool<HeroFlag>();
             heroFlagPool.Add(entity);
 
+            var healthPool = world.GetPool<HealthComponent>();
+            ref var healthComponent = ref healthPool.Add(entity);
+            healthComponent.MaxHealth = hero.HealthInfo.Health;
+            healthComponent.CurrentHealth = healthComponent.MaxHealth;
+
             var atackParametersPool = world.GetPool<AtackParametersComponent>();
             ref var atackParametersComponent = ref atackParametersPool.Add(entity);
             atackParametersComponent.Damage = hero.AttackInfo.Damage;

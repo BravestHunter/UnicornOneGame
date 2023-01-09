@@ -11,13 +11,11 @@ namespace UnicornOne.Ecs.Services
 {
     internal class MobService
     {
-        private readonly Enemy _enemy;
-
-        public IEnemy Enemy => _enemy;
+        public IEnemy Enemy { get; }
 
         public MobService(Enemy enemy)
         {
-            _enemy = enemy;
+            Enemy = enemy;
         }
     }
 }

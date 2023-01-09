@@ -15,3 +15,8 @@ MonoBehaviour:
   Prefab:
     Prefab: {fileID: 3227522866089905789, guid: 0b39395a2506b3e4480eced2b3a511b0, type: 3}
   NavMesh: {fileID: 23800000, guid: 9818757ec0975274fb7e7e08024c5659, type: 2}
+  EnemySpawnPositions:
+  - {x: 50, y: 0, z: 0}
+  - {x: -50, y: 0, z: 0}
+  - {x: 0, y: 0, z: 50}
+  - {x: 0, y: 0, z: -50}

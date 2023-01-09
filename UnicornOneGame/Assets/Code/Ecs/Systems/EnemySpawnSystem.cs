@@ -15,16 +15,36 @@ namespace UnicornOne.Ecs.Systems
 {
     internal class EnemySpawnSystem : IEcsRunSystem
     {
-        private const int MaxEnemyCount = 10;
-        private const float SpawnCirceRadius = 50.0f;
+        private const int WavesNumber = 5;
+        private const float TimeBetweenWaves = 15.0f;
+        private const int EnemiesInWaveNumber = 5;
+        private const float SpawnCirceRadius = 6.0f;
 
+        private readonly EcsCustomInject<LevelService> _levelService;
         private readonly EcsCustomInject<MobService> _mobService;
         private EcsFilter _enemyFilter;
+
+        private int _waveCounter = 0;
 
         public void Run(IEcsSystems systems)
         {
             var world = systems.GetWorld();
 
+            if (_waveCounter >= WavesNumber)
+            {
+                return;
+            }
+
+            if (Time.timeSinceLevelLoad < _waveCounter * TimeBetweenWaves)
+            {
+                return;
+            }
+
+            SpawnEnemyWave(world);
+        }
+
+        private void SpawnEnemyWave(EcsWorld world)
+        {
             if (_enemyFilter == null)
             {
                 _enemyFilter = world
@@ -32,18 +52,19 @@ namespace UnicornOne.Ecs.Systems
                     .End();
             }
 
-            int enemiesToSpawn = MaxEnemyCount - _enemyFilter.GetEntitiesCount();
-            for (int i = 0; i < enemiesToSpawn; i++)
+            Vector3 spawnPoint = _levelService.Value.Level.EnemySpawnPositions[UnityEngine.Random.Range(0, _levelService.Value.Level.EnemySpawnPositions.Length - 1)];
+            for (int i = 0; i < EnemiesInWaveNumber; i++)
             {
-                // TODO: Use objects pooling
+                Vector3 randomPosition = GetRandomPositionInRadius() + spawnPoint;
 
-                Vector3 randomPosition = GetRandomEnemyPosition();
+                // TODO: Use objects pooling
                 SpawnEnemy(world, randomPosition);
             }
+
+            _waveCounter++;
         }
 
-
-        private static Vector3 GetRandomEnemyPosition()
+        private static Vector3 GetRandomPositionInRadius()
         {
             Vector2 randomPosition = UnityEngine.Random.insideUnitCircle * SpawnCirceRadius;
             return new Vector3(randomPosition.x, 0.0f, randomPosition.y);

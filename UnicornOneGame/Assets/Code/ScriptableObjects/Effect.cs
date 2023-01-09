@@ -3,13 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnicornOne.ScriptableObjects.Data;
+using UnicornOne.ScriptableObjects.Interfaces;
 using UnityEngine;
 
 namespace UnicornOne.ScriptableObjects
 {
     [CreateAssetMenu(fileName = "Effect", menuName = "Custom/Effect")]
-    internal class Effect : ScriptableObject
+    internal class Effect : ScriptableObject, IEffect
     {
-        public GameObject Prefab;
+        public PrefabInfo Prefab;
+
+        public PrefabInfo PrefabInfo => Prefab;
     }
 }

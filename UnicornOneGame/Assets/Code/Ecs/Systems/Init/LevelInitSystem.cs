@@ -17,9 +17,9 @@ namespace UnicornOne.Ecs.Systems
 
         public void Init(IEcsSystems systems)
         {
-            GameObject.Instantiate(_levelService.Value.Prefab);
+            GameObject.Instantiate(_levelService.Value.Level.PrefabInfo.Prefab);
 
-            NavMesh.AddNavMeshData(_levelService.Value.NavMeshData);
+            NavMesh.AddNavMeshData(_levelService.Value.Level.NavMeshData);
         }
     }
 }

@@ -12,9 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba329fb5ae607eb43ba94c994cb4c854, type: 3}
   m_Name: Warrior
   m_EditorClassIdentifier: 
-  Prefab: {fileID: 6718588461118902311, guid: c2031e0c70152804ebf0539d753900b3, type: 3}
-  MovingSpeed: 6
-  AttackDamage: 10
-  AttackRange: 2.5
-  AttackRechargeTime: 1
-  IsRanged: 0
+  Prefab:
+    Prefab: {fileID: 6718588461118902311, guid: c2031e0c70152804ebf0539d753900b3, type: 3}
+  Move:
+    Speed: 6
+  Health:
+    Health: 1000
+  Attack:
+    Damage: 15
+    Range: 2.5
+    RechargeTime: 1
+    IsRanged: 0
+    AttackEffect: {fileID: 0}

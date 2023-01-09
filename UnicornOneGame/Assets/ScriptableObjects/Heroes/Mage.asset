@@ -10,12 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ba329fb5ae607eb43ba94c994cb4c854, type: 3}
-  m_Name: Archer
+  m_Name: Mage
   m_EditorClassIdentifier: 
-  Prefab: {fileID: 7520341672977643540, guid: 022a51728dfb6e24881904aefa443960, type: 3}
-  MovingSpeed: 6
-  AttackDamage: 10
-  AttackRange: 15
-  AttackRechargeTime: 2
-  IsRanged: 1
-  AttackEffect: {fileID: 0}
+  Prefab:
+    Prefab: {fileID: 9186795781410484748, guid: ed57daa7d9c63b647a8685c2a2e3c201, type: 3}
+  Move:
+    Speed: 6
+  Health:
+    Health: 1000
+  Attack:
+    Damage: 20
+    Range: 10
+    RechargeTime: 4
+    IsRanged: 0
+    AttackEffect: {fileID: 11400000, guid: 82b5ee4fd8febf64f89416f00e2547ef, type: 2}

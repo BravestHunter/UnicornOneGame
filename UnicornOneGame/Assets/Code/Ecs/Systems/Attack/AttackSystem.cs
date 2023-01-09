@@ -155,9 +155,9 @@ namespace UnicornOne.Ecs.Systems
 
                     ref var projectileParametersComponent = ref projectileParametersPool.Add(projectileEntity);
                     projectileParametersComponent.Damage = atackParametersComponent.Damage;
-                    projectileParametersComponent.MoveSpeed = _projectileService.Value.MoveSpeed;
+                    projectileParametersComponent.MoveSpeed = _projectileService.Value.Projectile.MoveInfo.Speed;
 
-                    var projectileGameObject = GameObject.Instantiate(_projectileService.Value.Prefab);
+                    var projectileGameObject = GameObject.Instantiate(_projectileService.Value.Projectile.PrefabInfo.Prefab);
                     projectileGameObject.transform.position = gameObjectRefComponent.GameObject.transform.position + Vector3.up * 1.65f + gameObjectRefComponent.GameObject.transform.forward * 1.0f;
                     projectileGameObject.transform.rotation = gameObjectRefComponent.GameObject.transform.rotation;
 
@@ -185,7 +185,7 @@ namespace UnicornOne.Ecs.Systems
                     effectLifeSpanComponent.LifeSpan = 0.25f;
                     effectLifeSpanComponent.CreationTime = Time.timeSinceLevelLoad;
 
-                    var effectGameObject = GameObject.Instantiate(_effectService.Value.Prefab);
+                    var effectGameObject = GameObject.Instantiate(_effectService.Value.Effect.PrefabInfo.Prefab);
 
                     ref var projectileGameObjectRefComponent = ref gameObjectRefPool.Add(effectEntity);
                     projectileGameObjectRefComponent.GameObject = effectGameObject;

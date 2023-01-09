@@ -3,22 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnicornOne.Assets.Code.ScriptableObjects.Data;
+using UnicornOne.ScriptableObjects.Data;
+using UnicornOne.ScriptableObjects.Interfaces;
 using UnityEngine;
 
 namespace UnicornOne.ScriptableObjects
 {
     [CreateAssetMenu(fileName = "Hero", menuName = "Custom/Hero")]
-    internal class Hero : ScriptableObject
+    internal class Hero : ScriptableObject, IHero
     {
-        public GameObject Prefab;
+        public PrefabInfo Prefab;
+        public MoveInfo Move;
+        public HealthInfo Health;
+        public AttackInfo Attack;
 
-        public float MovingSpeed;
-
-        public int AttackDamage;
-        public float AttackRange;
-        public float AttackRechargeTime;
-
-        public bool IsRanged;
-        public Effect AttackEffect;
+        public PrefabInfo PrefabInfo => Prefab;
+        public MoveInfo MoveInfo => Move;
+        public HealthInfo HealthInfo => Health;
+        public AttackInfo AttackInfo => Attack;
     }
 }

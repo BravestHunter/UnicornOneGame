@@ -51,7 +51,7 @@ namespace UnicornOne.Ecs.Systems
 
         private void SpawnSimpleEnemy(EcsWorld world, Vector3 position)
         {
-            var enemyGameObject = GameObject.Instantiate(_mobService.Value.EnemyPrefab);
+            var enemyGameObject = GameObject.Instantiate(_mobService.Value.Enemy.PrefabInfo.Prefab);
             enemyGameObject.transform.position = position;
             enemyGameObject.transform.rotation = Quaternion.Euler(0.0f, UnityEngine.Random.Range(0.0f, 360.0f), 0.0f);
 
@@ -62,7 +62,7 @@ namespace UnicornOne.Ecs.Systems
 
             var healthPool = world.GetPool<HealthComponent>();
             ref var healthComponent = ref healthPool.Add(entity);
-            healthComponent.MaxHealth = _mobService.Value.MaxHealth;
+            healthComponent.MaxHealth = _mobService.Value.Enemy.HealthInfo.Health;
             healthComponent.CurrentHealth = healthComponent.MaxHealth;
 
             var gameObjectRefPool = world.GetPool<GameObjectUnityRefComponent>();
@@ -72,7 +72,7 @@ namespace UnicornOne.Ecs.Systems
 
         private void SpawnEnemy(EcsWorld world, Vector3 position)
         {
-            var gameObject = GameObject.Instantiate(_mobService.Value.EnemyPrefab);
+            var gameObject = GameObject.Instantiate(_mobService.Value.Enemy.PrefabInfo.Prefab);
             gameObject.transform.position = position;
             var navigationAgent = gameObject.GetComponentInChildren<NavMeshAgent>();
             var animator = gameObject.GetComponentInChildren<Animator>();
@@ -88,18 +88,18 @@ namespace UnicornOne.Ecs.Systems
 
             var healthPool = world.GetPool<HealthComponent>();
             ref var healthComponent = ref healthPool.Add(entity);
-            healthComponent.MaxHealth = _mobService.Value.MaxHealth;
+            healthComponent.MaxHealth = _mobService.Value.Enemy.HealthInfo.Health;
             healthComponent.CurrentHealth = healthComponent.MaxHealth;
 
             var atackParametersPool = world.GetPool<AtackParametersComponent>();
             ref var atackParametersComponent = ref atackParametersPool.Add(entity);
-            atackParametersComponent.Damage = 5;
-            atackParametersComponent.Range = 1.5f;
-            atackParametersComponent.AttackRechargeTime = 1.5f;
+            atackParametersComponent.Damage = _mobService.Value.Enemy.AttackInfo.Damage;
+            atackParametersComponent.Range = _mobService.Value.Enemy.AttackInfo.Range;
+            atackParametersComponent.AttackRechargeTime = _mobService.Value.Enemy.AttackInfo.RechargeTime;
 
             var navigationPool = world.GetPool<NavigationComponent>();
             ref var navigationComponent = ref navigationPool.Add(entity);
-            navigationComponent.MovementSpeed = 0.5f;
+            navigationComponent.MovementSpeed = _mobService.Value.Enemy.MoveInfo.Speed;
 
             var enemyBehaviorAiPool = world.GetPool<EnemyBehaviorAiComponent>();
             ref var enemyBehaviorAiComponent = ref enemyBehaviorAiPool.Add(entity);

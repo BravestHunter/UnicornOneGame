@@ -9,9 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 895933f64bea0854991cf9d7caf88557, type: 3}
-  m_Name: Arrow
+  m_Script: {fileID: 11500000, guid: 6dcced9f3b84c194c9264cd8f0c32042, type: 3}
+  m_Name: LightningBolt
   m_EditorClassIdentifier: 
-  Prefab: {fileID: 4865309214770636011, guid: b6c18084c24eefa439e04530294f776e, type: 3}
-  Damage: 5
-  MoveSpeed: 25
+  Prefab:
+    Prefab: {fileID: 178460, guid: f7f7f797fc754f743b39ea117d8a818f, type: 3}

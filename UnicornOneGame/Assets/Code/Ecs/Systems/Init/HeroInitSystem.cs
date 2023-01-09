@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using UnicornOne.Ecs.Components;
 using UnicornOne.Ecs.Services;
 using UnicornOne.MonoBehaviours;
+using UnicornOne.ScriptableObjects.Interfaces;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -21,17 +22,17 @@ namespace UnicornOne.Ecs.Systems
         {
             var world = systems.GetWorld();
 
-            foreach (HeroInfo heroInfo in _heroService.Value.Heroes)
+            foreach (IHero hero in _heroService.Value.Heroes)
             {
                 Vector2 position = UnityEngine.Random.insideUnitCircle * 10.0f;
 
-                SpawnHero(heroInfo, world, new Vector3(position.x, 0.0f, position.y));
+                SpawnHero(hero, world, new Vector3(position.x, 0.0f, position.y));
             }
         }
 
-        private void SpawnHero(HeroInfo heroInfo, EcsWorld world, Vector3 position)
+        private void SpawnHero(IHero hero, EcsWorld world, Vector3 position)
         {
-            var heroGameObject = GameObject.Instantiate(heroInfo.Prefab);
+            var heroGameObject = GameObject.Instantiate(hero.PrefabInfo.Prefab);
             heroGameObject.transform.position = position;
             var animator = heroGameObject.GetComponentInChildren<Animator>();
             animator.fireEvents = true;
@@ -47,17 +48,17 @@ namespace UnicornOne.Ecs.Systems
 
             var atackParametersPool = world.GetPool<AtackParametersComponent>();
             ref var atackParametersComponent = ref atackParametersPool.Add(entity);
-            atackParametersComponent.Damage = heroInfo.AttackDamage;
-            atackParametersComponent.Range = heroInfo.AttackRange;
-            atackParametersComponent.AttackRechargeTime = heroInfo.AttackRechargeTime;
+            atackParametersComponent.Damage = hero.AttackInfo.Damage;
+            atackParametersComponent.Range = hero.AttackInfo.Range;
+            atackParametersComponent.AttackRechargeTime = hero.AttackInfo.RechargeTime;
 
-            if (heroInfo.IsRanged)
+            if (hero.AttackInfo.IsRanged)
             {
                 var rangedFlagPool = world.GetPool<RangedFlag>();
                 rangedFlagPool.Add(entity);
             }
 
-            if (heroInfo.HasAttackEffect)
+            if (hero.AttackInfo.AttackEffect != null)
             {
                 var hasAttackEffectFlagPool = world.GetPool<HasAttackEffectFlag>();
                 hasAttackEffectFlagPool.Add(entity);
@@ -65,7 +66,7 @@ namespace UnicornOne.Ecs.Systems
 
             var navigationPool = world.GetPool<NavigationComponent>();
             ref var navigationComponent = ref navigationPool.Add(entity);
-            navigationComponent.MovementSpeed = heroInfo.MovingSpeed;
+            navigationComponent.MovementSpeed = hero.MoveInfo.Speed;
 
             var gameObjectRefPool = world.GetPool<GameObjectUnityRefComponent>();
             ref var gameObjectRefComponent = ref gameObjectRefPool.Add(entity);

@@ -3,15 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnicornOne.ScriptableObjects.Data;
+using UnicornOne.ScriptableObjects.Interfaces;
 using UnityEngine;
 
 namespace UnicornOne.ScriptableObjects
 {
     [CreateAssetMenu(fileName = "Projectile", menuName = "Custom/Projectile")]
-    internal class Projectile : ScriptableObject
+    internal class Projectile : ScriptableObject, IProjectile
     {
-        public GameObject Prefab;
-        public int Damage;
-        public float MoveSpeed;
+        public PrefabInfo Prefab;
+        public MoveInfo Move;
+
+        public PrefabInfo PrefabInfo => Prefab;
+        public MoveInfo MoveInfo => Move;
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnicornOne.ScriptableObjects;
+using UnicornOne.ScriptableObjects.Interfaces;
 using UnityEngine;
 
 namespace UnicornOne.Ecs.Services
@@ -12,8 +13,7 @@ namespace UnicornOne.Ecs.Services
     {
         private readonly Enemy _enemy;
 
-        public GameObject EnemyPrefab { get { return _enemy.Prefab; } }
-        public int MaxHealth { get { return _enemy.Health; } }
+        public IEnemy Enemy => _enemy;
 
         public MobService(Enemy enemy)
         {

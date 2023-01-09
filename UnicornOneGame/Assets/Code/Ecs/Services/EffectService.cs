@@ -4,19 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnicornOne.ScriptableObjects;
+using UnicornOne.ScriptableObjects.Interfaces;
 using UnityEngine;
 
 namespace UnicornOne.Ecs.Services
 {
     internal class EffectService
     {
-        private readonly Effect _effect;
-
-        public GameObject Prefab => _effect.Prefab;
+        public IEffect Effect { get; }
 
         public EffectService(Effect effect)
         {
-            _effect = effect;
+            Effect = effect;
         }
     }
 }

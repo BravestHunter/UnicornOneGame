@@ -10,7 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 102cc730b4a02e446b2e330774a310e1, type: 3}
-  m_Name: Cactus
+  m_Name: Zombie
   m_EditorClassIdentifier: 
-  Prefab: {fileID: 1268516079989756, guid: 5c243d3591422814a81656730b54873b, type: 3}
-  Health: 50
+  Prefab:
+    Prefab: {fileID: 4916339962075591399, guid: 7ebd9c495c84d074d974e6e014c39061, type: 3}
+  Move:
+    Speed: 0.6
+  Health:
+    Health: 50
+  Attack:
+    Damage: 10
+    Range: 2
+    RechargeTime: 2
+    IsRanged: 0
+    AttackEffect: {fileID: 0}

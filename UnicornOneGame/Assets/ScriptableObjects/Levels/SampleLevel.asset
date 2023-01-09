@@ -9,8 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 102cc730b4a02e446b2e330774a310e1, type: 3}
-  m_Name: Zombie
+  m_Script: {fileID: 11500000, guid: 39fc0f3369f2e4449ba12dc76284c799, type: 3}
+  m_Name: SampleLevel
   m_EditorClassIdentifier: 
-  Prefab: {fileID: 4916339962075591399, guid: 7ebd9c495c84d074d974e6e014c39061, type: 3}
-  Health: 50
+  Prefab:
+    Prefab: {fileID: 3227522866089905789, guid: 0b39395a2506b3e4480eced2b3a511b0, type: 3}
+  NavMesh: {fileID: 23800000, guid: 9818757ec0975274fb7e7e08024c5659, type: 2}

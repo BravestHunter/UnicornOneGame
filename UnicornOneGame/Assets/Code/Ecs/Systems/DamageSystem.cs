@@ -17,7 +17,7 @@ namespace UnicornOne.Ecs.Systems
         private readonly EcsCustomInject<CameraService> _cameraService;
         private readonly EcsCustomInject<UIService> _uiService;
 
-        EcsFilter _attackFilter;
+        private EcsFilter _attackFilter;
 
         public void Run(IEcsSystems systems)
         {

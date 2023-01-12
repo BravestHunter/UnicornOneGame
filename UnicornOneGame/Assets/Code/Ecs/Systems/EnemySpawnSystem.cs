@@ -17,7 +17,7 @@ namespace UnicornOne.Ecs.Systems
     {
         private const int WavesNumber = 5;
         private const float TimeBetweenWaves = 15.0f;
-        private const int EnemiesInWaveNumber = 5;
+        private const int EnemiesInWaveNumber = 3;
         private const float SpawnCirceRadius = 6.0f;
 
         private readonly EcsCustomInject<LevelService> _levelService;
@@ -50,6 +50,12 @@ namespace UnicornOne.Ecs.Systems
                 _enemyFilter = world
                     .Filter<EnemyFlag>()
                     .End();
+            }
+
+            if (_enemyFilter.GetEntitiesCount() > 0)
+            {
+                // Wait until previous wave is cleared
+                return;
             }
 
             Vector3 spawnPoint = _levelService.Value.Level.EnemySpawnPositions[UnityEngine.Random.Range(0, _levelService.Value.Level.EnemySpawnPositions.Length - 1)];

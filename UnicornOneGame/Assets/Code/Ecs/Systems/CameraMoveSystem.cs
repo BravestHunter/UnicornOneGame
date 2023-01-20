@@ -13,6 +13,8 @@ namespace UnicornOne.Ecs.Systems
 {
     internal class CameraMoveSystem : IEcsRunSystem
     {
+        private const float SqrRatationDistance = 400.0f;
+
         private readonly EcsCustomInject<CameraService> _cameraService;
 
         private EcsFilter _heroFilter;
@@ -67,12 +69,15 @@ namespace UnicornOne.Ecs.Systems
             if (heroPositions.Count > 0 && enemyPositions.Count > 0)
             {
                 Vector3 enemyAvarage = enemyPositions.Aggregate(Vector3.zero, (sum, v) => sum + v) / enemyPositions.Count;
-                
-                Vector3 desiredPlaneDirection = enemyAvarage - heroAvarage;
-                desiredPlaneDirection.y = 0;
-                desiredPlaneDirection.Normalize();
 
-                _desiredCameraPlaneDirection = desiredPlaneDirection;
+                if ((heroAvarage - enemyAvarage).sqrMagnitude < SqrRatationDistance)
+                {
+                    Vector3 desiredPlaneDirection = enemyAvarage - heroAvarage;
+                    desiredPlaneDirection.y = 0;
+                    desiredPlaneDirection.Normalize();
+
+                    _desiredCameraPlaneDirection = desiredPlaneDirection;
+                }
             }
 
             Vector3 cameraPlaneDirection = _cameraService.Value.Camera.transform.forward;

@@ -10,11 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 39fc0f3369f2e4449ba12dc76284c799, type: 3}
-  m_Name: SampleLevel
+  m_Name: DesertLevel
   m_EditorClassIdentifier: 
   Prefab:
-    Prefab: {fileID: 3227522866089905789, guid: 0b39395a2506b3e4480eced2b3a511b0, type: 3}
-  NavMesh: {fileID: 23800000, guid: 9818757ec0975274fb7e7e08024c5659, type: 2}
+    Prefab: {fileID: 4019603065753328701, guid: 71f3e9c9da95f194ebf7cf44caaaa1df, type: 3}
+  NavMesh: {fileID: 23800000, guid: a215853e7984e7b4887727d8159e02d3, type: 2}
+  Skybox: {fileID: 2100000, guid: a79544dd4924be64eb10b8cbc0b1bf8c, type: 2}
   EnemySpawnPositions:
   - {x: 50, y: 0, z: 0}
   - {x: -50, y: 0, z: 0}

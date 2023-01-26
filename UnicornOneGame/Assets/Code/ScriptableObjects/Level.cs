@@ -15,10 +15,12 @@ namespace UnicornOne.ScriptableObjects
     {
         public PrefabInfo Prefab;
         public NavMeshData NavMesh;
+        public Material Skybox;
         public Vector3[] EnemySpawnPositions;
 
         public PrefabInfo PrefabInfo => Prefab;
         public NavMeshData NavMeshData => NavMesh;
+        Material ILevel.Skybox => Skybox;
         Vector3[] ILevel.EnemySpawnPositions => EnemySpawnPositions;
     }
 }

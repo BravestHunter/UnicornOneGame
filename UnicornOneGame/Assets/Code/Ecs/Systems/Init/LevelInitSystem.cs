@@ -20,6 +20,8 @@ namespace UnicornOne.Ecs.Systems
             GameObject.Instantiate(_levelService.Value.Level.PrefabInfo.Prefab);
 
             NavMesh.AddNavMeshData(_levelService.Value.Level.NavMeshData);
+
+            RenderSettings.skybox = _levelService.Value.Level.Skybox;
         }
     }
 }

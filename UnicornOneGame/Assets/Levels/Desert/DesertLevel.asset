@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Prefab:
     Prefab: {fileID: 4019603065753328701, guid: 71f3e9c9da95f194ebf7cf44caaaa1df, type: 3}
-  NavMesh: {fileID: 23800000, guid: a215853e7984e7b4887727d8159e02d3, type: 2}
+  NavMesh: {fileID: 23800000, guid: dba2237188488774c8e42de861ab0216, type: 2}
   Skybox: {fileID: 2100000, guid: a79544dd4924be64eb10b8cbc0b1bf8c, type: 2}
   EnemySpawnPositions:
   - {x: 50, y: 0, z: 0}

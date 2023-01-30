@@ -10,7 +10,7 @@ using UnityEngine;
 namespace UnicornOne.ScriptableObjects
 {
     [CreateAssetMenu(fileName = "Effect", menuName = "Custom/Effect")]
-    internal class Effect : ScriptableObject, IEffect
+    public class Effect : ScriptableObject, IEffect
     {
         public PrefabInfo Prefab;
 

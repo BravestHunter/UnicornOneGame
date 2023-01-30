@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace UnicornOne.ScriptableObjects.Data
 {
     [Serializable]
-    internal struct MoveInfo
+    public struct MoveInfo
     {
         public float Speed;
     }

@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39fc0f3369f2e4449ba12dc76284c799, type: 3}
+  m_Name: DesertLevel
+  m_EditorClassIdentifier: 
+  Prefab:
+    Prefab: {fileID: 4019603065753328701, guid: 71f3e9c9da95f194ebf7cf44caaaa1df, type: 3}
+  NavMesh: {fileID: 23800000, guid: ef8de00fa9c748e4f8daaf2c732ff799, type: 2}
+  Skybox: {fileID: 2100000, guid: a79544dd4924be64eb10b8cbc0b1bf8c, type: 2}
+  Script: {fileID: 11400000, guid: ca110c0c309b74e498ed5a6abf5eaaa5, type: 2}
+  EnemySpawnPositions:
+  - {x: 50, y: 0, z: 0}
+  - {x: -50, y: 0, z: 0}
+  - {x: 0, y: 0, z: 50}
+  - {x: 0, y: 0, z: -50}

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace UnicornOne.ScriptableObjects.Data
 {
     [Serializable]
-    internal struct HealthInfo
+    public struct HealthInfo
     {
         public int Health;
     }

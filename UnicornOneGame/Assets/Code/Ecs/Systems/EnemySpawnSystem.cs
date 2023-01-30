@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using UnicornOne.Ecs.Components;
 using UnicornOne.Ecs.Services;
 using UnicornOne.MonoBehaviours;
+using UnicornOne.ScriptableObjects;
+using UnicornOne.ScriptableObjects.Interfaces;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -15,13 +17,11 @@ namespace UnicornOne.Ecs.Systems
 {
     internal class EnemySpawnSystem : IEcsRunSystem
     {
-        private const int WavesNumber = 5;
-        private const float TimeBetweenWaves = 15.0f;
-        private const int EnemiesInWaveNumber = 3;
         private const float SpawnCirceRadius = 6.0f;
 
         private readonly EcsCustomInject<LevelService> _levelService;
         private readonly EcsCustomInject<MobService> _mobService;
+
         private EcsFilter _enemyFilter;
 
         private int _waveCounter = 0;
@@ -30,12 +30,12 @@ namespace UnicornOne.Ecs.Systems
         {
             var world = systems.GetWorld();
 
-            if (_waveCounter >= WavesNumber)
+            if (_waveCounter >= _levelService.Value.Level.Script.Waves.Length)
             {
                 return;
             }
 
-            if (Time.timeSinceLevelLoad < _waveCounter * TimeBetweenWaves)
+            if (!ShouldSpawnNextWave(world))
             {
                 return;
             }
@@ -43,7 +43,7 @@ namespace UnicornOne.Ecs.Systems
             SpawnEnemyWave(world);
         }
 
-        private void SpawnEnemyWave(EcsWorld world)
+        private bool ShouldSpawnNextWave(EcsWorld world)
         {
             if (_enemyFilter == null)
             {
@@ -52,19 +52,20 @@ namespace UnicornOne.Ecs.Systems
                     .End();
             }
 
-            if (_enemyFilter.GetEntitiesCount() > 0)
-            {
-                // Wait until previous wave is cleared
-                return;
-            }
+            return _enemyFilter.GetEntitiesCount() == 0;
+        }
 
-            Vector3 spawnPoint = _levelService.Value.Level.EnemySpawnPositions[UnityEngine.Random.Range(0, _levelService.Value.Level.EnemySpawnPositions.Length - 1)];
-            for (int i = 0; i < EnemiesInWaveNumber; i++)
+        private void SpawnEnemyWave(EcsWorld world)
+        {
+            var wave = _levelService.Value.Level.Script.Waves[_waveCounter];
+            Vector3 spawnPoint = _levelService.Value.SpawnPoints[_waveCounter];
+
+            for (int i = 0; i < wave.Count; i++)
             {
                 Vector3 randomPosition = GetRandomPositionInRadius() + spawnPoint;
 
                 // TODO: Use objects pooling
-                SpawnEnemy(world, randomPosition);
+                SpawnEnemy(wave.Enemy, randomPosition, world);
             }
 
             _waveCounter++;
@@ -97,9 +98,9 @@ namespace UnicornOne.Ecs.Systems
             gameObjectRefComponent.GameObject = enemyGameObject;
         }
 
-        private void SpawnEnemy(EcsWorld world, Vector3 position)
+        private static void SpawnEnemy(Enemy enemy, Vector3 position, EcsWorld world)
         {
-            var gameObject = GameObject.Instantiate(_mobService.Value.Enemy.PrefabInfo.Prefab);
+            var gameObject = GameObject.Instantiate(enemy.PrefabInfo.Prefab);
             gameObject.transform.position = position;
             var navigationAgent = gameObject.GetComponentInChildren<NavMeshAgent>();
             var animator = gameObject.GetComponentInChildren<Animator>();
@@ -115,18 +116,18 @@ namespace UnicornOne.Ecs.Systems
 
             var healthPool = world.GetPool<HealthComponent>();
             ref var healthComponent = ref healthPool.Add(entity);
-            healthComponent.MaxHealth = _mobService.Value.Enemy.HealthInfo.Health;
+            healthComponent.MaxHealth = enemy.HealthInfo.Health;
             healthComponent.CurrentHealth = healthComponent.MaxHealth;
 
             var atackParametersPool = world.GetPool<AtackParametersComponent>();
             ref var atackParametersComponent = ref atackParametersPool.Add(entity);
-            atackParametersComponent.Damage = _mobService.Value.Enemy.AttackInfo.Damage;
-            atackParametersComponent.Range = _mobService.Value.Enemy.AttackInfo.Range;
-            atackParametersComponent.AttackRechargeTime = _mobService.Value.Enemy.AttackInfo.RechargeTime;
+            atackParametersComponent.Damage = enemy.AttackInfo.Damage;
+            atackParametersComponent.Range = enemy.AttackInfo.Range;
+            atackParametersComponent.AttackRechargeTime = enemy.AttackInfo.RechargeTime;
 
             var navigationPool = world.GetPool<NavigationComponent>();
             ref var navigationComponent = ref navigationPool.Add(entity);
-            navigationComponent.MovementSpeed = _mobService.Value.Enemy.MoveInfo.Speed;
+            navigationComponent.MovementSpeed = enemy.MoveInfo.Speed;
 
             var enemyBehaviorAiPool = world.GetPool<EnemyBehaviorAiComponent>();
             ref var enemyBehaviorAiComponent = ref enemyBehaviorAiPool.Add(entity);

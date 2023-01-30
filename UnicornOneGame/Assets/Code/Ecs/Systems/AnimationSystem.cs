@@ -39,8 +39,6 @@ namespace UnicornOne.Ecs.Systems
             var attackAnimationFlagPool = world.GetPool<AttackAnimationFlag>();
             var standPool = world.GetPool<StandFlag>();
 
-            var enemyFlagPool = world.GetPool<EnemyFlag>();
-
             foreach (var entity in _meleeHeroFilter)
             {
                 ref var animatorRefComponent = ref animatorRefPool.Get(entity);

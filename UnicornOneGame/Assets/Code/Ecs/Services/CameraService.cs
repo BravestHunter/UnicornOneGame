@@ -9,12 +9,11 @@ namespace UnicornOne.Ecs.Services
 {
     internal class CameraService
     {
-        private const float MinCameraDistance = 20.0f;
+        private const float MinCameraDistance = 24.0f;
 
         private readonly Camera _camera;
 
         public Camera Camera => _camera;
-        public Vector3 CameraPosition => _camera.transform.position;
 
         public CameraService(Camera camera)
         {

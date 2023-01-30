@@ -11,16 +11,24 @@ using UnityEngine;
 
 namespace UnicornOne.Ecs.Systems
 {
-    internal class CameraMoveSystem : IEcsRunSystem
+    internal class CameraMoveSystem : IEcsInitSystem, IEcsRunSystem
     {
-        private const float SqrRatationDistance = 400.0f;
+        private const float AngleThreshold = 0.5f;
 
         private readonly EcsCustomInject<CameraService> _cameraService;
+        private readonly EcsCustomInject<SettingsService> _settingsService;
+
+        private float _sqrRatationDistance;
 
         private EcsFilter _heroFilter;
         private EcsFilter _enemyFilter;
 
         private Vector3 _desiredCameraPlaneDirection;
+
+        public void Init(IEcsSystems systems)
+        {
+            _sqrRatationDistance = _settingsService.Value.Camera.RotationStartDistance * _settingsService.Value.Camera.RotationStartDistance;
+        }
 
         public void Run(IEcsSystems systems)
         {
@@ -70,7 +78,7 @@ namespace UnicornOne.Ecs.Systems
             {
                 Vector3 enemyAvarage = enemyPositions.Aggregate(Vector3.zero, (sum, v) => sum + v) / enemyPositions.Count;
 
-                if ((heroAvarage - enemyAvarage).sqrMagnitude < SqrRatationDistance)
+                if ((heroAvarage - enemyAvarage).sqrMagnitude < _sqrRatationDistance)
                 {
                     Vector3 desiredPlaneDirection = enemyAvarage - heroAvarage;
                     desiredPlaneDirection.y = 0;
@@ -80,20 +88,26 @@ namespace UnicornOne.Ecs.Systems
                 }
             }
 
+            RotateCamera(heroAvarage);
+        }
+
+        private void RotateCamera(Vector3 rotationPoint)
+        {
             Vector3 cameraPlaneDirection = _cameraService.Value.Camera.transform.forward;
             cameraPlaneDirection.y = 0;
             cameraPlaneDirection.Normalize();
             float signedAngle = Vector3.SignedAngle(cameraPlaneDirection, _desiredCameraPlaneDirection, Vector3.up);
-            // TODO: move to fixed update
-            if (MathF.Abs(signedAngle) > 0.5f)
-            {
-                float angleToRotate = MathF.Min(MathF.Abs(signedAngle), 0.5f) * MathF.Sign(signedAngle);
 
-                _cameraService.Value.Camera.transform.RotateAround(heroAvarage, Vector3.up, angleToRotate);
+            float angleDelta = _settingsService.Value.Camera.AngleSpeed * Time.deltaTime;
+            float angleToRotate = MathF.Min(angleDelta, MathF.Abs(signedAngle)) * MathF.Sign(signedAngle);
+
+            if (MathF.Abs(signedAngle) > AngleThreshold)
+            {
+                _cameraService.Value.Camera.transform.RotateAround(rotationPoint, Vector3.up, angleToRotate);
             }
         }
 
-        private Bounds GetBounds(IEnumerable<Vector3> positions)
+        private static Bounds GetBounds(IEnumerable<Vector3> positions)
         {
             Bounds bounds = new Bounds();
 

@@ -16,6 +16,7 @@ MonoBehaviour:
     Prefab: {fileID: 4019603065753328701, guid: b11a250328c360f44a68b8e0f45c9151, type: 3}
   NavMesh: {fileID: 23800000, guid: 6be02c39d3a4d0b46a3638a4da66aef4, type: 2}
   Skybox: {fileID: 2100000, guid: 0cef16bf1c8569e41ba66c922dc95886, type: 2}
+  Script: {fileID: 11400000, guid: baf1fdfe356c3ff48baca1a3b0f1732f, type: 2}
   EnemySpawnPositions:
   - {x: 50, y: 0, z: 0}
   - {x: -50, y: 0, z: 0}

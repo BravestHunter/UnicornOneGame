@@ -10,9 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 102cc730b4a02e446b2e330774a310e1, type: 3}
-  m_Name: Cactus
+  m_Name: MetalonPurple
   m_EditorClassIdentifier: 
   Prefab:
-    Prefab: {fileID: 1268516079989756, guid: 5c243d3591422814a81656730b54873b, type: 3}
+    Prefab: {fileID: 1462720695320296, guid: e9a03d46b76afe246a9ffd58d255bb65, type: 3}
+  Move:
+    Speed: 3
   Health:
-    Health: 50
+    Health: 75
+  Attack:
+    Damage: 20
+    Range: 3
+    RechargeTime: 3
+    IsRanged: 0
+    AttackEffect: {fileID: 0}

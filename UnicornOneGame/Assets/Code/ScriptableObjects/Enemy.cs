@@ -11,7 +11,7 @@ using UnityEngine;
 namespace UnicornOne.ScriptableObjects
 {
     [CreateAssetMenu(fileName = "Enemy", menuName = "Custom/Enemy")]
-    internal class Enemy : ScriptableObject, IEnemy
+    public class Enemy : ScriptableObject, IEnemy
     {
         public PrefabInfo Prefab;
         public MoveInfo Move;

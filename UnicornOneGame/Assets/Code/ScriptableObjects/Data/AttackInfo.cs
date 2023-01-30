@@ -8,7 +8,7 @@ using UnicornOne.ScriptableObjects;
 namespace UnicornOne.Assets.Code.ScriptableObjects.Data
 {
     [Serializable]
-    internal struct AttackInfo
+    public struct AttackInfo
     {
         public int Damage;
         public float Range;

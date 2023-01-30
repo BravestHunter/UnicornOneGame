@@ -16,11 +16,13 @@ namespace UnicornOne.ScriptableObjects
         public PrefabInfo Prefab;
         public NavMeshData NavMesh;
         public Material Skybox;
+        public LevelScript Script;
         public Vector3[] EnemySpawnPositions;
 
         public PrefabInfo PrefabInfo => Prefab;
         public NavMeshData NavMeshData => NavMesh;
         Material ILevel.Skybox => Skybox;
+        LevelScript ILevel.Script => Script;
         Vector3[] ILevel.EnemySpawnPositions => EnemySpawnPositions;
     }
 }

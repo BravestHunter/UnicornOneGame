@@ -8,7 +8,7 @@ using UnityEngine;
 namespace UnicornOne.ScriptableObjects.Data
 {
     [Serializable]
-    internal struct PrefabInfo
+    public struct PrefabInfo
     {
         public GameObject Prefab;
     }

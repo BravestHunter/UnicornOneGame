@@ -14,6 +14,7 @@ namespace UnicornOne.ScriptableObjects.Interfaces
         PrefabInfo PrefabInfo { get; }
         NavMeshData NavMeshData { get; }
         Material Skybox { get; }
+        LevelScript Script { get; }
         public Vector3[] EnemySpawnPositions { get; }
     }
 }

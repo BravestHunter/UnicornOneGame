@@ -13,7 +13,8 @@ namespace UnicornOneEitor
         {
             DrawDefaultInspector();
 
-            EditorGUILayout.LinkButton("Click me");
+            // TODO: Load spawn points here
+            //EditorGUILayout.LinkButton("Click me");
         }
     }
 }

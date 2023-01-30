@@ -17,11 +17,13 @@ namespace UnicornOne.Ecs.Systems
 
         public void Init(IEcsSystems systems)
         {
-            GameObject.Instantiate(_levelService.Value.Level.PrefabInfo.Prefab);
+            var levelGameObject = GameObject.Instantiate(_levelService.Value.Level.PrefabInfo.Prefab);
 
             NavMesh.AddNavMeshData(_levelService.Value.Level.NavMeshData);
 
             RenderSettings.skybox = _levelService.Value.Level.Skybox;
+
+            _levelService.Value.Init();
         }
     }
 }

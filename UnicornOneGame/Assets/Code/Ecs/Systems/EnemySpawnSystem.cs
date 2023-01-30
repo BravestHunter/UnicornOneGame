@@ -58,7 +58,7 @@ namespace UnicornOne.Ecs.Systems
         private void SpawnEnemyWave(EcsWorld world)
         {
             var wave = _levelService.Value.Level.Script.Waves[_waveCounter];
-            Vector3 spawnPoint = _levelService.Value.Level.EnemySpawnPositions[UnityEngine.Random.Range(0, _levelService.Value.Level.EnemySpawnPositions.Length - 1)];
+            Vector3 spawnPoint = _levelService.Value.SpawnPoints[_waveCounter];
 
             for (int i = 0; i < wave.Count; i++)
             {

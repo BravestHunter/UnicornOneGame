@@ -414,9 +414,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Level: {fileID: 11400000, guid: 06d520b807b91ba46aec9578b094931a, type: 2}
   Heroes:
-  - {fileID: 11400000, guid: a138c87886c7e914fb2c3a1b3000e5d0, type: 2}
-  - {fileID: 11400000, guid: 0aef63e86e883074b955712b1efd3686, type: 2}
-  - {fileID: 11400000, guid: f4709582589dafc458c23b8626c1f1e2, type: 2}
+  - {fileID: 11400000, guid: 991bd1ca2c7b74d4a9c8ac1b014f2829, type: 2}
+  - {fileID: 11400000, guid: 53d6139792ace404081c8285ac0c64b6, type: 2}
+  - {fileID: 11400000, guid: 777d589dfd9a07e46a839ab461c6085f, type: 2}
   Enemy: {fileID: 11400000, guid: bc61e2d119c0c3f41af4040678b565bd, type: 2}
   Projectile: {fileID: 11400000, guid: 9153e23b61846254cb90836fc72c5e5a, type: 2}
   Effect: {fileID: 11400000, guid: 82b5ee4fd8febf64f89416f00e2547ef, type: 2}

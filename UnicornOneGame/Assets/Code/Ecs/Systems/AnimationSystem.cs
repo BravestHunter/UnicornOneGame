@@ -45,11 +45,16 @@ namespace UnicornOne.Ecs.Systems
                 ref var navigationComponent = ref navigationPool.Get(entity);
 
                 animatorRefComponent.Animator.SetFloat("Animation Speed", 1.0f); // Always 1.0 by now
+                animatorRefComponent.Animator.SetBool("Blocking", false);
+                animatorRefComponent.Animator.SetBool("Targeting", false);
+                animatorRefComponent.Animator.SetBool("Weapons", true);
 
                 if (attackAnimationRequestPool.Has(entity))
                 {
                     animatorRefComponent.Animator.SetInteger("Trigger Number", 2);
                     animatorRefComponent.Animator.SetTrigger("Trigger");
+
+                    animatorRefComponent.Animator.SetTrigger("AttackTrigger");
 
                     attackAnimationFlagPool.Add(entity);
                     attackAnimationRequestPool.Del(entity);
@@ -78,11 +83,15 @@ namespace UnicornOne.Ecs.Systems
                 {
                     animatorRefComponent.Animator.SetBool("Moving", true);
                     animatorRefComponent.Animator.SetFloat("Velocity", navigationComponent.MovementSpeed);
+                    animatorRefComponent.Animator.SetFloat("Velocity X", navigationComponent.MovementSpeed);
+                    animatorRefComponent.Animator.SetFloat("Velocity Z", navigationComponent.MovementSpeed);
                 }
                 else
                 {
                     animatorRefComponent.Animator.SetBool("Moving", false);
                     animatorRefComponent.Animator.SetFloat("Velocity", 0.0f);
+                    animatorRefComponent.Animator.SetFloat("Velocity X", 0.0f);
+                    animatorRefComponent.Animator.SetFloat("Velocity Z", 0.0f);
                 }
             }
         }

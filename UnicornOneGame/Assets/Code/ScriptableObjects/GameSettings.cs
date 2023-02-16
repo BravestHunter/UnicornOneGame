@@ -13,7 +13,7 @@ namespace UnicornOne.ScriptableObjects
     [CreateAssetMenu(fileName = "GameSettings", menuName = "Custom/GameSettings")]
     public class GameSettings : ScriptableObject, IGameSettings
     {
-       public CameraSettings Camera;
+        public CameraSettings Camera;
 
         CameraSettings IGameSettings.Camera => Camera;
     }

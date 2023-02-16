@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: GameSettings
   m_EditorClassIdentifier: 
   Camera:
-    AngleSpeed: 90
+    RotationSpeed: 90
     RotationStartDistance: 20
+    CenterPointOffset: {x: 0, y: 4}

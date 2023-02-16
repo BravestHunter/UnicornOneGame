@@ -16,6 +16,8 @@ namespace UnicornOne.Ecs.Systems
 {
     internal class HeroInitSystem : IEcsInitSystem
     {
+        private const float HeroSpawnRange = 5.0f;
+
         private readonly EcsCustomInject<HeroService> _heroService;
 
         public void Init(IEcsSystems systems)
@@ -24,7 +26,7 @@ namespace UnicornOne.Ecs.Systems
 
             foreach (IHero hero in _heroService.Value.Heroes)
             {
-                Vector2 position = UnityEngine.Random.insideUnitCircle * 10.0f;
+                Vector2 position = UnityEngine.Random.insideUnitCircle * HeroSpawnRange;
 
                 SpawnHero(hero, world, new Vector3(position.x, 0.0f, position.y));
             }

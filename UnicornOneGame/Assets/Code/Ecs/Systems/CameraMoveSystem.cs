@@ -66,10 +66,13 @@ namespace UnicornOne.Ecs.Systems
                 enemyPositions.Add(gameObjectRefComponent.GameObject.transform.position);
             }
 
+            Vector2 planeOffset = _settingsService.Value.Camera.TargetPointOffset;
+            Vector3 offset = new Vector3(planeOffset.x, 0.0f, planeOffset.y);
+
             if (heroPositions.Count > 0)
             {
                 var bounds = GetBounds(heroPositions);
-                _cameraService.Value.MoveToFitBounds(bounds);
+                _cameraService.Value.MoveToFitBounds(bounds, _settingsService.Value.Camera.CameraDistanceScale, offset);
             }
 
             Vector3 heroAvarage = heroPositions.Aggregate(Vector3.zero, (sum, v) => sum + v) / heroPositions.Count;
@@ -98,7 +101,7 @@ namespace UnicornOne.Ecs.Systems
             cameraPlaneDirection.Normalize();
             float signedAngle = Vector3.SignedAngle(cameraPlaneDirection, _desiredCameraPlaneDirection, Vector3.up);
 
-            float angleDelta = _settingsService.Value.Camera.AngleSpeed * Time.deltaTime;
+            float angleDelta = _settingsService.Value.Camera.RotationSpeed * Time.deltaTime;
             float angleToRotate = MathF.Min(angleDelta, MathF.Abs(signedAngle)) * MathF.Sign(signedAngle);
 
             if (MathF.Abs(signedAngle) > AngleThreshold)

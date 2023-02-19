@@ -69,14 +69,17 @@ namespace UnicornOne.Ecs.Systems
 
             var attackRequestPool = world.GetPool<AttackRequest>();
             var attackFlagPool = world.GetPool<AttackFlag>();
-            var attackAnimationRequestPool = world.GetPool<AttackAnimationRequest>();
             var targetPool = world.GetPool<TargetComponent>();
             var gameObjectRefPool = world.GetPool<GameObjectUnityRefComponent>();
+
+            var animatorTriggerRequestPool = world.GetPool<AnimatorTriggerRequest>();
 
             foreach (var entity in _attackRequestFilter)
             {
                 attackFlagPool.Add(entity);
-                attackAnimationRequestPool.Add(entity);
+
+                ref var animatorTriggerRequest = ref animatorTriggerRequestPool.Add(entity);
+                animatorTriggerRequest.Name = "AttackTrigger";
 
                 ref var targetComponent = ref targetPool.Get(entity);
                 ref var gameObjectRefComponent = ref gameObjectRefPool.Get(entity);

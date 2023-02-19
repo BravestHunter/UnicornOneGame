@@ -11,57 +11,61 @@ namespace UnicornOne.Ecs.Systems
 {
     internal class AnimationSystem : IEcsRunSystem
     {
-        private EcsFilter _meleeHeroFilter;
+        private EcsFilter _animatedEntityFilter;
+        private EcsFilter _animatorTriggerRequestFilter;
         private EcsFilter _animationEventFilter;
 
         public void Run(IEcsSystems systems)
         {
             var world = systems.GetWorld();
 
-            ProcessMeleeHeroAnimation(world);
+            ProcessAnimatorStateUpdates(world);
+            ProcessAnimationTriggerRequests(world);
             ProcessAnimationEvents(world);
         }
 
-        private void ProcessMeleeHeroAnimation(EcsWorld world)
+        private void ProcessAnimatorStateUpdates(EcsWorld world)
         {
-            if (_meleeHeroFilter == null)
+            if (_animatedEntityFilter == null)
             {
-                _meleeHeroFilter = world
+                _animatedEntityFilter = world
                     .Filter<AnimatorUnityRefComponent>()
-                    .Inc<AnimationEventHandlerUnityRefComponent>()
-                    .Inc<NavigationComponent>()
                     .End();
             }
 
             var animatorRefPool = world.GetPool<AnimatorUnityRefComponent>();
             var navigationPool = world.GetPool<NavigationComponent>();
-            var attackAnimationRequestPool = world.GetPool<AttackAnimationRequest>();
-            var attackAnimationFlagPool = world.GetPool<AttackAnimationFlag>();
             var standPool = world.GetPool<StandFlag>();
+            var attackAnimationFlagPool = world.GetPool<AttackAnimationFlag>();
 
-            foreach (var entity in _meleeHeroFilter)
+            foreach (var entity in _animatedEntityFilter)
             {
-                ref var animatorRefComponent = ref animatorRefPool.Get(entity);
-                ref var navigationComponent = ref navigationPool.Get(entity);
+                var animatorRefComponent = animatorRefPool.Get(entity);
 
+                // Update state
                 animatorRefComponent.Animator.SetFloat("Animation Speed", 1.0f); // Always 1.0 by now
                 animatorRefComponent.Animator.SetBool("Blocking", false);
                 animatorRefComponent.Animator.SetBool("Targeting", false);
                 animatorRefComponent.Animator.SetBool("Weapons", true);
 
-                if (attackAnimationRequestPool.Has(entity))
+                if (!standPool.Has(entity) && navigationPool.Has(entity))
                 {
-                    animatorRefComponent.Animator.SetInteger("Trigger Number", 2);
-                    animatorRefComponent.Animator.SetTrigger("Trigger");
+                    var navigationComponent = navigationPool.Get(entity);
 
-                    animatorRefComponent.Animator.SetTrigger("AttackTrigger");
-
-                    attackAnimationFlagPool.Add(entity);
-                    attackAnimationRequestPool.Del(entity);
-
-                    continue;
+                    animatorRefComponent.Animator.SetBool("Moving", true);
+                    animatorRefComponent.Animator.SetFloat("Velocity", navigationComponent.MovementSpeed);
+                    animatorRefComponent.Animator.SetFloat("Velocity X", navigationComponent.MovementSpeed);
+                    animatorRefComponent.Animator.SetFloat("Velocity Z", navigationComponent.MovementSpeed);
+                }
+                else
+                {
+                    animatorRefComponent.Animator.SetBool("Moving", false);
+                    animatorRefComponent.Animator.SetFloat("Velocity", 0.0f);
+                    animatorRefComponent.Animator.SetFloat("Velocity X", 0.0f);
+                    animatorRefComponent.Animator.SetFloat("Velocity Z", 0.0f);
                 }
 
+                // On animation finished
                 if (attackAnimationFlagPool.Has(entity))
                 {
                     var currentState = animatorRefComponent.Animator.GetCurrentAnimatorStateInfo(0);
@@ -78,21 +82,32 @@ namespace UnicornOne.Ecs.Systems
                         attackAnimationFlagPool.Del(entity);
                     }
                 }
+            }
+        }
 
-                if (!standPool.Has(entity))
-                {
-                    animatorRefComponent.Animator.SetBool("Moving", true);
-                    animatorRefComponent.Animator.SetFloat("Velocity", navigationComponent.MovementSpeed);
-                    animatorRefComponent.Animator.SetFloat("Velocity X", navigationComponent.MovementSpeed);
-                    animatorRefComponent.Animator.SetFloat("Velocity Z", navigationComponent.MovementSpeed);
-                }
-                else
-                {
-                    animatorRefComponent.Animator.SetBool("Moving", false);
-                    animatorRefComponent.Animator.SetFloat("Velocity", 0.0f);
-                    animatorRefComponent.Animator.SetFloat("Velocity X", 0.0f);
-                    animatorRefComponent.Animator.SetFloat("Velocity Z", 0.0f);
-                }
+        private void ProcessAnimationTriggerRequests(EcsWorld world)
+        {
+            if (_animatorTriggerRequestFilter == null)
+            {
+                _animatorTriggerRequestFilter = world
+                    .Filter<AnimatorTriggerRequest>()
+                    .Inc<AnimatorUnityRefComponent>()
+                    .End();
+            }
+
+            var animatorTriggerRequestPool = world.GetPool<AnimatorTriggerRequest>();
+            var animatorRefPool = world.GetPool<AnimatorUnityRefComponent>();
+            var attackAnimationFlagPool = world.GetPool<AttackAnimationFlag>();
+
+            foreach (var entity in _animatorTriggerRequestFilter)
+            {
+                var animatorTriggerRequest = animatorTriggerRequestPool.Get(entity);
+                var animatorRefComponent = animatorRefPool.Get(entity);
+
+                animatorRefComponent.Animator.SetTrigger(animatorTriggerRequest.Name);
+
+                attackAnimationFlagPool.Add(entity);
+                animatorTriggerRequestPool.Del(entity);
             }
         }
 

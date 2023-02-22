@@ -39,7 +39,7 @@ namespace UnicornOne.Ecs.Systems
             {
                 _attackFinishFilter = world
                     .Filter<AttackFlag>()
-                    .Exc<AttackAnimationFlag>()
+                    .Exc<RequestedAnimatorStateComponent>()
                     .End();
             }
 
@@ -79,7 +79,7 @@ namespace UnicornOne.Ecs.Systems
                 attackFlagPool.Add(entity);
 
                 ref var animatorTriggerRequest = ref animatorTriggerRequestPool.Add(entity);
-                animatorTriggerRequest.Name = "AttackTrigger";
+                animatorTriggerRequest.Name = "Attack";
 
                 ref var targetComponent = ref targetPool.Get(entity);
                 ref var gameObjectRefComponent = ref gameObjectRefPool.Get(entity);

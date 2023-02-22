@@ -12,6 +12,7 @@ namespace UnicornOne.Ecs.Systems
     internal class AnimationSystem : IEcsRunSystem
     {
         private EcsFilter _animatedEntityFilter;
+        private EcsFilter _requestedAnimatorStateFilter;
         private EcsFilter _animatorTriggerRequestFilter;
         private EcsFilter _animationEventFilter;
 
@@ -20,6 +21,7 @@ namespace UnicornOne.Ecs.Systems
             var world = systems.GetWorld();
 
             ProcessAnimatorStateUpdates(world);
+            ProcessRequestedAnimatorStateUpdate(world);
             ProcessAnimationTriggerRequests(world);
             ProcessAnimationEvents(world);
         }
@@ -36,7 +38,7 @@ namespace UnicornOne.Ecs.Systems
             var animatorRefPool = world.GetPool<AnimatorUnityRefComponent>();
             var navigationPool = world.GetPool<NavigationComponent>();
             var standPool = world.GetPool<StandFlag>();
-            var attackAnimationFlagPool = world.GetPool<AttackAnimationFlag>();
+            var requestedAnimatorStatePool = world.GetPool<RequestedAnimatorStateComponent>();
 
             foreach (var entity in _animatedEntityFilter)
             {
@@ -64,23 +66,34 @@ namespace UnicornOne.Ecs.Systems
                     animatorRefComponent.Animator.SetFloat("Velocity X", 0.0f);
                     animatorRefComponent.Animator.SetFloat("Velocity Z", 0.0f);
                 }
+            }
+        }
 
-                // On animation finished
-                if (attackAnimationFlagPool.Has(entity))
+        private void ProcessRequestedAnimatorStateUpdate(EcsWorld world)
+        {
+            if (_requestedAnimatorStateFilter == null)
+            {
+                _requestedAnimatorStateFilter = world
+                    .Filter<RequestedAnimatorStateComponent>()
+                    .Inc<AnimatorUnityRefComponent>()
+                    .End();
+            }
+
+            var animatorRefPool = world.GetPool<AnimatorUnityRefComponent>();
+            var requestedAnimatorStatePool = world.GetPool<RequestedAnimatorStateComponent>();
+
+            foreach (var entity in _requestedAnimatorStateFilter)
+            {
+                var requestedAnimatorStateComponent = requestedAnimatorStatePool.Get(entity);
+                var animatorRefComponent = animatorRefPool.Get(entity);
+
+                var currentState = animatorRefComponent.Animator.GetCurrentAnimatorStateInfo(0);
+                var nextState = animatorRefComponent.Animator.GetNextAnimatorStateInfo(0);
+
+                if (!currentState.IsName(requestedAnimatorStateComponent.Name) &&
+                    !nextState.IsName(requestedAnimatorStateComponent.Name))
                 {
-                    var currentState = animatorRefComponent.Animator.GetCurrentAnimatorStateInfo(0);
-                    var nextState = animatorRefComponent.Animator.GetNextAnimatorStateInfo(0);
-
-                    // We have to check next state, because animation may start not immediately
-                    if (nextState.IsName("Attack1")) // Attack animation is going to start
-                    {
-                        continue;
-                    }
-
-                    if (currentState.IsName("Idle") || currentState.IsName("Movement Blend")) // Attack is finished
-                    {
-                        attackAnimationFlagPool.Del(entity);
-                    }
+                    requestedAnimatorStatePool.Del(entity);
                 }
             }
         }
@@ -97,16 +110,18 @@ namespace UnicornOne.Ecs.Systems
 
             var animatorTriggerRequestPool = world.GetPool<AnimatorTriggerRequest>();
             var animatorRefPool = world.GetPool<AnimatorUnityRefComponent>();
-            var attackAnimationFlagPool = world.GetPool<AttackAnimationFlag>();
+            var requestedAnimatorStatePool = world.GetPool<RequestedAnimatorStateComponent>();
 
             foreach (var entity in _animatorTriggerRequestFilter)
             {
                 var animatorTriggerRequest = animatorTriggerRequestPool.Get(entity);
                 var animatorRefComponent = animatorRefPool.Get(entity);
 
-                animatorRefComponent.Animator.SetTrigger(animatorTriggerRequest.Name);
+                animatorRefComponent.Animator.SetTrigger($"{animatorTriggerRequest.Name}Trigger");
 
-                attackAnimationFlagPool.Add(entity);
+                ref var requestedAnimatorStateComponent = ref requestedAnimatorStatePool.Add(entity);
+                requestedAnimatorStateComponent.Name = animatorTriggerRequest.Name;
+
                 animatorTriggerRequestPool.Del(entity);
             }
         }

@@ -137,6 +137,7 @@ namespace UnicornOne.Ecs.Systems
 
             var animationEventHandlerRefPool = world.GetPool<AnimationEventHandlerUnityRefComponent>();
             var hitRequestPool = world.GetPool<HitRequest>();
+            var shotRequestPool = world.GetPool<ShotRequest>();
 
             foreach (var entity in _animationEventFilter)
             {
@@ -147,6 +148,13 @@ namespace UnicornOne.Ecs.Systems
                     if (!hitRequestPool.Has(entity))
                     {
                         hitRequestPool.Add(entity);
+                    }
+                }
+                if (animationEventHandlerRefComponent.AnimationEventHandler.ShootFlag)
+                {
+                    if (!shotRequestPool.Has(entity))
+                    {
+                        shotRequestPool.Add(entity);
                     }
                 }
 

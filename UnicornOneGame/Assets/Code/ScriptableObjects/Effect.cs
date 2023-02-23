@@ -14,6 +14,6 @@ namespace UnicornOne.ScriptableObjects
     {
         public PrefabInfo Prefab;
 
-        public PrefabInfo PrefabInfo => Prefab;
+        PrefabInfo IEffect.Prefab => Prefab;
     }
 }

@@ -7,8 +7,8 @@ using UnicornOne.ScriptableObjects.Data;
 
 namespace UnicornOne.ScriptableObjects.Interfaces
 {
-    internal interface IEffect
+    public interface IEffect
     {
-        PrefabInfo PrefabInfo { get; }
+        PrefabInfo Prefab { get; }
     }
 }

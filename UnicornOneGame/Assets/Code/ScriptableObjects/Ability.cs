@@ -13,11 +13,13 @@ namespace UnicornOne.ScriptableObjects
 		public float Cooldown;
 
         public Projectile Projectile;
+        public Effect Effect;
 
         string IAbility.Name => Name;
         float IAbility.Range => Range;
         int IAbility.Damage => Damage;
         float IAbility.Cooldown => Cooldown;
         Projectile IAbility.Projectile => Projectile;
+        IEffect IAbility.Effect => Effect;
     }
 }

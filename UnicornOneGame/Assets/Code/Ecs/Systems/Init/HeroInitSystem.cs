@@ -54,12 +54,6 @@ namespace UnicornOne.Ecs.Systems
             healthComponent.MaxHealth = hero.HealthInfo.Health;
             healthComponent.CurrentHealth = healthComponent.MaxHealth;
 
-            /*if (hero.AttackInfo.AttackEffect != null)
-            {
-                var hasAttackEffectFlagPool = world.GetPool<HasAttackEffectFlag>();
-                hasAttackEffectFlagPool.Add(entity);
-            }*/
-
             var navigationPool = world.GetPool<NavigationComponent>();
             ref var navigationComponent = ref navigationPool.Add(entity);
             navigationComponent.MovementSpeed = hero.MoveInfo.Speed;

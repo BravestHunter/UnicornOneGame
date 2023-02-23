@@ -10,5 +10,6 @@ namespace UnicornOne.ScriptableObjects.Interfaces
         public float Cooldown { get; }
 
         public Projectile Projectile { get; }
+        public IEffect Effect { get; }
     }
 }

@@ -7,6 +7,7 @@ namespace UnicornOne.MonoBehaviours
     public class AnimationEventHandler : MonoBehaviour
     {
         public bool HitFlag { get; private set; }
+        public bool ShootFlag { get; private set; }
 
         void Start()
         {
@@ -22,6 +23,7 @@ namespace UnicornOne.MonoBehaviours
         public void Clean()
         {
             HitFlag = false;
+            ShootFlag = false;
         }
 
         public void FootR()
@@ -37,6 +39,11 @@ namespace UnicornOne.MonoBehaviours
         public void Hit()
         {
             HitFlag = true;
+        }
+
+        public void Shoot()
+        {
+            ShootFlag = true;
         }
     }
 }

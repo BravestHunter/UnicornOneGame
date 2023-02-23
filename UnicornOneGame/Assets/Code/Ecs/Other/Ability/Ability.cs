@@ -11,14 +11,16 @@ namespace UnicornOne.Ecs.Other.Ability
         public float Cooldown { get; }
 
         public IProjectile Projectile { get; }
+        public IEffect Effect { get; }
 
-        public Ability(string name, float range, int damage, float cooldown, IProjectile projectile)
+        public Ability(string name, float range, int damage, float cooldown, IProjectile projectile, IEffect effect)
         {
             Name = name;
             Range = range;
             Damage = damage;
             Cooldown = cooldown;
             Projectile = projectile;
+            Effect = effect;
         }
     }
 }

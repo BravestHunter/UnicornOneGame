@@ -54,13 +54,7 @@ namespace UnicornOne.Ecs.Systems
             healthComponent.MaxHealth = hero.HealthInfo.Health;
             healthComponent.CurrentHealth = healthComponent.MaxHealth;
 
-            /*if (hero.AttackInfo.IsRanged)
-            {
-                var rangedFlagPool = world.GetPool<RangedFlag>();
-                rangedFlagPool.Add(entity);
-            }
-
-            if (hero.AttackInfo.AttackEffect != null)
+            /*if (hero.AttackInfo.AttackEffect != null)
             {
                 var hasAttackEffectFlagPool = world.GetPool<HasAttackEffectFlag>();
                 hasAttackEffectFlagPool.Add(entity);

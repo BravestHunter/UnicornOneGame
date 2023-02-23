@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Attack
   m_EditorClassIdentifier: 
   Name: Attack
-  Range: 2.5
-  Damage: 15
-  Cooldown: 1
+  Range: 15
+  Damage: 10
+  Cooldown: 3
+  Projectile: {fileID: 11400000, guid: 9153e23b61846254cb90836fc72c5e5a, type: 2}

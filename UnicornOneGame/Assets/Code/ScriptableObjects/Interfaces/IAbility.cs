@@ -8,5 +8,7 @@ namespace UnicornOne.ScriptableObjects.Interfaces
         public float Range { get; }
         public int Damage { get; }
         public float Cooldown { get; }
+
+        public Projectile Projectile { get; }
     }
 }

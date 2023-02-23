@@ -10,7 +10,7 @@ using UnityEngine;
 namespace UnicornOne.ScriptableObjects
 {
     [CreateAssetMenu(fileName = "Projectile", menuName = "Custom/Projectile")]
-    internal class Projectile : ScriptableObject, IProjectile
+    public class Projectile : ScriptableObject, IProjectile
     {
         public PrefabInfo Prefab;
         public MoveInfo Move;

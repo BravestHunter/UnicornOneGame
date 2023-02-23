@@ -1,4 +1,5 @@
 ﻿using System;
+using UnicornOne.ScriptableObjects.Interfaces;
 
 namespace UnicornOne.Ecs.Other.Ability
 {
@@ -9,12 +10,15 @@ namespace UnicornOne.Ecs.Other.Ability
         public int Damage { get; }
         public float Cooldown { get; }
 
-        public Ability(string name, float range, int damage, float cooldown)
+        public IProjectile Projectile { get; }
+
+        public Ability(string name, float range, int damage, float cooldown, IProjectile projectile)
         {
             Name = name;
             Range = range;
             Damage = damage;
             Cooldown = cooldown;
+            Projectile = projectile;
         }
     }
 }

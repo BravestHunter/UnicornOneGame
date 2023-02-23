@@ -7,7 +7,7 @@ using UnicornOne.ScriptableObjects.Data;
 
 namespace UnicornOne.ScriptableObjects.Interfaces
 {
-    internal interface IProjectile
+    public interface IProjectile
     {
         PrefabInfo PrefabInfo { get; }
         MoveInfo MoveInfo { get; }

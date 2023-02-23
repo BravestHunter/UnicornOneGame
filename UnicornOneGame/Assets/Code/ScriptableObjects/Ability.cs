@@ -12,12 +12,12 @@ namespace UnicornOne.ScriptableObjects
 		public int Damage;
 		public float Cooldown;
 
+        public Projectile Projectile;
+
         string IAbility.Name => Name;
-
         float IAbility.Range => Range;
-
         int IAbility.Damage => Damage;
-
         float IAbility.Cooldown => Cooldown;
+        Projectile IAbility.Projectile => Projectile;
     }
 }

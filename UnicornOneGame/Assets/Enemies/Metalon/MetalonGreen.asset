@@ -18,9 +18,5 @@ MonoBehaviour:
     Speed: 3
   Health:
     Health: 50
-  Attack:
-    Damage: 10
-    Range: 3
-    RechargeTime: 3
-    IsRanged: 0
-    AttackEffect: {fileID: 0}
+  Abilities:
+  - {fileID: 11400000, guid: e2cd1f3ce4b9e4dbf8658df876bde89c, type: 2}

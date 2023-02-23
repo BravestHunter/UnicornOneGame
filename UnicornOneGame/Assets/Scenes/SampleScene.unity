@@ -415,6 +415,7 @@ MonoBehaviour:
   Level: {fileID: 11400000, guid: 06d520b807b91ba46aec9578b094931a, type: 2}
   Heroes:
   - {fileID: 11400000, guid: 991bd1ca2c7b74d4a9c8ac1b014f2829, type: 2}
+  - {fileID: 11400000, guid: 53d6139792ace404081c8285ac0c64b6, type: 2}
   Enemy: {fileID: 11400000, guid: bc61e2d119c0c3f41af4040678b565bd, type: 2}
   Projectile: {fileID: 11400000, guid: 9153e23b61846254cb90836fc72c5e5a, type: 2}
   Effect: {fileID: 11400000, guid: 82b5ee4fd8febf64f89416f00e2547ef, type: 2}

@@ -21,7 +21,7 @@ namespace UnicornOne.Ecs.Services
 			foreach (var hero in heroes)
 			{
 				AbilitySet abilitySet = new AbilitySet(
-					hero.Abilities.Select(a => new Ability(a.Name, a.Range, a.Damage, a.Cooldown)).ToArray()
+					hero.Abilities.Select(a => new Ability(a.Name, a.Range, a.Damage, a.Cooldown, a.Projectile)).ToArray()
 				);
 				abilitySets.Add(abilitySet);
                 HeroToAbilitySetMap.Add(hero, index++);
@@ -30,7 +30,7 @@ namespace UnicornOne.Ecs.Services
             foreach (var enemy in enemies)
             {
                 AbilitySet abilitySet = new AbilitySet(
-                    enemy.Abilities.Select(a => new Ability(a.Name, a.Range, a.Damage, a.Cooldown)).ToArray()
+                    enemy.Abilities.Select(a => new Ability(a.Name, a.Range, a.Damage, a.Cooldown, a.Projectile)).ToArray()
                 );
                 abilitySets.Add(abilitySet);
                 EnemyToAbilitySetMap.Add(enemy, index++);

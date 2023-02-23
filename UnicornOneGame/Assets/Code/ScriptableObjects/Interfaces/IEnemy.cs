@@ -8,11 +8,11 @@ using UnicornOne.ScriptableObjects.Data;
 
 namespace UnicornOne.ScriptableObjects.Interfaces
 {
-    internal interface IEnemy
+    public interface IEnemy
     {
         PrefabInfo PrefabInfo { get; }
         MoveInfo MoveInfo { get; }
         HealthInfo HealthInfo { get; }
-        AttackInfo AttackInfo { get; }
+        IEnumerable<IAbility> Abilities { get; }
     }
 }

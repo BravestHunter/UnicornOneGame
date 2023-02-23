@@ -19,6 +19,7 @@ namespace UnicornOne.Ecs.Systems
         private const float HeroSpawnRange = 5.0f;
 
         private readonly EcsCustomInject<HeroService> _heroService;
+        private readonly EcsCustomInject<AbilityService> _abilityService;
 
         public void Init(IEcsSystems systems)
         {
@@ -91,11 +92,11 @@ namespace UnicornOne.Ecs.Systems
 
             var abilitySetPool = world.GetPool<AbilitySetComponent>();
             ref var abilitySetComponent = ref abilitySetPool.Add(entity);
-            abilitySetComponent.Index = 0;
+            abilitySetComponent.Index = _abilityService.Value.HeroToAbilitySetMap[hero];
 
             var abilityRechargePool = world.GetPool<AbilityRechargeComponent>();
             ref var abilityRechargeComponent = ref abilityRechargePool.Add(entity);
-            abilityRechargeComponent.LastUseTimes = new float[2] { float.MinValue, float.MinValue };
+            abilityRechargeComponent.LastUseTimes = Enumerable.Repeat(float.NegativeInfinity, 4).ToArray();
         }
     }
 }

@@ -2,6 +2,7 @@ using Leopotam.EcsLite;
 using Leopotam.EcsLite.Di;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnicornOne.Assets.Code.Ecs.Systems;
 using UnicornOne.Ecs;
 using UnicornOne.Ecs.Services;
@@ -33,6 +34,10 @@ namespace UnicornOne.MonoBehaviours
         {
             _world = new EcsWorld();
 
+            var uniqueHeroes = Heroes.Distinct();
+            // Get all enemy types from level waves
+            var uniqueEnemies = Level.Script.Waves.Select(w => w.Enemy).Distinct();
+
             // TODO: combine all these services with init data into one?
             var levelService = new LevelService(Level);
             var heroService = new HeroService(Heroes);
@@ -42,7 +47,7 @@ namespace UnicornOne.MonoBehaviours
             var cameraService = new CameraService(Camera);
             var uiService = new UIService(Label3D);
             var settingsService = new SettingsService(GameSettings);
-            var abilityService = new AbilityService();
+            var abilityService = new AbilityService(uniqueHeroes, uniqueEnemies);
 
             _systems = new EcsSystems(_world);
             _systems.Add(new LevelInitSystem());

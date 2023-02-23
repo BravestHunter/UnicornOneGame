@@ -16,11 +16,11 @@ namespace UnicornOne.ScriptableObjects
         public PrefabInfo Prefab;
         public MoveInfo Move;
         public HealthInfo Health;
-        public AttackInfo Attack;
+        public Ability[] Abilities;
 
         public PrefabInfo PrefabInfo => Prefab;
         public MoveInfo MoveInfo => Move;
         public HealthInfo HealthInfo => Health;
-        public AttackInfo AttackInfo => Attack;
+        IEnumerable<IAbility> IEnemy.Abilities => Abilities;
     }
 }

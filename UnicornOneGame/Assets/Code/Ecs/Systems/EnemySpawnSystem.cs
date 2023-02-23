@@ -21,6 +21,7 @@ namespace UnicornOne.Ecs.Systems
 
         private readonly EcsCustomInject<LevelService> _levelService;
         private readonly EcsCustomInject<MobService> _mobService;
+        private readonly EcsCustomInject<AbilityService> _abilityService;
 
         private EcsFilter _enemyFilter;
 
@@ -98,7 +99,7 @@ namespace UnicornOne.Ecs.Systems
             gameObjectRefComponent.GameObject = enemyGameObject;
         }
 
-        private static void SpawnEnemy(Enemy enemy, Vector3 position, EcsWorld world)
+        private void SpawnEnemy(IEnemy enemy, Vector3 position, EcsWorld world)
         {
             var gameObject = GameObject.Instantiate(enemy.PrefabInfo.Prefab);
             gameObject.transform.position = position;
@@ -145,11 +146,11 @@ namespace UnicornOne.Ecs.Systems
 
             var abilitySetPool = world.GetPool<AbilitySetComponent>();
             ref var abilitySetComponent = ref abilitySetPool.Add(entity);
-            abilitySetComponent.Index = 1;
+            abilitySetComponent.Index = _abilityService.Value.EnemyToAbilitySetMap[enemy];
 
             var abilityRechargePool = world.GetPool<AbilityRechargeComponent>();
             ref var abilityRechargeComponent = ref abilityRechargePool.Add(entity);
-            abilityRechargeComponent.LastUseTimes = new float[1] { float.MinValue };
+            abilityRechargeComponent.LastUseTimes = Enumerable.Repeat(float.NegativeInfinity, 4).ToArray();
         }
     }
 }

@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnicornOne.Ecs.Other.Ability;
+using UnicornOne.ScriptableObjects.Interfaces;
 
 namespace UnicornOne.Ecs.Services
 {
@@ -7,20 +10,33 @@ namespace UnicornOne.Ecs.Services
 	{
 		private AbilitySet[] _abilitySets;
 
-		public AbilityService()
+		public Dictionary<IHero, int> HeroToAbilitySetMap { get; } = new Dictionary<IHero, int>();
+		public Dictionary<IEnemy, int> EnemyToAbilitySetMap { get; } = new Dictionary<IEnemy, int>();
+
+		public AbilityService(IEnumerable<IHero> heroes, IEnumerable<IEnemy> enemies)
 		{
-			AbilitySet heroAbilitySet = new(new Ability[]
+			List<AbilitySet> abilitySets = new List<AbilitySet>(heroes.Count() + enemies.Count());
+			int index = 0;
+
+			foreach (var hero in heroes)
 			{
-				new Ability("Attack", 2.5f, 15, 1),
-				new Ability("CutAttack", 2.5f, 30, 5)
-			});
+				AbilitySet abilitySet = new AbilitySet(
+					hero.Abilities.Select(a => new Ability(a.Name, a.Range, a.Damage, a.Cooldown)).ToArray()
+				);
+				abilitySets.Add(abilitySet);
+                HeroToAbilitySetMap.Add(hero, index++);
+			}
 
-            AbilitySet enemyAbilitySet = new(new Ability[]
+            foreach (var enemy in enemies)
             {
-                new Ability("Attack", 2.0f, 10, 2)
-            });
+                AbilitySet abilitySet = new AbilitySet(
+                    enemy.Abilities.Select(a => new Ability(a.Name, a.Range, a.Damage, a.Cooldown)).ToArray()
+                );
+                abilitySets.Add(abilitySet);
+                EnemyToAbilitySetMap.Add(enemy, index++);
+            }
 
-			_abilitySets = new AbilitySet[] { heroAbilitySet, enemyAbilitySet };
+			_abilitySets = abilitySets.ToArray();
         }
 
 		public AbilitySet GetAbilitySet(int index)

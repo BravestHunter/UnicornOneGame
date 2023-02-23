@@ -53,13 +53,7 @@ namespace UnicornOne.Ecs.Systems
             healthComponent.MaxHealth = hero.HealthInfo.Health;
             healthComponent.CurrentHealth = healthComponent.MaxHealth;
 
-            /*var atackParametersPool = world.GetPool<AtackParametersComponent>();
-            ref var atackParametersComponent = ref atackParametersPool.Add(entity);
-            atackParametersComponent.Damage = hero.AttackInfo.Damage;
-            atackParametersComponent.Range = hero.AttackInfo.Range;
-            atackParametersComponent.AttackRechargeTime = hero.AttackInfo.RechargeTime;
-
-            if (hero.AttackInfo.IsRanged)
+            /*if (hero.AttackInfo.IsRanged)
             {
                 var rangedFlagPool = world.GetPool<RangedFlag>();
                 rangedFlagPool.Add(entity);
@@ -98,6 +92,10 @@ namespace UnicornOne.Ecs.Systems
             var abilitySetPool = world.GetPool<AbilitySetComponent>();
             ref var abilitySetComponent = ref abilitySetPool.Add(entity);
             abilitySetComponent.Index = 0;
+
+            var abilityRechargePool = world.GetPool<AbilityRechargeComponent>();
+            ref var abilityRechargeComponent = ref abilityRechargePool.Add(entity);
+            abilityRechargeComponent.LastUseTimes = new float[2] { float.MinValue, float.MinValue };
         }
     }
 }

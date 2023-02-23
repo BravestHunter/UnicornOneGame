@@ -29,14 +29,16 @@ namespace UnicornOne.Ecs.Systems
             }
 
             var abilityInUsageComponentPool = world.GetPool<AbilityInUsageComponent>();
-            var attackRechargePool = world.GetPool<AttackRechargeComponent>();
+            var abilityRechargePool = world.GetPool<AbilityRechargeComponent>();
 
             foreach (var entity in _abilityUseFinishFilter)
             {
-                abilityInUsageComponentPool.Del(entity);
+                var abilityInUsageComponent = abilityInUsageComponentPool.Get(entity);
 
-                ref var attackRechargeComponent = ref attackRechargePool.Add(entity);
-                attackRechargeComponent.LastAttackTime = Time.timeSinceLevelLoad;
+                ref var attackRechargeComponent = ref abilityRechargePool.Get(entity);
+                attackRechargeComponent.LastUseTimes[abilityInUsageComponent.AbilityIndex] = Time.timeSinceLevelLoad;
+
+                abilityInUsageComponentPool.Del(entity);
             }
         }
 
@@ -64,6 +66,7 @@ namespace UnicornOne.Ecs.Systems
 
                 ref var abilityInUsageComponent = ref abilityInUsageComponentPool.Add(entity);
                 abilityInUsageComponent.Ability = abilityUseRequest.Ability;
+                abilityInUsageComponent.AbilityIndex = abilityUseRequest.AbilityIndex;
 
                 ref var animatorTriggerRequest = ref animatorTriggerRequestPool.Add(entity);
                 animatorTriggerRequest.Name = abilityUseRequest.Ability.Name;

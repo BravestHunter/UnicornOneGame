@@ -119,12 +119,6 @@ namespace UnicornOne.Ecs.Systems
             healthComponent.MaxHealth = enemy.HealthInfo.Health;
             healthComponent.CurrentHealth = healthComponent.MaxHealth;
 
-            var atackParametersPool = world.GetPool<AtackParametersComponent>();
-            ref var atackParametersComponent = ref atackParametersPool.Add(entity);
-            atackParametersComponent.Damage = enemy.AttackInfo.Damage;
-            atackParametersComponent.Range = enemy.AttackInfo.Range;
-            atackParametersComponent.AttackRechargeTime = enemy.AttackInfo.RechargeTime;
-
             var navigationPool = world.GetPool<NavigationComponent>();
             ref var navigationComponent = ref navigationPool.Add(entity);
             navigationComponent.MovementSpeed = enemy.MoveInfo.Speed;
@@ -152,6 +146,10 @@ namespace UnicornOne.Ecs.Systems
             var abilitySetPool = world.GetPool<AbilitySetComponent>();
             ref var abilitySetComponent = ref abilitySetPool.Add(entity);
             abilitySetComponent.Index = 1;
+
+            var abilityRechargePool = world.GetPool<AbilityRechargeComponent>();
+            ref var abilityRechargeComponent = ref abilityRechargePool.Add(entity);
+            abilityRechargeComponent.LastUseTimes = new float[1] { float.MinValue };
         }
     }
 }

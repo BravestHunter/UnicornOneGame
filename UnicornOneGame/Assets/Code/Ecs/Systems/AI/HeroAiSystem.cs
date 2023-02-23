@@ -41,7 +41,7 @@ namespace UnicornOne.Ecs.Systems
             var targetPool = world.GetPool<TargetComponent>();
             var abilityUseRequestPool = world.GetPool<AbilityUseRequest>();
             var abilityInUsageComponentPool = world.GetPool<AbilityInUsageComponent>();
-            var attackRechargePool = world.GetPool<AttackRechargeComponent>();
+            var abilityRechargePool = world.GetPool<AbilityRechargeComponent>();
             var standPool = world.GetPool<StandFlag>();
 
             var abilitySetPool = world.GetPool<AbilitySetComponent>();
@@ -101,6 +101,7 @@ namespace UnicornOne.Ecs.Systems
                             var ability = abilitySet.Abilities.Last();
 
                             heroBehaviorAiComponent.SelectedAbility = ability;
+                            heroBehaviorAiComponent.SelectedAbilityIndex = 1;
                             heroBehaviorAiComponent.CurrentState = HeroBehaviorAiComponent.State.MovingToTarget;
 
                             break;
@@ -194,8 +195,10 @@ namespace UnicornOne.Ecs.Systems
                                 standPool.Add(entity);
                             }
 
-                            // Case: Attack recharge is happening
-                            if (attackRechargePool.Has(entity))
+                            // Case: Ability recharge is happening
+                            var abilityRechargeComponent = abilityRechargePool.Get(entity);
+                            float timePassed = Time.timeSinceLevelLoad - abilityRechargeComponent.LastUseTimes[heroBehaviorAiComponent.SelectedAbilityIndex];
+                            if (timePassed < heroBehaviorAiComponent.SelectedAbility.Cooldown)
                             {
                                 break;
                             }
@@ -203,6 +206,7 @@ namespace UnicornOne.Ecs.Systems
                             // Use ability
                             ref var abilityUseRequest = ref abilityUseRequestPool.Add(entity);
                             abilityUseRequest.Ability = heroBehaviorAiComponent.SelectedAbility;
+                            abilityUseRequest.AbilityIndex = heroBehaviorAiComponent.SelectedAbilityIndex;
 
                             break;
                         }

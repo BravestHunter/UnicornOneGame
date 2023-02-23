@@ -19,5 +19,6 @@ namespace UnicornOne.Ecs.Components
 
         public State CurrentState;
         public Ability SelectedAbility;
+        public int SelectedAbilityIndex;
     }
 }

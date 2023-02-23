@@ -41,7 +41,7 @@ namespace UnicornOne.Ecs.Systems
 
             var abilityUseRequestPool = world.GetPool<AbilityUseRequest>();
             var abilityInUsageComponentPool = world.GetPool<AbilityInUsageComponent>();
-            var attackRechargePool = world.GetPool<AttackRechargeComponent>();
+            var abilityRechargePool = world.GetPool<AbilityRechargeComponent>();
 
             var abilitySetPool = world.GetPool<AbilitySetComponent>();
 
@@ -110,6 +110,7 @@ namespace UnicornOne.Ecs.Systems
                             var ability = abilitySet.Abilities.Last();
 
                             enemyBehaviorAiComponent.SelectedAbility = ability;
+                            enemyBehaviorAiComponent.SelectedAbilityIndex = 0;
                             enemyBehaviorAiComponent.CurrentState = EnemyBehaviorAiComponent.State.MovingToTarget;
 
                             break;
@@ -205,8 +206,10 @@ namespace UnicornOne.Ecs.Systems
                                 standPool.Add(entity);
                             }
 
-                            // Case: Attack recharge is happening
-                            if (attackRechargePool.Has(entity))
+                            // Case: Ability recharge is happening
+                            var abilityRechargeComponent = abilityRechargePool.Get(entity);
+                            float timePassed = Time.timeSinceLevelLoad - abilityRechargeComponent.LastUseTimes[enemyBehaviorAiComponent.SelectedAbilityIndex];
+                            if (timePassed < enemyBehaviorAiComponent.SelectedAbility.Cooldown)
                             {
                                 break;
                             }
@@ -214,6 +217,7 @@ namespace UnicornOne.Ecs.Systems
                             // Use ability
                             ref var abilityUseRequest = ref abilityUseRequestPool.Add(entity);
                             abilityUseRequest.Ability = enemyBehaviorAiComponent.SelectedAbility;
+                            abilityUseRequest.AbilityIndex = enemyBehaviorAiComponent.SelectedAbilityIndex;
 
                             break;
                         }

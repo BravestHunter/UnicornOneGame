@@ -17,36 +17,24 @@ namespace UnicornOne.Ecs.Systems
         {
             var world = systems.GetWorld();
 
-            if (_filter == null)
-            {
-                _filter = world
-                    .Filter<AttackRechargeComponent>()
-                    .End();
-            }
-
-            var attackRechargePool = world.GetPool<AttackRechargeComponent>();
-            var atackParametersPool = world.GetPool<AtackParametersComponent>();
-
-            foreach (var entity in _filter)
-            {
-                var attackRechargeComponent = attackRechargePool.Get(entity);
-
-                float cooldown = 0.0f;
-                if (atackParametersPool.Has(entity))
-                {
-                    var atackParametersComponent = atackParametersPool.Get(entity);
-                    cooldown = atackParametersComponent.AttackRechargeTime;
-                }
-                else
-                {
-                    cooldown = 2.0f;
-                }
-
-                if (Time.timeSinceLevelLoad - attackRechargeComponent.LastAttackTime >= cooldown)
-                {
-                    attackRechargePool.Del(entity);
-                }
-            }
+            //if (_filter == null)
+            //{
+            //    _filter = world
+            //        .Filter<AttackRechargeComponent>()
+            //        .End();
+            //}
+            //
+            //var attackRechargePool = world.GetPool<AttackRechargeComponent>();
+            //
+            //foreach (var entity in _filter)
+            //{
+            //    var attackRechargeComponent = attackRechargePool.Get(entity);
+            //
+            //    if (Time.timeSinceLevelLoad - attackRechargeComponent.LastAttackTime >= 2.0f)
+            //    {
+            //        attackRechargePool.Del(entity);
+            //    }
+            //}
         }
     }
 }

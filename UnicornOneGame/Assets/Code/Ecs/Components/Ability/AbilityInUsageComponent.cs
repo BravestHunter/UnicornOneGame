@@ -6,5 +6,6 @@ namespace UnicornOne.Ecs.Components
     public struct AbilityInUsageComponent
     {
         public Ability Ability;
+        public int AbilityIndex;
     }
 }

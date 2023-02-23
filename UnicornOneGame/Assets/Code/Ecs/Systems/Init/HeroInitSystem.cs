@@ -53,7 +53,7 @@ namespace UnicornOne.Ecs.Systems
             healthComponent.MaxHealth = hero.HealthInfo.Health;
             healthComponent.CurrentHealth = healthComponent.MaxHealth;
 
-            var atackParametersPool = world.GetPool<AtackParametersComponent>();
+            /*var atackParametersPool = world.GetPool<AtackParametersComponent>();
             ref var atackParametersComponent = ref atackParametersPool.Add(entity);
             atackParametersComponent.Damage = hero.AttackInfo.Damage;
             atackParametersComponent.Range = hero.AttackInfo.Range;
@@ -69,7 +69,7 @@ namespace UnicornOne.Ecs.Systems
             {
                 var hasAttackEffectFlagPool = world.GetPool<HasAttackEffectFlag>();
                 hasAttackEffectFlagPool.Add(entity);
-            }
+            }*/
 
             var navigationPool = world.GetPool<NavigationComponent>();
             ref var navigationComponent = ref navigationPool.Add(entity);
@@ -93,7 +93,11 @@ namespace UnicornOne.Ecs.Systems
 
             var heroBehaviorAiPool = world.GetPool<HeroBehaviorAiComponent>();
             ref var heroBehaviorAiComponent = ref heroBehaviorAiPool.Add(entity);
-            heroBehaviorAiComponent.CurrentState = HeroBehaviorAiComponent.State.SearchForTarget;
+            heroBehaviorAiComponent.CurrentState = HeroBehaviorAiComponent.State.SearchingForTarget;
+
+            var abilitySetPool = world.GetPool<AbilitySetComponent>();
+            ref var abilitySetComponent = ref abilitySetPool.Add(entity);
+            abilitySetComponent.Index = 0;
         }
     }
 }

@@ -1,0 +1,9 @@
+﻿using System;
+
+namespace UnicornOne.Ecs.Components
+{
+    public struct AbilitySetComponent
+    {
+        public int Index;
+    }
+}

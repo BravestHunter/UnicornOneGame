@@ -42,6 +42,7 @@ namespace UnicornOne.MonoBehaviours
             var cameraService = new CameraService(Camera);
             var uiService = new UIService(Label3D);
             var settingsService = new SettingsService(GameSettings);
+            var abilityService = new AbilityService();
 
             _systems = new EcsSystems(_world);
             _systems.Add(new LevelInitSystem());
@@ -51,6 +52,7 @@ namespace UnicornOne.MonoBehaviours
             _systems.Add(new SquadAiSystem());
             _systems.Add(new HeroAiSystem());
             _systems.Add(new EnemyAiSystem());
+            _systems.Add(new AbilitySystem());
             _systems.Add(new AttackSystem());
             _systems.Add(new EffectSystem());
             _systems.Add(new ProjectileMoveSystem());
@@ -62,7 +64,7 @@ namespace UnicornOne.MonoBehaviours
             _systems.Add(new LifetimeSystem());
             _systems.Add(new DeathSystem());
             _systems.Add(new DestroySystem());
-            _systems.Inject(levelService, heroService, mobService, projectileService, effectService, cameraService, uiService, settingsService);
+            _systems.Inject(levelService, heroService, mobService, projectileService, effectService, cameraService, uiService, settingsService, abilityService);
             _systems.Init();
 
 #if UNITY_EDITOR

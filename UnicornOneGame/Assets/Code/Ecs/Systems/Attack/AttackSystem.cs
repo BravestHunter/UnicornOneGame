@@ -119,14 +119,14 @@ namespace UnicornOne.Ecs.Systems
                 _hitFilter = world
                     .Filter<HitRequest>()
                     .Inc<TargetComponent>()
-                    .Inc<AtackParametersComponent>()
+                    .Inc<AbilityInUsageComponent>()
                     .Inc<GameObjectUnityRefComponent>()
                     .End();
             }
 
             var hitRequestPool = world.GetPool<HitRequest>();
             var targetPool = world.GetPool<TargetComponent>();
-            var atackParametersPool = world.GetPool<AtackParametersComponent>();
+            var abilityInUsageComponentPool = world.GetPool<AbilityInUsageComponent>();
             var damagePool = world.GetPool<DamageComponent>();
             var rangedFlagPool = world.GetPool<RangedFlag>();
             var projectileParametersPool = world.GetPool<ProjectileParametersComponent>();
@@ -139,7 +139,7 @@ namespace UnicornOne.Ecs.Systems
             foreach (var entity in _hitFilter)
             {
                 var targetComponent = targetPool.Get(entity);
-                var atackParametersComponent = atackParametersPool.Get(entity);
+                var abilityInUsageComponent = abilityInUsageComponentPool.Get(entity);
                 var gameObjectRefComponent = gameObjectRefPool.Get(entity);
 
                 int targetEntity;
@@ -157,7 +157,7 @@ namespace UnicornOne.Ecs.Systems
                     projectileTargetComponent.TargetEntity = targetComponent.TargetEntity;
 
                     ref var projectileParametersComponent = ref projectileParametersPool.Add(projectileEntity);
-                    projectileParametersComponent.Damage = atackParametersComponent.Damage;
+                    projectileParametersComponent.Damage = abilityInUsageComponent.Ability.Damage;
                     projectileParametersComponent.MoveSpeed = _projectileService.Value.Projectile.MoveInfo.Speed;
 
                     var projectileGameObject = GameObject.Instantiate(_projectileService.Value.Projectile.PrefabInfo.Prefab);
@@ -175,7 +175,7 @@ namespace UnicornOne.Ecs.Systems
                     damageTargetComponent.TargetEntity = targetComponent.TargetEntity;
 
                     ref var damageComponent = ref damagePool.Add(damageEntity);
-                    damageComponent.Damage = atackParametersComponent.Damage;
+                    damageComponent.Damage = abilityInUsageComponent.Ability.Damage;
                 }
 
                 if (hasAttackEffectFlagPool.Has(entity))

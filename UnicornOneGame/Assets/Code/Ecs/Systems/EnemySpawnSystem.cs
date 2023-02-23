@@ -131,7 +131,7 @@ namespace UnicornOne.Ecs.Systems
 
             var enemyBehaviorAiPool = world.GetPool<EnemyBehaviorAiComponent>();
             ref var enemyBehaviorAiComponent = ref enemyBehaviorAiPool.Add(entity);
-            enemyBehaviorAiComponent.CurrentState = EnemyBehaviorAiComponent.State.SearchForTarget;
+            enemyBehaviorAiComponent.CurrentState = EnemyBehaviorAiComponent.State.SearchingForTarget;
 
             var gameObjectRefPool = world.GetPool<GameObjectUnityRefComponent>();
             ref var gameObjectRefComponent = ref gameObjectRefPool.Add(entity);
@@ -148,6 +148,10 @@ namespace UnicornOne.Ecs.Systems
             var animationEventHandlerRefPool = world.GetPool<AnimationEventHandlerUnityRefComponent>();
             ref var animationEventHandlerRefComponent = ref animationEventHandlerRefPool.Add(entity);
             animationEventHandlerRefComponent.AnimationEventHandler = animationEventHandler;
+
+            var abilitySetPool = world.GetPool<AbilitySetComponent>();
+            ref var abilitySetComponent = ref abilitySetPool.Add(entity);
+            abilitySetComponent.Index = 1;
         }
     }
 }

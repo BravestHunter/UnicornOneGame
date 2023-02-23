@@ -30,9 +30,19 @@ namespace UnicornOne.Ecs.Systems
             foreach (var entity in _filter)
             {
                 var attackRechargeComponent = attackRechargePool.Get(entity);
-                var atackParametersComponent = atackParametersPool.Get(entity);
 
-                if (Time.timeSinceLevelLoad - attackRechargeComponent.LastAttackTime >= atackParametersComponent.AttackRechargeTime)
+                float cooldown = 0.0f;
+                if (atackParametersPool.Has(entity))
+                {
+                    var atackParametersComponent = atackParametersPool.Get(entity);
+                    cooldown = atackParametersComponent.AttackRechargeTime;
+                }
+                else
+                {
+                    cooldown = 2.0f;
+                }
+
+                if (Time.timeSinceLevelLoad - attackRechargeComponent.LastAttackTime >= cooldown)
                 {
                     attackRechargePool.Del(entity);
                 }

@@ -1,16 +1,20 @@
 ﻿using Leopotam.EcsLite;
+using Leopotam.EcsLite.Di;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnicornOne.Ecs.Components;
+using UnicornOne.Ecs.Services;
 using UnityEngine;
 
 namespace UnicornOne.Ecs.Systems
 {
     internal class HeroAiSystem : IEcsRunSystem
     {
+        private readonly EcsCustomInject<AbilityService> _abilityService;
+
         private EcsFilter _squadAiFilter;
         private EcsFilter _heroFilter;
 
@@ -25,34 +29,34 @@ namespace UnicornOne.Ecs.Systems
                 _heroFilter = world
                     .Filter<HeroFlag>()
                     .Inc<HeroBehaviorAiComponent>()
-                    .Inc<AtackParametersComponent>()
                     .Inc<NavigationComponent>()
                     .Inc<GameObjectUnityRefComponent>()
+                    .Inc<AbilitySetComponent>()
                     .End();
             }
 
             var heroBehaviorAiPool = world.GetPool<HeroBehaviorAiComponent>();
-            var atackParametersPool = world.GetPool<AtackParametersComponent>();
             var navigationPool = world.GetPool<NavigationComponent>();
             var gameObjectRefPool = world.GetPool<GameObjectUnityRefComponent>();
             var targetPool = world.GetPool<TargetComponent>();
-            var attackRequestPool = world.GetPool<AttackRequest>();
-            var attackFlagPool = world.GetPool<AttackFlag>();
+            var abilityUseRequestPool = world.GetPool<AbilityUseRequest>();
+            var abilityInUsageComponentPool = world.GetPool<AbilityInUsageComponent>();
             var attackRechargePool = world.GetPool<AttackRechargeComponent>();
             var standPool = world.GetPool<StandFlag>();
 
+            var abilitySetPool = world.GetPool<AbilitySetComponent>();
+
             foreach (var entity in _heroFilter)
             {
-                ref var meleeFighterBehaviorAiComponent = ref heroBehaviorAiPool.Get(entity);
-                ref var atackParametersComponent = ref atackParametersPool.Get(entity);
+                ref var heroBehaviorAiComponent = ref heroBehaviorAiPool.Get(entity);
                 ref var navigationComponent = ref navigationPool.Get(entity);
                 ref var gameObjectRefComponent = ref gameObjectRefPool.Get(entity);
 
                 Vector3 entityPosition = gameObjectRefComponent.GameObject.transform.position;
 
-                switch (meleeFighterBehaviorAiComponent.CurrentState)
+                switch (heroBehaviorAiComponent.CurrentState)
                 {
-                    case HeroBehaviorAiComponent.State.SearchForTarget:
+                    case HeroBehaviorAiComponent.State.SearchingForTarget:
                         {
                             // Case: Squad leader has no target
                             if (squadTargetComponent == null)
@@ -60,8 +64,8 @@ namespace UnicornOne.Ecs.Systems
                                 break;
                             }
 
-                            // Case: Set target of squad leader
-                            meleeFighterBehaviorAiComponent.CurrentState = HeroBehaviorAiComponent.State.MoveToTarget;
+                            // Set target of squad leader
+                            heroBehaviorAiComponent.CurrentState = HeroBehaviorAiComponent.State.SelectingAbility;
 
                             ref var targetComponent = ref targetPool.Add(entity);
                             targetComponent.TargetEntity = squadTargetComponent.Value.TargetEntity;
@@ -69,12 +73,12 @@ namespace UnicornOne.Ecs.Systems
                             break;
                         }
 
-                    case HeroBehaviorAiComponent.State.MoveToTarget:
+                    case HeroBehaviorAiComponent.State.SelectingAbility:
                         {
                             // Case: No target
                             if (!targetPool.Has(entity))
                             {
-                                meleeFighterBehaviorAiComponent.CurrentState = HeroBehaviorAiComponent.State.SearchForTarget;
+                                heroBehaviorAiComponent.CurrentState = HeroBehaviorAiComponent.State.SearchingForTarget;
 
                                 break;
                             }
@@ -85,7 +89,40 @@ namespace UnicornOne.Ecs.Systems
                             if (!targetComponent.TargetEntity.Unpack(world, out targetEntity))
                             {
                                 // Target is missing, search for new one
-                                meleeFighterBehaviorAiComponent.CurrentState = HeroBehaviorAiComponent.State.SearchForTarget;
+                                heroBehaviorAiComponent.CurrentState = HeroBehaviorAiComponent.State.SearchingForTarget;
+                                targetPool.Del(entity);
+
+                                break;
+                            }
+
+                            // Select ability
+                            var abilitySetComponent = abilitySetPool.Get(entity);
+                            var abilitySet = _abilityService.Value.GetAbilitySet(abilitySetComponent.Index);
+                            var ability = abilitySet.Abilities.Last();
+
+                            heroBehaviorAiComponent.SelectedAbility = ability;
+                            heroBehaviorAiComponent.CurrentState = HeroBehaviorAiComponent.State.MovingToTarget;
+
+                            break;
+                        }
+
+                    case HeroBehaviorAiComponent.State.MovingToTarget:
+                        {
+                            // Case: No target
+                            if (!targetPool.Has(entity))
+                            {
+                                heroBehaviorAiComponent.CurrentState = HeroBehaviorAiComponent.State.SearchingForTarget;
+
+                                break;
+                            }
+
+                            // Case: Target is not alive
+                            ref var targetComponent = ref targetPool.Get(entity);
+                            int targetEntity;
+                            if (!targetComponent.TargetEntity.Unpack(world, out targetEntity))
+                            {
+                                // Target is missing, search for new one
+                                heroBehaviorAiComponent.CurrentState = HeroBehaviorAiComponent.State.SearchingForTarget;
                                 targetPool.Del(entity);
 
                                 break;
@@ -93,7 +130,7 @@ namespace UnicornOne.Ecs.Systems
 
                             // Case: Too far from target, keep moving
                             Vector3 targetEntityPosition = gameObjectRefPool.Get(targetEntity).GameObject.transform.position;
-                            if ((targetEntityPosition - entityPosition).magnitude > atackParametersComponent.Range)
+                            if ((targetEntityPosition - entityPosition).magnitude > heroBehaviorAiComponent.SelectedAbility.Range)
                             {
                                 navigationComponent.DestionationPosition = targetEntityPosition;
 
@@ -109,16 +146,16 @@ namespace UnicornOne.Ecs.Systems
                                 navigationComponent.DestionationPosition = entityPosition;
                             }
 
-                            // Case: Reached target point
-                            meleeFighterBehaviorAiComponent.CurrentState = HeroBehaviorAiComponent.State.AttackTarget;
+                            // Reached target point
+                            heroBehaviorAiComponent.CurrentState = HeroBehaviorAiComponent.State.AttackingWithAbility;
 
                             break;
                         }
 
-                    case HeroBehaviorAiComponent.State.AttackTarget:
+                    case HeroBehaviorAiComponent.State.AttackingWithAbility:
                         {
-                            // Case: Attack is happening
-                            if (attackFlagPool.Has(entity))
+                            // Case: Ability is in usage
+                            if (abilityInUsageComponentPool.Has(entity))
                             {
                                 break;
                             }
@@ -126,7 +163,7 @@ namespace UnicornOne.Ecs.Systems
                             // Case: No target
                             if (!targetPool.Has(entity))
                             {
-                                meleeFighterBehaviorAiComponent.CurrentState = HeroBehaviorAiComponent.State.SearchForTarget;
+                                heroBehaviorAiComponent.CurrentState = HeroBehaviorAiComponent.State.SearchingForTarget;
 
                                 break;
                             }
@@ -136,7 +173,7 @@ namespace UnicornOne.Ecs.Systems
                             int targetEntity;
                             if (!targetComponent.TargetEntity.Unpack(world, out targetEntity))
                             {
-                                meleeFighterBehaviorAiComponent.CurrentState = HeroBehaviorAiComponent.State.SearchForTarget;
+                                heroBehaviorAiComponent.CurrentState = HeroBehaviorAiComponent.State.SearchingForTarget;
                                 targetPool.Del(entity);
 
                                 break;
@@ -144,9 +181,9 @@ namespace UnicornOne.Ecs.Systems
 
                             // Case: Target is too far
                             Vector3 targetEntityPosition = gameObjectRefPool.Get(targetEntity).GameObject.transform.position;
-                            if ((entityPosition - targetEntityPosition).magnitude > atackParametersComponent.Range)
+                            if ((entityPosition - targetEntityPosition).magnitude > heroBehaviorAiComponent.SelectedAbility.Range)
                             {
-                                meleeFighterBehaviorAiComponent.CurrentState = HeroBehaviorAiComponent.State.MoveToTarget;
+                                heroBehaviorAiComponent.CurrentState = HeroBehaviorAiComponent.State.MovingToTarget;
 
                                 break;
                             }
@@ -163,8 +200,9 @@ namespace UnicornOne.Ecs.Systems
                                 break;
                             }
 
-                            // Case: Start attack
-                            attackRequestPool.Add(entity);
+                            // Use ability
+                            ref var abilityUseRequest = ref abilityUseRequestPool.Add(entity);
+                            abilityUseRequest.Ability = heroBehaviorAiComponent.SelectedAbility;
 
                             break;
                         }

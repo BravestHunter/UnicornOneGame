@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnicornOne.Ecs.Components;
+using UnicornOne.Ecs.Other.Ability;
 using UnicornOne.Ecs.Services;
 using UnityEngine;
 using static UnityEngine.EventSystems.EventTrigger;
@@ -104,13 +105,32 @@ namespace UnicornOne.Ecs.Systems
                                 break;
                             }
 
+                            // Case: Some ability is still in usage
+                            if (abilityInUsageComponentPool.Has(entity))
+                            {
+                                break;
+                            }
+
                             // Select ability
                             var abilitySetComponent = abilitySetPool.Get(entity);
+                            var abilityRechargeComponent = abilityRechargePool.Get(entity);
+
                             var abilitySet = _abilityService.Value.GetAbilitySet(abilitySetComponent.Index);
-                            var ability = abilitySet.Abilities.Last();
+                            int abilityIndex = 0;
+                            Ability ability = abilitySet.Abilities[abilityIndex];
+                            for (int i = abilitySet.Abilities.Length - 1; i >= 0; i--)
+                            {
+                                float timePassed = Time.timeSinceLevelLoad - abilityRechargeComponent.LastUseTimes[i];
+                                if (timePassed >= abilitySet.Abilities[i].Cooldown)
+                                {
+                                    ability = abilitySet.Abilities[i];
+                                    abilityIndex = i;
+                                    break;
+                                }
+                            }
 
                             enemyBehaviorAiComponent.SelectedAbility = ability;
-                            enemyBehaviorAiComponent.SelectedAbilityIndex = 0;
+                            enemyBehaviorAiComponent.SelectedAbilityIndex = abilityIndex;
                             enemyBehaviorAiComponent.CurrentState = EnemyBehaviorAiComponent.State.MovingToTarget;
 
                             break;
@@ -218,6 +238,8 @@ namespace UnicornOne.Ecs.Systems
                             ref var abilityUseRequest = ref abilityUseRequestPool.Add(entity);
                             abilityUseRequest.Ability = enemyBehaviorAiComponent.SelectedAbility;
                             abilityUseRequest.AbilityIndex = enemyBehaviorAiComponent.SelectedAbilityIndex;
+
+                            enemyBehaviorAiComponent.CurrentState = EnemyBehaviorAiComponent.State.SelectingAbility;
 
                             break;
                         }

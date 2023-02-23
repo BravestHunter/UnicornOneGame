@@ -16,7 +16,6 @@ namespace UnicornOne.MonoBehaviours
     {
         [SerializeField] private Level Level;
         [SerializeField] private List<Hero> Heroes;
-        [SerializeField] private Enemy Enemy;
         [SerializeField] private Camera Camera;
         [SerializeField] private GameObject Label3D;
         [SerializeField] private GameSettings GameSettings;
@@ -39,7 +38,6 @@ namespace UnicornOne.MonoBehaviours
             // TODO: combine all these services with init data into one?
             var levelService = new LevelService(Level);
             var heroService = new HeroService(Heroes);
-            var mobService = new MobService(Enemy);
             var cameraService = new CameraService(Camera);
             var uiService = new UIService(Label3D);
             var settingsService = new SettingsService(GameSettings);
@@ -65,7 +63,7 @@ namespace UnicornOne.MonoBehaviours
             _systems.Add(new LifetimeSystem());
             _systems.Add(new DeathSystem());
             _systems.Add(new DestroySystem());
-            _systems.Inject(levelService, heroService, mobService, cameraService, uiService, settingsService, abilityService);
+            _systems.Inject(levelService, heroService, cameraService, uiService, settingsService, abilityService);
             _systems.Init();
 
 #if UNITY_EDITOR

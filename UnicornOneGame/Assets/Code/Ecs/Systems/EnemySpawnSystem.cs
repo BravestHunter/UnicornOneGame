@@ -20,7 +20,6 @@ namespace UnicornOne.Ecs.Systems
         private const float SpawnCirceRadius = 6.0f;
 
         private readonly EcsCustomInject<LevelService> _levelService;
-        private readonly EcsCustomInject<MobService> _mobService;
         private readonly EcsCustomInject<AbilityService> _abilityService;
 
         private EcsFilter _enemyFilter;
@@ -76,27 +75,6 @@ namespace UnicornOne.Ecs.Systems
         {
             Vector2 randomPosition = UnityEngine.Random.insideUnitCircle * SpawnCirceRadius;
             return new Vector3(randomPosition.x, 0.0f, randomPosition.y);
-        }
-
-        private void SpawnSimpleEnemy(EcsWorld world, Vector3 position)
-        {
-            var enemyGameObject = GameObject.Instantiate(_mobService.Value.Enemy.PrefabInfo.Prefab);
-            enemyGameObject.transform.position = position;
-            enemyGameObject.transform.rotation = Quaternion.Euler(0.0f, UnityEngine.Random.Range(0.0f, 360.0f), 0.0f);
-
-            var entity = world.NewEntity();
-
-            var enemyFlagPool = world.GetPool<EnemyFlag>();
-            enemyFlagPool.Add(entity);
-
-            var healthPool = world.GetPool<HealthComponent>();
-            ref var healthComponent = ref healthPool.Add(entity);
-            healthComponent.MaxHealth = _mobService.Value.Enemy.HealthInfo.Health;
-            healthComponent.CurrentHealth = healthComponent.MaxHealth;
-
-            var gameObjectRefPool = world.GetPool<GameObjectUnityRefComponent>();
-            ref var gameObjectRefComponent = ref gameObjectRefPool.Add(entity);
-            gameObjectRefComponent.GameObject = enemyGameObject;
         }
 
         private void SpawnEnemy(IEnemy enemy, Vector3 position, EcsWorld world)

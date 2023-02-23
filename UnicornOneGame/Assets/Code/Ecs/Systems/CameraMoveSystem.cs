@@ -18,16 +18,17 @@ namespace UnicornOne.Ecs.Systems
         private readonly EcsCustomInject<CameraService> _cameraService;
         private readonly EcsCustomInject<SettingsService> _settingsService;
 
-        private float _sqrRatationDistance;
+        private float _sqrRotationDistance;
 
         private EcsFilter _heroFilter;
         private EcsFilter _enemyFilter;
 
         private Vector3 _desiredCameraPlaneDirection;
+        private bool _canChangeDesiredCameraDirection = true;
 
         public void Init(IEcsSystems systems)
         {
-            _sqrRatationDistance = _settingsService.Value.Camera.RotationStartDistance * _settingsService.Value.Camera.RotationStartDistance;
+            _sqrRotationDistance = _settingsService.Value.Camera.RotationStartDistance * _settingsService.Value.Camera.RotationStartDistance;
         }
 
         public void Run(IEcsSystems systems)
@@ -76,18 +77,24 @@ namespace UnicornOne.Ecs.Systems
             }
 
             Vector3 heroAvarage = heroPositions.Aggregate(Vector3.zero, (sum, v) => sum + v) / heroPositions.Count;
+            Vector3 enemyAvarage = enemyPositions.Aggregate(Vector3.zero, (sum, v) => sum + v) / enemyPositions.Count;
+            float heroEnemyDistanceSqr = (heroAvarage - enemyAvarage).sqrMagnitude;
 
             if (heroPositions.Count > 0 && enemyPositions.Count > 0)
             {
-                Vector3 enemyAvarage = enemyPositions.Aggregate(Vector3.zero, (sum, v) => sum + v) / enemyPositions.Count;
-
-                if ((heroAvarage - enemyAvarage).sqrMagnitude < _sqrRatationDistance)
+                if (_canChangeDesiredCameraDirection && heroEnemyDistanceSqr < _sqrRotationDistance)
                 {
                     Vector3 desiredPlaneDirection = enemyAvarage - heroAvarage;
                     desiredPlaneDirection.y = 0;
                     desiredPlaneDirection.Normalize();
 
                     _desiredCameraPlaneDirection = desiredPlaneDirection;
+
+                    _canChangeDesiredCameraDirection = false;
+                }
+                else
+                {
+                    _canChangeDesiredCameraDirection = true;
                 }
             }
 

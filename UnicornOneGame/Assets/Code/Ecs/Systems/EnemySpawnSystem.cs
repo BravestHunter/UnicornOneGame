@@ -19,6 +19,7 @@ namespace UnicornOne.Ecs.Systems
     {
         private const float SpawnCirceRadius = 6.0f;
 
+        private readonly EcsCustomInject<GameControlService> _gameControlService;
         private readonly EcsCustomInject<LevelService> _levelService;
         private readonly EcsCustomInject<AbilityService> _abilityService;
 
@@ -32,6 +33,11 @@ namespace UnicornOne.Ecs.Systems
 
             if (_waveCounter >= _levelService.Value.Level.Script.Waves.Length)
             {
+                if (!ShouldSpawnNextWave(world))
+                {
+                    _gameControlService.Value.ReportGameFinish();
+                }    
+
                 return;
             }
 

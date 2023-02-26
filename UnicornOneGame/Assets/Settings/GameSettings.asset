@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: GameSettings
   m_EditorClassIdentifier: 
   Camera:
+    CameraDistanceScale: 0
     RotationSpeed: 90
     RotationStartDistance: 20
-    CenterPointOffset: {x: 0, y: 4}
+    TargetPointOffset: {x: 0, y: 0}

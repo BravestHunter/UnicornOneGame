@@ -1,5 +1,6 @@
 using Leopotam.EcsLite;
 using Leopotam.EcsLite.Di;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,16 +10,20 @@ using UnicornOne.Ecs.Services;
 using UnicornOne.Ecs.Systems;
 using UnicornOne.ScriptableObjects;
 using UnityEngine;
+using UnityEngine.Rendering.VirtualTexturing;
 
 namespace UnicornOne.MonoBehaviours
 {
     public class EcsWorldScript : MonoBehaviour
     {
-        [SerializeField] private Level Level;
+        public event Action GameFinished;
+
         [SerializeField] private List<Hero> Heroes;
         [SerializeField] private Camera Camera;
         [SerializeField] private GameObject Label3D;
         [SerializeField] private GameSettings GameSettings;
+
+        private bool _isRunning = false;
 
         private EcsWorld _world;
         private IEcsSystems _systems;
@@ -27,16 +32,44 @@ namespace UnicornOne.MonoBehaviours
         private IEcsSystems _debugSystems;
 #endif
 
-        private void Start()
+        private GameControlService _gameControlService = null;
+
+        private void Update()
+        {
+            if (!_isRunning)
+            {
+                return;
+            }
+
+            _systems.Run();
+
+#if UNITY_EDITOR
+            _debugSystems.Run();
+#endif
+
+            if (_gameControlService.GameFinished)
+            {
+                Destroy();
+                GameFinished?.Invoke();
+            }
+        }
+
+        private void OnDestroy()
+        {
+            Destroy();
+        }
+
+        public void Init(Level level)
         {
             _world = new EcsWorld();
 
             var uniqueHeroes = Heroes.Distinct();
             // Get all enemy types from level waves
-            var uniqueEnemies = Level.Script.Waves.Select(w => w.Enemy).Distinct();
+            var uniqueEnemies = level.Script.Waves.Select(w => w.Enemy).Distinct();
 
+            _gameControlService = new();
             // TODO: combine all these services with init data into one?
-            var levelService = new LevelService(Level);
+            var levelService = new LevelService(level);
             var heroService = new HeroService(Heroes);
             var cameraService = new CameraService(Camera);
             var uiService = new UIService(Label3D);
@@ -63,7 +96,7 @@ namespace UnicornOne.MonoBehaviours
             _systems.Add(new LifetimeSystem());
             _systems.Add(new DeathSystem());
             _systems.Add(new DestroySystem());
-            _systems.Inject(levelService, heroService, cameraService, uiService, settingsService, abilityService);
+            _systems.Inject(_gameControlService, levelService, heroService, cameraService, uiService, settingsService, abilityService);
             _systems.Init();
 
 #if UNITY_EDITOR
@@ -72,26 +105,26 @@ namespace UnicornOne.MonoBehaviours
             _debugSystems.Add(new TargetDebugSystem());
             _debugSystems.Init();
 #endif
+
+            _isRunning = true;
         }
 
-        private void Update()
+        private void Destroy()
         {
-            _systems.Run();
+            _isRunning = false;
 
-#if UNITY_EDITOR
-            _debugSystems.Run();
-#endif
-        }
+            _gameControlService = null;
 
-        private void OnDestroy()
-        {
             _systems?.Destroy();
+            _systems = null;
 
 #if UNITY_EDITOR
             _debugSystems?.Destroy();
+            _debugSystems = null;
 #endif
-            
+
             _world?.Destroy();
+            _world = null;
         }
     }
 }

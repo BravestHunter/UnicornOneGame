@@ -11,7 +11,7 @@ using UnityEngine.AI;
 namespace UnicornOne.ScriptableObjects
 {
     [CreateAssetMenu(fileName = "Level", menuName = "Custom/Level")]
-    internal class Level : ScriptableObject, ILevel
+    public class Level : ScriptableObject, ILevel
     {
         public PrefabInfo Prefab;
         public NavMeshData NavMesh;

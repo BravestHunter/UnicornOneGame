@@ -10,5 +10,6 @@ namespace UnicornOne.ScriptableObjects.Interfaces
     public interface IGameSettings
     {
         CameraSettings Camera { get; }
+        DamageNumbersSettings DamageNumbers { get; }
     }
 }

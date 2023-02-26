@@ -16,7 +16,7 @@ namespace UnicornOne.Ecs.Systems
         private const float AngleThreshold = 0.5f;
 
         private readonly EcsCustomInject<CameraService> _cameraService;
-        private readonly EcsCustomInject<SettingsService> _settingsService;
+        private readonly EcsCustomInject<GameSettingsService> _settingsService;
 
         private float _sqrRotationDistance;
 

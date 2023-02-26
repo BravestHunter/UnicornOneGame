@@ -20,7 +20,6 @@ namespace UnicornOne.MonoBehaviours
 
         [SerializeField] private List<Hero> Heroes;
         [SerializeField] private Camera Camera;
-        [SerializeField] private GameObject Label3D;
         [SerializeField] private GameSettings GameSettings;
 
         private bool _isRunning = false;
@@ -72,8 +71,7 @@ namespace UnicornOne.MonoBehaviours
             var levelService = new LevelService(level);
             var heroService = new HeroService(Heroes);
             var cameraService = new CameraService(Camera);
-            var uiService = new UIService(Label3D);
-            var settingsService = new SettingsService(GameSettings);
+            var settingsService = new GameSettingsService(GameSettings);
             var abilityService = new AbilityService(uniqueHeroes, uniqueEnemies);
 
             _systems = new EcsSystems(_world);
@@ -96,7 +94,7 @@ namespace UnicornOne.MonoBehaviours
             _systems.Add(new LifetimeSystem());
             _systems.Add(new DeathSystem());
             _systems.Add(new DestroySystem());
-            _systems.Inject(_gameControlService, levelService, heroService, cameraService, uiService, settingsService, abilityService);
+            _systems.Inject(_gameControlService, levelService, heroService, cameraService, settingsService, abilityService);
             _systems.Init();
 
 #if UNITY_EDITOR

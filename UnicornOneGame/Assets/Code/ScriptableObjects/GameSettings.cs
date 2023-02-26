@@ -14,7 +14,9 @@ namespace UnicornOne.ScriptableObjects
     public class GameSettings : ScriptableObject, IGameSettings
     {
         public CameraSettings Camera;
+        public DamageNumbersSettings DamageNumbers;
 
         CameraSettings IGameSettings.Camera => Camera;
+        DamageNumbersSettings IGameSettings.DamageNumbers => DamageNumbers;
     }
 }

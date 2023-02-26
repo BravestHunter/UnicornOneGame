@@ -8,14 +8,15 @@ using System.Threading.Tasks;
 using TMPro;
 using UnicornOne.Ecs.Components;
 using UnicornOne.Ecs.Services;
+using UnityEditor;
 using UnityEngine;
 
 namespace UnicornOne.Ecs.Systems
 {
     internal class DamageSystem : IEcsRunSystem
     {
+        private readonly EcsCustomInject<GameSettingsService> _gameSettingsService;
         private readonly EcsCustomInject<CameraService> _cameraService;
-        private readonly EcsCustomInject<UIService> _uiService;
 
         private EcsFilter _attackFilter;
 
@@ -34,6 +35,7 @@ namespace UnicornOne.Ecs.Systems
             var damagePool = world.GetPool<DamageComponent>();
             var targetPool = world.GetPool<TargetComponent>();
             var healthPool = world.GetPool<HealthComponent>();
+            var enemyFlagPool = world.GetPool<EnemyFlag>();
             var gameObjectUnityRefPool = world.GetPool<GameObjectUnityRefComponent>();
 
             foreach (var entity in _attackFilter)
@@ -49,7 +51,11 @@ namespace UnicornOne.Ecs.Systems
                         ref var healthComponent = ref healthPool.Get(targetEntity);
 
                         healthComponent.CurrentHealth -= damageComponent.Damage;
+                    }
 
+                    // Only enemies spawn damage labels
+                    if (enemyFlagPool.Has(targetEntity) && gameObjectUnityRefPool.Has(targetEntity))
+                    {
                         ref var gameObjectUnityRefComponent = ref gameObjectUnityRefPool.Get(targetEntity);
                         CreateDamageLabel(world, damageComponent.Damage, gameObjectUnityRefComponent.GameObject.transform.position + Vector3.up * 2.5f);
                     }
@@ -61,16 +67,18 @@ namespace UnicornOne.Ecs.Systems
 
         private void CreateDamageLabel(EcsWorld world, int damage, Vector3 position)
         {
-            var labelGameObject = GameObject.Instantiate(_uiService.Value.Label3DPrefab);
+            var labelGameObject = GameObject.Instantiate(_gameSettingsService.Value.DamageNumbers.Prefab);
             var canvas = labelGameObject.GetComponentInChildren<Canvas>();
             var tmpText = labelGameObject.GetComponentInChildren<TMP_Text>();
 
             labelGameObject.transform.position = position;
             labelGameObject.transform.LookAt(_cameraService.Value.Camera.transform.position, _cameraService.Value.Camera.transform.up);
-            labelGameObject.transform.Translate(Vector3.forward * 5.0f, Space.Self);
+            labelGameObject.transform.Translate(_gameSettingsService.Value.DamageNumbers.SpawnPointOffset, Space.Self);
             canvas.worldCamera = _cameraService.Value.Camera;
             tmpText.text = damage.ToString();
-            tmpText.fontSize = 0.5f;
+            tmpText.fontSize = _gameSettingsService.Value.DamageNumbers.FontSize;
+            tmpText.color = _gameSettingsService.Value.DamageNumbers.Color;
+            tmpText.font = _gameSettingsService.Value.DamageNumbers.Font;
 
             var labelEntity = world.NewEntity();
 
@@ -89,7 +97,7 @@ namespace UnicornOne.Ecs.Systems
             var lifetimePool = world.GetPool<LifetimeComponent>();
             ref var lifetimeComponent = ref lifetimePool.Add(labelEntity);
             lifetimeComponent.CreationTime = Time.timeSinceLevelLoad;
-            lifetimeComponent.LifeDuration = 0.35f;
+            lifetimeComponent.LifeDuration = _gameSettingsService.Value.DamageNumbers.Lifetime;
         }
     }
 }

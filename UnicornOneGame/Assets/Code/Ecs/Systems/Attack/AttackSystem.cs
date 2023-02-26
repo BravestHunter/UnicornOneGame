@@ -114,6 +114,7 @@ namespace UnicornOne.Ecs.Systems
             var abilityInUsageComponentPool = world.GetPool<AbilityInUsageComponent>();
             var gameObjectRefPool = world.GetPool<GameObjectUnityRefComponent>();
             var projectileParametersPool = world.GetPool<ProjectileParametersComponent>();
+            var damagePool = world.GetPool<DamageComponent>();
             var effectFlagPool = world.GetPool<EffectFlag>();
             var effectLifeSpanPool = world.GetPool<EffectLifeSpanComponent>();
 
@@ -149,6 +150,16 @@ namespace UnicornOne.Ecs.Systems
 
                     ref var projectileGameObjectRefComponent = ref gameObjectRefPool.Add(projectileEntity);
                     projectileGameObjectRefComponent.GameObject = projectileGameObject;
+                }
+                else
+                {
+                    var damageEntity = world.NewEntity();
+
+                    ref var damageTargetComponent = ref targetPool.Add(damageEntity);
+                    damageTargetComponent.TargetEntity = targetComponent.TargetEntity;
+
+                    ref var damageComponent = ref damagePool.Add(damageEntity);
+                    damageComponent.Damage = abilityInUsageComponent.Ability.Damage;
                 }
 
                 if (abilityInUsageComponent.Ability.Effect != null)

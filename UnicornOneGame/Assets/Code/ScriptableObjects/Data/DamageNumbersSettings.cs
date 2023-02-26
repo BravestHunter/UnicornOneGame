@@ -12,7 +12,7 @@ namespace UnicornOne.ScriptableObjects.Data
         public float FontSize;
         public Color Color;
         public float Lifetime;
-        [Tooltip("X is up-down, Y is left-right, Z is forward-backward to camera")]
+        [Tooltip("X is left-right, Y is up-down, Z is forward-backward to camera")]
         public Vector3 SpawnPointOffset;
     }
 }

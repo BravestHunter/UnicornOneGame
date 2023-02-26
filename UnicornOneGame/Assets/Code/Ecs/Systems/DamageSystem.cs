@@ -70,6 +70,7 @@ namespace UnicornOne.Ecs.Systems
             var labelGameObject = GameObject.Instantiate(_gameSettingsService.Value.DamageNumbers.Prefab);
             var canvas = labelGameObject.GetComponentInChildren<Canvas>();
             var tmpText = labelGameObject.GetComponentInChildren<TMP_Text>();
+            var animator = labelGameObject.GetComponentInChildren<Animator>();
 
             labelGameObject.transform.position = position;
             labelGameObject.transform.LookAt(_cameraService.Value.Camera.transform.position, _cameraService.Value.Camera.transform.up);
@@ -79,6 +80,7 @@ namespace UnicornOne.Ecs.Systems
             tmpText.fontSize = _gameSettingsService.Value.DamageNumbers.FontSize;
             tmpText.color = _gameSettingsService.Value.DamageNumbers.Color;
             tmpText.font = _gameSettingsService.Value.DamageNumbers.Font;
+            animator.SetFloat("AnimationSpeed", 1.0f / _gameSettingsService.Value.DamageNumbers.Lifetime);
 
             var labelEntity = world.NewEntity();
 
@@ -93,6 +95,10 @@ namespace UnicornOne.Ecs.Systems
             var tmpTextUnityRefPool = world.GetPool<TMPTextUnityRefComponent>();
             ref var tmpTextUnityRefComponent = ref tmpTextUnityRefPool.Add(labelEntity);
             tmpTextUnityRefComponent.Text = tmpText;
+
+            var animatorUnityRefComponentPool = world.GetPool<AnimatorUnityRefComponent>();
+            ref var animatorUnityRefComponent = ref animatorUnityRefComponentPool.Add(labelEntity);
+            animatorUnityRefComponent.Animator = animator;
 
             var lifetimePool = world.GetPool<LifetimeComponent>();
             ref var lifetimeComponent = ref lifetimePool.Add(labelEntity);

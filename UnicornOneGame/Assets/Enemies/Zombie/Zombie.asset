@@ -17,6 +17,6 @@ MonoBehaviour:
   Move:
     Speed: 1
   Health:
-    Health: 50
+    Health: 60
   Abilities:
   - {fileID: 11400000, guid: 817147fa213fa4790abdb679b780898b, type: 2}

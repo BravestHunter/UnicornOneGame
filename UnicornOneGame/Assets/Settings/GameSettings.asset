@@ -20,5 +20,7 @@ MonoBehaviour:
   DamageNumbers:
     Prefab: {fileID: 3878117087197096768, guid: 8a8268fed4c109343a93beb363071cd6, type: 3}
     Font: {fileID: 11400000, guid: 0c002121a90f94d5f8ff1412dbefedaa, type: 2}
-    FontSize: 0.8
+    FontSize: 0.7
     Color: {r: 0.7607843, g: 0.9498031, b: 1, a: 1}
+    Lifetime: 1
+    SpawnPointOffset: {x: 0, y: 0.6, z: 10}

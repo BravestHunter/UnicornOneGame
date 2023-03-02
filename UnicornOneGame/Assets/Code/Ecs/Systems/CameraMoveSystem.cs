@@ -82,13 +82,16 @@ namespace UnicornOne.Ecs.Systems
 
             if (heroPositions.Count > 0 && enemyPositions.Count > 0)
             {
-                if (_canChangeDesiredCameraDirection && heroEnemyDistanceSqr < _sqrRotationDistance)
+                if (heroEnemyDistanceSqr < _sqrRotationDistance)
                 {
-                    Vector3 desiredPlaneDirection = enemyAvarage - heroAvarage;
-                    desiredPlaneDirection.y = 0;
-                    desiredPlaneDirection.Normalize();
+                    if (_canChangeDesiredCameraDirection)
+                    {
+                        Vector3 desiredPlaneDirection = enemyAvarage - heroAvarage;
+                        desiredPlaneDirection.y = 0;
+                        desiredPlaneDirection.Normalize();
 
-                    _desiredCameraPlaneDirection = desiredPlaneDirection;
+                        _desiredCameraPlaneDirection = desiredPlaneDirection;
+                    }
 
                     _canChangeDesiredCameraDirection = false;
                 }

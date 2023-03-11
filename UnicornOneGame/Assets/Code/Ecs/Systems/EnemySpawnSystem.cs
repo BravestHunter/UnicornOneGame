@@ -1,4 +1,5 @@
-﻿using Leopotam.EcsLite;
+﻿using Codice.CM.Client.Differences;
+using Leopotam.EcsLite;
 using Leopotam.EcsLite.Di;
 using System;
 using System.Collections.Generic;
@@ -33,7 +34,7 @@ namespace UnicornOne.Ecs.Systems
 
             if (_waveCounter >= _levelService.Value.Level.Script.Waves.Length)
             {
-                if (!ShouldSpawnNextWave(world))
+                if (!AreSomeEnemiesAlive(world))
                 {
                     _gameControlService.Value.ReportGameFinish();
                 }    
@@ -51,6 +52,11 @@ namespace UnicornOne.Ecs.Systems
 
         private bool ShouldSpawnNextWave(EcsWorld world)
         {
+            return !AreSomeEnemiesAlive(world);
+        }
+
+        private bool AreSomeEnemiesAlive(EcsWorld world)
+        {
             if (_enemyFilter == null)
             {
                 _enemyFilter = world
@@ -58,7 +64,7 @@ namespace UnicornOne.Ecs.Systems
                     .End();
             }
 
-            return _enemyFilter.GetEntitiesCount() == 0;
+            return _enemyFilter.GetEntitiesCount() > 0;
         }
 
         private void SpawnEnemyWave(EcsWorld world)

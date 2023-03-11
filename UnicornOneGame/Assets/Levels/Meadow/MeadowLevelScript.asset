@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: MeadowLevelScript
   m_EditorClassIdentifier: 
   Waves:
-  - Enemy: {fileID: 11400000, guid: 8751257dd73e04fef9f5efccbfdb815a, type: 2}
+  - Enemy: {fileID: 11400000, guid: fb34fce8a8b1942859afca8834164f23, type: 2}
     Count: 1
-  - Enemy: {fileID: 11400000, guid: caa355284a1bcc149a4c502af38c8d12, type: 2}
-    Count: 3
-  - Enemy: {fileID: 11400000, guid: 315ca0793f1bd3942b9ee962d21f9df8, type: 2}
-    Count: 3
+  - Enemy: {fileID: 11400000, guid: 8751257dd73e04fef9f5efccbfdb815a, type: 2}
+    Count: 2
+  - Enemy: {fileID: 11400000, guid: fb34fce8a8b1942859afca8834164f23, type: 2}
+    Count: 1

@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 102cc730b4a02e446b2e330774a310e1, type: 3}
-  m_Name: Bear
+  m_Name: BigBear
   m_EditorClassIdentifier: 
   Prefab:
-    Prefab: {fileID: 7962199819078159310, guid: f5b41ba4c79702547a89de7544b80656, type: 3}
+    Prefab: {fileID: 6038957647889224000, guid: 2c0122e412a8948f98993e95889521b1, type: 3}
   Move:
     Speed: 4
   Health:
-    Health: 300
+    Health: 1000
   Abilities:
-  - {fileID: 11400000, guid: e9436eea08c2046e594c0a397178d594, type: 2}
-  - {fileID: 11400000, guid: f612732a856084f848bb942690dea814, type: 2}
-  - {fileID: 11400000, guid: 6a6b368e808244473b44f90b211f59dc, type: 2}
+  - {fileID: 11400000, guid: 5cd2389092d4a4941aa3d0ba0909b21a, type: 2}
+  - {fileID: 11400000, guid: 248f30129159b4924aa191a7142d8c97, type: 2}
+  - {fileID: 11400000, guid: 79cec040d0c674a15b5d8b2bdb6f1a4a, type: 2}

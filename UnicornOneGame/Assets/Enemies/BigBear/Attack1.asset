@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Attack1
   Range: 2
-  Damage: 15
+  Damage: 30
   Cooldown: 2.5
   Projectile: {fileID: 0}
   Effect: {fileID: 0}

@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Attack3
   m_EditorClassIdentifier: 
   Name: Attack3
-  Range: 0
-  Damage: 0
-  Cooldown: 0
+  Range: 2.5
+  Damage: 50
+  Cooldown: 6
   Projectile: {fileID: 0}
   Effect: {fileID: 0}

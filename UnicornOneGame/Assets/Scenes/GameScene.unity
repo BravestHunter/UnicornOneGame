@@ -220,7 +220,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _ecsWorld: {fileID: 1217280518}
-  EditorLevel: {fileID: 11400000, guid: 06d520b807b91ba46aec9578b094931a, type: 2}
+  EditorLevel: {fileID: 11400000, guid: 1088b0a89804e4d4c90439d1e4a8677a, type: 2}
 --- !u!4 &698487163
 Transform:
   m_ObjectHideFlags: 0

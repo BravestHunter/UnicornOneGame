@@ -15,6 +15,6 @@ MonoBehaviour:
   Name: Attack1
   Range: 2.5
   Damage: 10
-  Cooldown: 2
+  Cooldown: 2.5
   Projectile: {fileID: 0}
   Effect: {fileID: 0}

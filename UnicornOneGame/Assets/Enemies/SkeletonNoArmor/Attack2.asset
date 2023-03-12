@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e9de9266addd4621a65fe7e98d8adc2, type: 3}
   m_Name: Attack2
   m_EditorClassIdentifier: 
-  Name: 
-  Range: 0
-  Damage: 0
-  Cooldown: 0
+  Name: Attack2
+  Range: 2.5
+  Damage: 10
+  Cooldown: 2.5
   Projectile: {fileID: 0}
   Effect: {fileID: 0}

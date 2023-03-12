@@ -20,3 +20,5 @@ MonoBehaviour:
     Health: 200
   Abilities:
   - {fileID: 11400000, guid: d22f4bde5271549269a7ecfff7148efd, type: 2}
+  - {fileID: 11400000, guid: 8c388cf49f23b4a878e8aa7d2a4af9f0, type: 2}
+  - {fileID: 11400000, guid: e2bd4bcf9abf64bc8b0ccd9211f2059f, type: 2}

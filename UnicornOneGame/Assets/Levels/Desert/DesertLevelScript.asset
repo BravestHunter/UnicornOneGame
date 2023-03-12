@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: DesertLevelScript
   m_EditorClassIdentifier: 
   Waves:
-  - Enemy: {fileID: 11400000, guid: 9449c5ec25d944836a76412bffe44d84, type: 2}
+  - Enemy: {fileID: 11400000, guid: dd2f22c3612a24cc9b273c2b24419b46, type: 2}
     Count: 2
-  - Enemy: {fileID: 11400000, guid: bc61e2d119c0c3f41af4040678b565bd, type: 2}
+  - Enemy: {fileID: 11400000, guid: dd2f22c3612a24cc9b273c2b24419b46, type: 2}
     Count: 3
   - Enemy: {fileID: 11400000, guid: 9449c5ec25d944836a76412bffe44d84, type: 2}
     Count: 3

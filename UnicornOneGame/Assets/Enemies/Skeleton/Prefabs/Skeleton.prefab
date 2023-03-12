@@ -2311,7 +2311,7 @@ GameObject:
   - component: {fileID: 4473038820226754418}
   - component: {fileID: 6549954196211509008}
   m_Layer: 0
-  m_Name: SkeletonOutlaw_NoArmor
+  m_Name: Skeleton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -10,15 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 102cc730b4a02e446b2e330774a310e1, type: 3}
-  m_Name: BigBear
+  m_Name: SkeletonNoArmor
   m_EditorClassIdentifier: 
   Prefab:
-    Prefab: {fileID: 7962199819078159310, guid: 2c46f2123194e4166ab45be02196d915, type: 3}
+    Prefab: {fileID: 1849936960482616, guid: 1fc72a5275dd04fdab97acac274f0809, type: 3}
   Move:
     Speed: 4
   Health:
-    Health: 1000
+    Health: 200
   Abilities:
-  - {fileID: 11400000, guid: 5cd2389092d4a4941aa3d0ba0909b21a, type: 2}
-  - {fileID: 11400000, guid: 248f30129159b4924aa191a7142d8c97, type: 2}
-  - {fileID: 11400000, guid: 79cec040d0c674a15b5d8b2bdb6f1a4a, type: 2}
+  - {fileID: 11400000, guid: d22f4bde5271549269a7ecfff7148efd, type: 2}

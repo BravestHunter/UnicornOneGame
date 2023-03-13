@@ -117,12 +117,14 @@ namespace UnicornOne.Ecs.Systems
             var damagePool = world.GetPool<DamageComponent>();
             var effectFlagPool = world.GetPool<EffectFlag>();
             var effectLifeSpanPool = world.GetPool<EffectLifeSpanComponent>();
+            var launchPointUnityRefComponentPool = world.GetPool<LaunchPointUnityRefComponent>();
 
             foreach (var entity in _shotFilter)
             {
                 var targetComponent = targetPool.Get(entity);
                 var abilityInUsageComponent = abilityInUsageComponentPool.Get(entity);
                 var gameObjectRefComponent = gameObjectRefPool.Get(entity);
+                var launchPointUnityRefComponent = launchPointUnityRefComponentPool.Get(entity);
 
                 int targetEntity;
                 if (!targetComponent.TargetEntity.Unpack(world, out targetEntity))
@@ -145,7 +147,7 @@ namespace UnicornOne.Ecs.Systems
                     projectileParametersComponent.MoveSpeed = projectile.MoveInfo.Speed;
 
                     var projectileGameObject = GameObject.Instantiate(projectile.PrefabInfo.Prefab);
-                    projectileGameObject.transform.position = gameObjectRefComponent.GameObject.transform.position + Vector3.up * 1.65f + gameObjectRefComponent.GameObject.transform.forward * 1.0f;
+                    projectileGameObject.transform.position = launchPointUnityRefComponent.LaunchPoint.transform.position;
                     projectileGameObject.transform.rotation = gameObjectRefComponent.GameObject.transform.rotation;
 
                     ref var projectileGameObjectRefComponent = ref gameObjectRefPool.Add(projectileEntity);
@@ -179,14 +181,13 @@ namespace UnicornOne.Ecs.Systems
                     ref var projectileGameObjectRefComponent = ref gameObjectRefPool.Add(effectEntity);
                     projectileGameObjectRefComponent.GameObject = effectGameObject;
 
-                    Vector3 entityPosition = gameObjectRefComponent.GameObject.transform.position + Vector3.up * 1.65f + gameObjectRefComponent.GameObject.transform.forward * 1.0f;
-                    Vector3 targetEntityPosition = gameObjectRefPool.Get(targetEntity).GameObject.transform.position + Vector3.up * 1.65f;
+                    var targetGameObject = gameObjectRefPool.Get(targetEntity).GameObject;
 
                     LightningBoltScript script = effectGameObject.GetComponent<LightningBoltScript>();
-                    script.StartObject = null;
-                    script.StartPosition = entityPosition;
-                    script.EndObject = null;
-                    script.EndPosition = targetEntityPosition;
+                    script.StartObject = launchPointUnityRefComponent.LaunchPoint.gameObject;
+                    script.EndObject = targetGameObject;
+                    script.EndPosition = targetGameObject.transform.position;
+                    script.EndShift = Vector3.up * 1.65f;
                 }
 
                 shotRequestPool.Del(entity);

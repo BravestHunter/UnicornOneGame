@@ -883,6 +883,7 @@ Transform:
   - {fileID: 3009907526361858334}
   - {fileID: 3009907526361858320}
   - {fileID: 3009907526361858314}
+  - {fileID: 3166650827793007505}
   m_Father: {fileID: 3009907526361858306}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1868,6 +1869,50 @@ Transform:
   m_Father: {fileID: 3009907526361858366}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &4346519130530624862
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3166650827793007505}
+  - component: {fileID: 6454045788062457531}
+  m_Layer: 0
+  m_Name: LaunchPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3166650827793007505
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4346519130530624862}
+  m_LocalRotation: {x: 0.099117264, y: -0.094126806, z: -0.73488903, w: 0.66426957}
+  m_LocalPosition: {x: -0.43629664, y: 0.013815939, z: 0.92435706}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3009907526361858304}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6454045788062457531
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4346519130530624862}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db4081eee8d0f491781a412650b22c3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7609828253002326640
 GameObject:
   m_ObjectHideFlags: 0
@@ -1967,7 +2012,7 @@ GameObject:
   - component: {fileID: 4743523076812310332}
   - component: {fileID: 7689879707314682972}
   m_Layer: 0
-  m_Name: Warrior
+  m_Name: Mage
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

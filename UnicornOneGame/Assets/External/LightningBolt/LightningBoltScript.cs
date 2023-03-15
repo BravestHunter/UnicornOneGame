@@ -50,7 +50,6 @@ namespace DigitalRuby.LightningBolt
 
         [Tooltip("The game object where the lightning will end at. If null, EndPosition is used.")]
         public GameObject EndObject;
-        public Vector3 EndShift;
 
         [Tooltip("The end position where the lightning will end at. This is in world space if EndObject is null, otherwise this is offset from EndObject position.")]
         public Vector3 EndPosition;
@@ -328,11 +327,12 @@ namespace DigitalRuby.LightningBolt
             }
             if (EndObject == null)
             {
-                end = EndPosition + EndShift;
+                end = EndPosition;
             }
             else
             {
-                end = EndObject.transform.position + EndShift;
+                end = EndObject.transform.position;
+                EndPosition = EndObject.transform.position;
             }
             startIndex = 0;
             GenerateLightningBolt(start, end, Generations, Generations, 0.0f);

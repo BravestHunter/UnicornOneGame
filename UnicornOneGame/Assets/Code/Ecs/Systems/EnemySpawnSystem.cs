@@ -99,6 +99,8 @@ namespace UnicornOne.Ecs.Systems
             animator.applyRootMotion = false;
             var animationEventHandler = gameObject.GetComponentInChildren<AnimationEventHandler>();
             animationEventHandler.Clean();
+            var launchPoint = gameObject.GetComponentInChildren<LaunchPoint>();
+            var targetPoint = gameObject.GetComponentInChildren<TargetPoint>();
 
             var entity = world.NewEntity();
 
@@ -125,6 +127,20 @@ namespace UnicornOne.Ecs.Systems
             var navigationAgentRefPool = world.GetPool<NavigationAgentUnityRefComponent>();
             ref var navigationAgentRefComponent = ref navigationAgentRefPool.Add(entity);
             navigationAgentRefComponent.Agent = navigationAgent;
+
+            if (targetPoint != null)
+            {
+                var targetPointRefPool = world.GetPool<TargetPointUnityRefComponent>();
+                ref var targetPointUnityRefComponent = ref targetPointRefPool.Add(entity);
+                targetPointUnityRefComponent.TargetPoint = targetPoint;
+            }
+
+            if (launchPoint != null)
+            {
+                var launchPointRefPool = world.GetPool<LaunchPointUnityRefComponent>();
+                ref var launchPointUnityRefComponent = ref launchPointRefPool.Add(entity);
+                launchPointUnityRefComponent.LaunchPoint = launchPoint;
+            }
 
             var animatorRefPool = world.GetPool<AnimatorUnityRefComponent>();
             ref var animatorRefComponent = ref animatorRefPool.Add(entity);

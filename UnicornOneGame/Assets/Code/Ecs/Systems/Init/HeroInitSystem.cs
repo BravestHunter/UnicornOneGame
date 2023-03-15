@@ -44,6 +44,7 @@ namespace UnicornOne.Ecs.Systems
             animationEventHandler.Clean();
             var navigationAgent = heroGameObject.GetComponent<NavMeshAgent>();
             var launchPoint = heroGameObject.GetComponentInChildren<LaunchPoint>();
+            var targetPoint = heroGameObject.GetComponentInChildren<TargetPoint>();
 
             var entity = world.NewEntity();
 
@@ -77,9 +78,16 @@ namespace UnicornOne.Ecs.Systems
 
             if (launchPoint != null)
             {
-                var launchPointUnityRefComponentPool = world.GetPool<LaunchPointUnityRefComponent>();
-                ref var launchPointUnityRefComponent = ref launchPointUnityRefComponentPool.Add(entity);
+                var launchPointRefPool = world.GetPool<LaunchPointUnityRefComponent>();
+                ref var launchPointUnityRefComponent = ref launchPointRefPool.Add(entity);
                 launchPointUnityRefComponent.LaunchPoint = launchPoint;
+            }
+
+            if (targetPoint != null)
+            {
+                var targetPointRefPool = world.GetPool<TargetPointUnityRefComponent>();
+                ref var targetPointUnityRefComponent = ref targetPointRefPool.Add(entity);
+                targetPointUnityRefComponent.TargetPoint = targetPoint;
             }
 
             var heroBehaviorAiPool = world.GetPool<HeroBehaviorAiComponent>();

@@ -29,6 +29,7 @@ namespace UnicornOne.Ecs.Systems
             var projectileParametersPool = world.GetPool<ProjectileParametersComponent>();
             var targetPool = world.GetPool<TargetComponent>();
             var gameObjectRefPool = world.GetPool<GameObjectUnityRefComponent>();
+            var targetPointRefPool = world.GetPool<TargetPointUnityRefComponent>();
 
             foreach (var entity in _filter)
             {
@@ -39,14 +40,21 @@ namespace UnicornOne.Ecs.Systems
                 int targetEntity;
                 if (targetComponent.TargetEntity.Unpack(world, out targetEntity))
                 {
-                    Vector3 entityPosition = gameObjectComponent.GameObject.transform.position;
-                    entityPosition.y = 0;
+                    Vector3 projectilePosition = gameObjectComponent.GameObject.transform.position;
+                    projectilePosition.y = 0;
+
                     Vector3 targetEntityPosition = gameObjectRefPool.Get(targetEntity).GameObject.transform.position;
+                    if (targetPointRefPool.Has(targetEntity))
+                    {
+                        var targetPointUnityRefComponent = targetPointRefPool.Get(targetEntity);
+                        targetEntityPosition = targetPointUnityRefComponent.TargetPoint.transform.position;
+                    }
                     targetEntityPosition.y = 0;
-                    Vector3 offsetToTarget = targetEntityPosition - entityPosition;
+                    Vector3 offsetToTarget = targetEntityPosition - projectilePosition;
 
                     float moveDistance = Time.deltaTime * projectileParametersComponent.MoveSpeed;
 
+                    gameObjectComponent.GameObject.transform.rotation = Quaternion.LookRotation(offsetToTarget.normalized);
                     if (offsetToTarget.magnitude <= moveDistance)
                     {
                         gameObjectComponent.GameObject.transform.position = targetEntityPosition;

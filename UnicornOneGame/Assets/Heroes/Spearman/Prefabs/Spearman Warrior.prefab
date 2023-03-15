@@ -31,6 +31,50 @@ Transform:
   m_Father: {fileID: 5870695979939355796}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 50.012, y: -87.576004, z: 23.796001}
+--- !u!1 &8065117796828106881
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2530665876203914999}
+  - component: {fileID: 2664035815976568465}
+  m_Layer: 0
+  m_Name: TargetPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2530665876203914999
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8065117796828106881}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5870695979939355902}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2664035815976568465
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8065117796828106881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2310d7e52d404da68b7e8a87b250cf4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8651515420689572497
 GameObject:
   m_ObjectHideFlags: 0
@@ -188,6 +232,9 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 26a233237f1b0e64f9f81ec5272d508b, type: 2}
     m_RemovedComponents: []
     m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 400048, guid: ec9ce9573683d684aa75013daec3884d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2530665876203914999}
     - targetCorrespondingSourceObject: {fileID: 400090, guid: ec9ce9573683d684aa75013daec3884d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4599688228927786666}
@@ -200,6 +247,11 @@ Transform:
 --- !u!4 &5870695979939355816 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400102, guid: ec9ce9573683d684aa75013daec3884d, type: 3}
+  m_PrefabInstance: {fileID: 5870695979939743310}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &5870695979939355902 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 400048, guid: ec9ce9573683d684aa75013daec3884d, type: 3}
   m_PrefabInstance: {fileID: 5870695979939743310}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &5870695979939709256 stripped

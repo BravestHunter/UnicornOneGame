@@ -9,6 +9,7 @@ namespace UnicornOne.Ecs.Systems
     {
         private EcsFilter _abilityUseFinishFilter;
         private EcsFilter _abilityUseRequestFilter;
+        private EcsFilter _abilityUserFilter;
 
         public void Run(IEcsSystems systems)
         {
@@ -16,6 +17,7 @@ namespace UnicornOne.Ecs.Systems
 
             ProcessAbilityUseFinish(world);
             ProcessAbilityUseRequest(world);
+            ProcessAbilityUserLookDirectionUpdate(world);
         }
 
         private void ProcessAbilityUseFinish(EcsWorld world)
@@ -56,10 +58,6 @@ namespace UnicornOne.Ecs.Systems
             var abilityInUsageComponentPool = world.GetPool<AbilityInUsageComponent>();
             var animatorTriggerRequestPool = world.GetPool<AnimatorTriggerRequest>();
 
-            // Temp
-            var targetPool = world.GetPool<TargetComponent>();
-            var gameObjectRefPool = world.GetPool<GameObjectUnityRefComponent>();
-
             foreach (var entity in _abilityUseRequestFilter)
             {
                 var abilityUseRequest = abilityUseRequestPool.Get(entity);
@@ -71,7 +69,25 @@ namespace UnicornOne.Ecs.Systems
                 ref var animatorTriggerRequest = ref animatorTriggerRequestPool.Add(entity);
                 animatorTriggerRequest.Name = abilityUseRequest.Ability.Name;
 
-                // Temp
+                abilityUseRequestPool.Del(entity);
+            }
+        }
+
+        private void ProcessAbilityUserLookDirectionUpdate(EcsWorld world)
+        {
+            if (_abilityUserFilter == null)
+            {
+                _abilityUserFilter = world
+                    .Filter<AbilityInUsageComponent>()
+                    .Inc<TargetComponent>()
+                    .End();
+            }
+
+            var targetPool = world.GetPool<TargetComponent>();
+            var gameObjectRefPool = world.GetPool<GameObjectUnityRefComponent>();
+
+            foreach (var entity in _abilityUserFilter)
+            {
                 ref var targetComponent = ref targetPool.Get(entity);
                 ref var gameObjectRefComponent = ref gameObjectRefPool.Get(entity);
                 int targetEntity;
@@ -79,8 +95,6 @@ namespace UnicornOne.Ecs.Systems
                 {
                     gameObjectRefComponent.GameObject.transform.LookAt(gameObjectRefPool.Get(targetEntity).GameObject.transform.position);
                 }
-
-                abilityUseRequestPool.Del(entity);
             }
         }
     }

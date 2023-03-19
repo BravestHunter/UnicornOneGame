@@ -1,15 +1,7 @@
 ﻿using DigitalRuby.LightningBolt;
 using Leopotam.EcsLite;
-using Leopotam.EcsLite.Di;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnicornOne.Ecs.Components;
-using UnicornOne.Ecs.Services;
 using UnityEngine;
-using static UnityEngine.EventSystems.EventTrigger;
 
 namespace UnicornOne.Ecs.Systems
 {

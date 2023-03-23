@@ -18,6 +18,7 @@ namespace UnicornOne.MonoBehaviours
         [SerializeField] private Canvas _contentCanvas;
         [SerializeField] private Canvas _pageCanvas;
 
+        [SerializeField] private ShopViewScript _shopViewScript;
         [SerializeField] private MainMenuViewScript _mainMenuViewScript;
         [SerializeField] private SettingsViewScript _settingsViewScript;
 
@@ -52,6 +53,18 @@ namespace UnicornOne.MonoBehaviours
             _pageCanvas.gameObject.SetActive(true);
 
             _settingsViewScript.gameObject.SetActive(true);
+        }
+
+        public void OnShopButtonClick()
+        {
+            _shopViewScript.gameObject.SetActive(true);
+            _mainMenuViewScript.gameObject.SetActive(false);
+        }
+
+        public void OnPlayButtonClick()
+        {
+            _shopViewScript.gameObject.SetActive(false);
+            _mainMenuViewScript.gameObject.SetActive(true);
         }
 
         private void OnPlayButtonClicked()

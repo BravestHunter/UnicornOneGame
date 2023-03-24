@@ -20,6 +20,7 @@ namespace UnicornOne.MonoBehaviours
 
         [SerializeField] private ShopViewScript _shopViewScript;
         [SerializeField] private MainMenuViewScript _mainMenuViewScript;
+        [SerializeField] private CollectionViewScript _collectionViewScript;
         [SerializeField] private SettingsViewScript _settingsViewScript;
 
         [SerializeField] private Level[] _availableLevels;
@@ -59,12 +60,20 @@ namespace UnicornOne.MonoBehaviours
         {
             _shopViewScript.gameObject.SetActive(true);
             _mainMenuViewScript.gameObject.SetActive(false);
+            _collectionViewScript.gameObject.SetActive(false);
         }
 
         public void OnPlayButtonClick()
         {
             _shopViewScript.gameObject.SetActive(false);
             _mainMenuViewScript.gameObject.SetActive(true);
+            _collectionViewScript.gameObject.SetActive(false);
+        }
+        public void OnCollectionButtonClick()
+        {
+            _shopViewScript.gameObject.SetActive(false);
+            _mainMenuViewScript.gameObject.SetActive(false);
+            _collectionViewScript.gameObject.SetActive(true);
         }
 
         private void OnPlayButtonClicked()

@@ -13,17 +13,21 @@ namespace UnicornOne.MonoBehaviours
 
 #if UNITY_EDITOR
         [SerializeField] private Level EditorLevel;
+        [SerializeField] private Hero[] EditorHeroes;
 #endif
 
         private void Start()
         {
             SceneManager.activeSceneChanged += OnActiveSceneChanged;
 
-#if UNITY_EDITOR
-            StartGame(SharedData.SelectedLevel ?? EditorLevel);
-#endif
-
             _ecsWorld.GameFinished += OnGameFinished;
+
+#if UNITY_EDITOR
+            StartGame(
+                SharedData.SelectedLevel ?? EditorLevel,
+                SharedData.SelectedHeroes ?? EditorHeroes
+            );
+#endif
         }
 
         private void Update()
@@ -37,9 +41,9 @@ namespace UnicornOne.MonoBehaviours
         }
 
 
-        private void StartGame(Level level)
+        private void StartGame(Level level, Hero[] heroes)
         {
-            _ecsWorld.Init(level);
+            _ecsWorld.Init(level, heroes);
         }
 
         private void OnActiveSceneChanged(Scene current, Scene next)
@@ -49,7 +53,7 @@ namespace UnicornOne.MonoBehaviours
                 return;
             }
 
-            StartGame(SharedData.SelectedLevel);
+            StartGame(SharedData.SelectedLevel, SharedData.SelectedHeroes);
         }
 
         private void OnGameFinished()

@@ -14,20 +14,22 @@ namespace UnicornOne.MonoBehaviours
 
 		[SerializeField] private GameObject _heroListItemViewPrefab;
 
-		private ShowHeroInfoAction _showHeroInfoCallback;
+        [SerializeField] private Hero[] _heroes;
 
-        public void Init(IEnumerable<Hero> heroes, ShowHeroInfoAction showHeroInfoCallback)
+        private SelectHeroAction _selectHeroCallback;
+
+        public void Init(SelectHeroAction selectHeroCallback)
 		{
-			_showHeroInfoCallback = showHeroInfoCallback;
+            _selectHeroCallback = selectHeroCallback;
 
-            foreach (var hero in heroes)
+            foreach (var hero in _heroes)
 			{
 				GameObject heroItemView = Instantiate(_heroListItemViewPrefab);
 				heroItemView.transform.SetParent(_heroGrid.transform, false);
 
 				var itemScript = heroItemView.GetComponent<HeroListItemViewScript>();
                 itemScript.SetHero(hero);
-                itemScript.ShowInfoButtonClicked += _showHeroInfoCallback;
+                itemScript.SelectHeroButtonClicked += _selectHeroCallback;
             }
 
             _scroll.verticalNormalizedPosition = 1.0f;
@@ -37,7 +39,7 @@ namespace UnicornOne.MonoBehaviours
         {
             foreach (var itemScript in _heroGrid.GetComponentsInChildren<HeroListItemViewScript>())
 			{
-				itemScript.ShowInfoButtonClicked -= _showHeroInfoCallback;
+				itemScript.SelectHeroButtonClicked -= _selectHeroCallback;
             }
         }
     }

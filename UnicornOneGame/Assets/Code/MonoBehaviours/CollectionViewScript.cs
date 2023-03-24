@@ -9,11 +9,9 @@ namespace UnicornOne.MonoBehaviours
 		[SerializeField] private HeroListViewScript _heroListViewScript;
         [SerializeField] private HeroInfoViewScript _heroInfoViewScript;
 
-        [SerializeField] private Hero[] _heroes;
-
 		void Start()
 		{
-			_heroListViewScript.Init(_heroes, OnHeroListItemClick);
+			_heroListViewScript.Init(OnHeroListItemClick);
 
 			_heroInfoViewScript.BackButtonClicked += OnHeroInfoViewBackButtonClick;
         }

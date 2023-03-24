@@ -19,7 +19,7 @@ namespace UnicornOne.MonoBehaviours
         [SerializeField] private Canvas _pageCanvas;
 
         [SerializeField] private ShopViewScript _shopViewScript;
-        [SerializeField] private MainMenuViewScript _mainMenuViewScript;
+        [SerializeField] private PlayViewScript _playViewScript;
         [SerializeField] private CollectionViewScript _collectionViewScript;
         [SerializeField] private SettingsViewScript _settingsViewScript;
 
@@ -29,8 +29,8 @@ namespace UnicornOne.MonoBehaviours
 
         private void Start()
         {
-            _mainMenuViewScript.SetAvailableLevels(_availableLevels);
-            _mainMenuViewScript.PlayButtonClicked += OnPlayButtonClicked;
+            _playViewScript.SetAvailableLevels(_availableLevels);
+            _playViewScript.GameRequested += OnGameRequested;
 
             _settingsViewScript.BackButtonClicked += SettingsViewBackButtonClick;
         }
@@ -39,7 +39,7 @@ namespace UnicornOne.MonoBehaviours
         {
             _settingsViewScript.BackButtonClicked -= SettingsViewBackButtonClick;
 
-            _mainMenuViewScript.PlayButtonClicked -= OnPlayButtonClicked;
+            _playViewScript.GameRequested -= OnGameRequested;
         }
 
         private void Update()
@@ -59,38 +59,49 @@ namespace UnicornOne.MonoBehaviours
         public void OnShopButtonClick()
         {
             _shopViewScript.gameObject.SetActive(true);
-            _mainMenuViewScript.gameObject.SetActive(false);
+            _playViewScript.gameObject.SetActive(false);
             _collectionViewScript.gameObject.SetActive(false);
         }
 
         public void OnPlayButtonClick()
         {
             _shopViewScript.gameObject.SetActive(false);
-            _mainMenuViewScript.gameObject.SetActive(true);
+            _playViewScript.gameObject.SetActive(true);
             _collectionViewScript.gameObject.SetActive(false);
         }
         public void OnCollectionButtonClick()
         {
             _shopViewScript.gameObject.SetActive(false);
-            _mainMenuViewScript.gameObject.SetActive(false);
+            _playViewScript.gameObject.SetActive(false);
             _collectionViewScript.gameObject.SetActive(true);
         }
 
-        private void OnPlayButtonClicked()
+        private void OnGameRequested(IEnumerable<Hero> heroes)
         {
             if (_gameSceneLoadingOperation != null)
             {
                 return;
             }
 
+            if (heroes.Count() < 1)
+            {
+                return;
+            }
+
             // Clean previous value
             SharedData.SelectedLevel = null;
+            SharedData.SelectedHeroes = null;
 
-            var selectedOption = _mainMenuViewScript.SelectedLevelData;
+            var selectedOption = _playViewScript.SelectedLevelData;
             SharedData.SelectedLevel = _availableLevels.FirstOrDefault(l => l.name == selectedOption.text);
             if (SharedData.SelectedLevel == null)
             {
                 SharedData.SelectedLevel = _availableLevels.First();
+            }
+
+            if (SharedData.SelectedHeroes == null)
+            {
+                SharedData.SelectedHeroes = heroes.ToArray();
             }
 
             _gameSceneLoadingOperation = SceneManager.LoadSceneAsync("GameScene", LoadSceneMode.Single);

@@ -18,7 +18,6 @@ namespace UnicornOne.MonoBehaviours
     {
         public event Action GameFinished;
 
-        [SerializeField] private List<Hero> Heroes;
         [SerializeField] private Camera Camera;
         [SerializeField] private GameSettings GameSettings;
 
@@ -58,18 +57,18 @@ namespace UnicornOne.MonoBehaviours
             Destroy();
         }
 
-        public void Init(Level level)
+        public void Init(Level level, Hero[] heroes)
         {
             _world = new EcsWorld();
 
-            var uniqueHeroes = Heroes.Distinct();
+            var uniqueHeroes = heroes.Distinct();
             // Get all enemy types from level waves
             var uniqueEnemies = level.Script.Waves.Select(w => w.Enemy).Distinct();
 
             _gameControlService = new();
             // TODO: combine all these services with init data into one?
             var levelService = new LevelService(level);
-            var heroService = new HeroService(Heroes);
+            var heroService = new HeroService(heroes);
             var cameraService = new CameraService(Camera);
             var settingsService = new GameSettingsService(GameSettings);
             var abilityService = new AbilityService(uniqueHeroes, uniqueEnemies);

@@ -12,8 +12,8 @@ namespace UnicornOne.MonoBehaviours
 
 		public Hero Hero { get; private set; }
 
-		public delegate void ShowHeroInfoAction(Hero hero);
-		public event ShowHeroInfoAction ShowInfoButtonClicked;
+		public delegate void SelectHeroAction(Hero hero);
+		public event SelectHeroAction SelectHeroButtonClicked;
 
 		public void SetHero(Hero hero)
 		{
@@ -24,7 +24,7 @@ namespace UnicornOne.MonoBehaviours
 
 		public void OnShowInfoButtonClick()
 		{
-			ShowInfoButtonClicked?.Invoke(Hero);
+            SelectHeroButtonClicked?.Invoke(Hero);
         }
     }
 }

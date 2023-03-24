@@ -221,6 +221,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _ecsWorld: {fileID: 1217280518}
   EditorLevel: {fileID: 11400000, guid: 06d520b807b91ba46aec9578b094931a, type: 2}
+  EditorHeroes:
+  - {fileID: 11400000, guid: 991bd1ca2c7b74d4a9c8ac1b014f2829, type: 2}
+  - {fileID: 11400000, guid: 3b6a70ec1add7d64293848167368d8c8, type: 2}
+  - {fileID: 11400000, guid: 53d6139792ace404081c8285ac0c64b6, type: 2}
+  - {fileID: 11400000, guid: 777d589dfd9a07e46a839ab461c6085f, type: 2}
 --- !u!4 &698487163
 Transform:
   m_ObjectHideFlags: 0
@@ -479,10 +484,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 625a943583c3d344893a9df5e4f82213, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Heroes:
-  - {fileID: 11400000, guid: 991bd1ca2c7b74d4a9c8ac1b014f2829, type: 2}
-  - {fileID: 11400000, guid: 3b6a70ec1add7d64293848167368d8c8, type: 2}
-  - {fileID: 11400000, guid: 53d6139792ace404081c8285ac0c64b6, type: 2}
-  - {fileID: 11400000, guid: 777d589dfd9a07e46a839ab461c6085f, type: 2}
   Camera: {fileID: 963194227}
   GameSettings: {fileID: 11400000, guid: f278d9eefdb3cd048a2e36661748d496, type: 2}

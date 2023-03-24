@@ -1,20 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnicornOne.ScriptableObjects;
 
 namespace UnicornOne.MonoBehaviours
 {
 	public class CollectionViewScript : MonoBehaviour
 	{
-		// Use this for initialization
+		[SerializeField] private HeroListViewScript _heroListViewScript;
+
+		[SerializeField] private Hero[] _heroes;
+
 		void Start()
 		{
-
-		}
-
-		// Update is called once per frame
-		void Update()
-		{
-
-		}
+			_heroListViewScript.SetHeros(_heroes);
+        }
 	}
 }

@@ -10,7 +10,7 @@ using UnityEngine;
 namespace UnicornOne.ScriptableObjects
 {
     [CreateAssetMenu(fileName = "Hero", menuName = "Custom/Hero")]
-    internal class Hero : ScriptableObject, IHero
+    public class Hero : ScriptableObject, IHero
     {
         public PrefabInfo Prefab;
         public MoveInfo Move;

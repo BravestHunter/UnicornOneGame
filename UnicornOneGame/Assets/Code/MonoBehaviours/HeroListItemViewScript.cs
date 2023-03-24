@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using TMPro;
+using UnicornOne.ScriptableObjects;
 
 namespace UnicornOne.MonoBehaviours
 {
@@ -8,9 +9,13 @@ namespace UnicornOne.MonoBehaviours
 	{
 		[SerializeField] private TMP_Text _title;
 
-		public string Title
+		public Hero Hero { get; private set; }
+
+		public void SetHero(Hero hero)
 		{
-			set { _title.text = value; }
-		}
+			Hero = hero;
+
+            _title.text = hero.name;
+        }
 	}
 }

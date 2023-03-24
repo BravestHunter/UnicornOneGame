@@ -50,6 +50,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56371bd5e25ee48009371d673b740745, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _scroll: {fileID: 7184668656261641937}
   _heroGrid: {fileID: 5158956357882033301}
   _heroListItemViewPrefab: {fileID: 538406865761949297, guid: ac0d9b52df1b7478fb3a84fbd288e5c4, type: 3}
 --- !u!1 &1878859733822687760

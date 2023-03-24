@@ -7,12 +7,34 @@ namespace UnicornOne.MonoBehaviours
 	public class CollectionViewScript : MonoBehaviour
 	{
 		[SerializeField] private HeroListViewScript _heroListViewScript;
+        [SerializeField] private HeroInfoViewScript _heroInfoViewScript;
 
-		[SerializeField] private Hero[] _heroes;
+        [SerializeField] private Hero[] _heroes;
 
 		void Start()
 		{
-			_heroListViewScript.SetHeros(_heroes);
+			_heroListViewScript.Init(_heroes, OnHeroListItemClick);
+
+			_heroInfoViewScript.BackButtonClicked += OnHeroInfoViewBackButtonClick;
+        }
+
+        private void OnDestroy()
+        {
+            _heroInfoViewScript.BackButtonClicked -= OnHeroInfoViewBackButtonClick;
+        }
+
+        private void OnHeroListItemClick(Hero hero)
+		{
+            _heroInfoViewScript.SetHero(hero);
+
+            _heroListViewScript.gameObject.SetActive(false);
+            _heroInfoViewScript.gameObject.SetActive(true);
+        }
+
+		private void OnHeroInfoViewBackButtonClick()
+		{
+            _heroListViewScript.gameObject.SetActive(true);
+            _heroInfoViewScript.gameObject.SetActive(false);
         }
 	}
 }

@@ -11,10 +11,10 @@ namespace UnicornOne.Board
         [Serializable]
         public struct TileEntry
         {
-            public Vector3Int _position;
-            public Tile _tile;
+            public HexCoordinates Position;
+            public Tile Tile;
         }
 
-        public TileEntry[] Path;
+        public TileEntry[] Tiles;
     }
 }

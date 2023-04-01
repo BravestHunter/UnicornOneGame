@@ -12,3 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbeec0540732c4da4b264183f64211b8, type: 3}
   m_Name: CampTile
   m_EditorClassIdentifier: 
+  Color: {r: 0.9433962, g: 0.7925546, b: 0.28034887, a: 0}

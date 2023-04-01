@@ -9,6 +9,6 @@ namespace UnicornOne.Board
     {
         public Color Color;
 
-        // All tile tada including tile script
+        // All tile data including tile script
     }
 }

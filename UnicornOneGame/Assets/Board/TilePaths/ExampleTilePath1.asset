@@ -12,4 +12,48 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0d679ec4188d4d56b0c58e6b9051090, type: 3}
   m_Name: ExampleTilePath1
   m_EditorClassIdentifier: 
-  Path: []
+  Tiles:
+  - Position:
+      X: 0
+      Y: 0
+    Tile: {fileID: 11400000, guid: d3c009f44b6a5465f962668cc33781cd, type: 2}
+  - Position:
+      X: 0
+      Y: 1
+    Tile: {fileID: 11400000, guid: b977ea59ca4e0490b871c4a8f37beded, type: 2}
+  - Position:
+      X: 1
+      Y: 1
+    Tile: {fileID: 11400000, guid: b977ea59ca4e0490b871c4a8f37beded, type: 2}
+  - Position:
+      X: 2
+      Y: 0
+    Tile: {fileID: 11400000, guid: b977ea59ca4e0490b871c4a8f37beded, type: 2}
+  - Position:
+      X: 2
+      Y: -1
+    Tile: {fileID: 11400000, guid: b977ea59ca4e0490b871c4a8f37beded, type: 2}
+  - Position:
+      X: 2
+      Y: -2
+    Tile: {fileID: 11400000, guid: b977ea59ca4e0490b871c4a8f37beded, type: 2}
+  - Position:
+      X: 2
+      Y: -3
+    Tile: {fileID: 11400000, guid: b977ea59ca4e0490b871c4a8f37beded, type: 2}
+  - Position:
+      X: 1
+      Y: -3
+    Tile: {fileID: 11400000, guid: b977ea59ca4e0490b871c4a8f37beded, type: 2}
+  - Position:
+      X: 0
+      Y: -2
+    Tile: {fileID: 11400000, guid: b977ea59ca4e0490b871c4a8f37beded, type: 2}
+  - Position:
+      X: -1
+      Y: -1
+    Tile: {fileID: 11400000, guid: b977ea59ca4e0490b871c4a8f37beded, type: 2}
+  - Position:
+      X: -1
+      Y: 0
+    Tile: {fileID: 11400000, guid: b977ea59ca4e0490b871c4a8f37beded, type: 2}

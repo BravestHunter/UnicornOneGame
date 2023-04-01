@@ -12,6 +12,8 @@ namespace UnicornOne.Board
         [SerializeField] private float HexOuterRadius = 1.0f;
         private float HexInnerRadius => HexOuterRadius * 0.866025404f; // * sqrRoot(3) / 2
 
+        [SerializeField] private float _tileHeight = 4.0f;
+
         private Vector3[] HexCorners => new Vector3[] {
             new Vector3(0f, 0f, HexOuterRadius),
             new Vector3(HexInnerRadius, 0f, 0.5f * HexOuterRadius),
@@ -38,19 +40,22 @@ namespace UnicornOne.Board
 
             foreach (var tileEntry in tilePath.Tiles)
             {
-                CreateTile(tileEntry.Position, mesh);
+                CreateTile(tileEntry.Position, mesh, tileEntry.Tile);
             }
         }
 
-        void CreateTile(HexCoordinates coords, Mesh mesh)
+        void CreateTile(HexCoordinates coords, Mesh mesh, Tile tile)
         {
             Vector3 position = coords.ToWorldCoords(HexOuterRadius, HexInnerRadius);
 
-            var tile = Instantiate(_tilePrefab, transform, false);
-            tile.transform.localPosition = position;
+            var tileObject = Instantiate(_tilePrefab, transform, false);
+            tileObject.transform.localPosition = position;
 
-            var meshFilter = tile.GetComponent<MeshFilter>();
+            var meshFilter = tileObject.GetComponent<MeshFilter>();
             meshFilter.mesh = mesh;
+
+            var meshRenderer = tileObject.GetComponent<MeshRenderer>();
+            meshRenderer.material = tile.Material;
         }
 
         private Mesh GetHexMesh()
@@ -70,9 +75,19 @@ namespace UnicornOne.Board
             }
 
             var hexCorners = HexCorners;
+
+            // Top
             for (int i = 0; i < 6; i++)
             {
                 AddTriangle(Vector3.zero, hexCorners[i], hexCorners[i + 1]);
+            }
+
+            // Side
+            Vector3 verticalOffset = -Vector3.up * _tileHeight;
+            for (int i = 0; i < 6; i++)
+            {
+                AddTriangle(hexCorners[i], hexCorners[i] + verticalOffset, hexCorners[i + 1] + verticalOffset);
+                AddTriangle(hexCorners[i], hexCorners[i + 1] + verticalOffset, hexCorners[i + 1]);
             }
 
             var mesh = new Mesh();

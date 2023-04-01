@@ -10,6 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cbeec0540732c4da4b264183f64211b8, type: 3}
-  m_Name: CampTile
+  m_Name: RoadTile
   m_EditorClassIdentifier: 
-  Material: {fileID: 2100000, guid: d48a4a4f4dbba4178953463b8e6613f0, type: 2}
+  Color: {r: 0.8396226, g: 0.36040404, b: 0.582111, a: 0}
+  Material: {fileID: 2100000, guid: 1ecec5a1f6c5f467598badca1e5750fc, type: 2}

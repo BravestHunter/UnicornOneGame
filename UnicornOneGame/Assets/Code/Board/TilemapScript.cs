@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnicornOne.Board.TilePath;
 
 namespace UnicornOne.Board
 {
@@ -13,6 +14,10 @@ namespace UnicornOne.Board
         private float HexInnerRadius => HexOuterRadius * 0.866025404f; // * sqrRoot(3) / 2
 
         [SerializeField] private float _tileHeight = 4.0f;
+
+        [SerializeField] private Tile _fillTile;
+        [SerializeField] private Vector2Int _fillFieldXRange;
+        [SerializeField] private Vector2Int _fillFieldYRange;
 
         private Vector3[] HexCorners => new Vector3[] {
             new Vector3(0f, 0f, HexOuterRadius),
@@ -38,9 +43,22 @@ namespace UnicornOne.Board
         {
             var mesh = GetHexMesh();
 
+            HashSet<(int, int)> existingTilesSet = new();
             foreach (var tileEntry in tilePath.Tiles)
             {
                 CreateTile(tileEntry.Position, mesh, tileEntry.Tile);
+                existingTilesSet.Add((tileEntry.Position.X, tileEntry.Position.Y));
+            }
+
+            for (int i = _fillFieldXRange.x; i <= _fillFieldXRange.y; i++)
+            {
+                for (int j = _fillFieldYRange.x; j <= _fillFieldYRange.y; j++)
+                {
+                    if (!existingTilesSet.Contains((i, j)))
+                    {
+                        CreateTile(new HexCoordinates(i, j), mesh, _fillTile);
+                    }
+                }
             }
         }
 
@@ -51,11 +69,8 @@ namespace UnicornOne.Board
             var tileObject = Instantiate(_tilePrefab, transform, false);
             tileObject.transform.localPosition = position;
 
-            var meshFilter = tileObject.GetComponent<MeshFilter>();
-            meshFilter.mesh = mesh;
-
-            var meshRenderer = tileObject.GetComponent<MeshRenderer>();
-            meshRenderer.material = tile.Material;
+            var tileScript = tileObject.GetComponent<TileScript>();
+            tileScript.Init(tile, mesh);
         }
 
         private Mesh GetHexMesh()

@@ -174,6 +174,11 @@ MonoBehaviour:
   _fillTile: {fileID: 11400000, guid: 1cc474152b6c54b1ab80a7112a31a128, type: 2}
   _fillFieldXRange: {x: -4, y: 8}
   _fillFieldYRange: {x: -8, y: 3}
+  _randomGeneration: 1
+  _generatedPathLength: 10
+  _startTile: {fileID: 11400000, guid: d3c009f44b6a5465f962668cc33781cd, type: 2}
+  _finishTile: {fileID: 11400000, guid: 05ee652bf47004f90bb6aaab47149af0, type: 2}
+  _roadTile: {fileID: 11400000, guid: b977ea59ca4e0490b871c4a8f37beded, type: 2}
 --- !u!1 &695850534
 GameObject:
   m_ObjectHideFlags: 0

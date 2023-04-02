@@ -19,6 +19,12 @@ namespace UnicornOne.Board
         [SerializeField] private Vector2Int _fillFieldXRange;
         [SerializeField] private Vector2Int _fillFieldYRange;
 
+        [SerializeField] private bool _randomGeneration = false;
+        [SerializeField] private int _generatedPathLength = 10;
+        [SerializeField] private Tile _startTile;
+        [SerializeField] private Tile _finishTile;
+        [SerializeField] private Tile _roadTile;
+
         private Vector3[] HexCorners => new Vector3[] {
             new Vector3(0f, 0f, HexOuterRadius),
             new Vector3(HexInnerRadius, 0f, 0.5f * HexOuterRadius),
@@ -31,7 +37,14 @@ namespace UnicornOne.Board
 
         void Start()
         {
-            Setup(_tilePath);
+            if (_randomGeneration)
+            {
+                Setup(TilePathGenerator.Generate(_startTile, _finishTile, _roadTile, _generatedPathLength));
+            }
+            else
+            {
+                Setup(_tilePath);
+            }
         }
 
         void Update()

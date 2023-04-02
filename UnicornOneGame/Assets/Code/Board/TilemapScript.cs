@@ -8,7 +8,6 @@ namespace UnicornOne.Board
 {
     public class TilemapScript : MonoBehaviour
     {
-        [SerializeField] private TilePath _tilePath;
         [SerializeField] private GameObject _tilePrefab;
 
         [SerializeField] private float HexOuterRadius = 1.0f;
@@ -23,12 +22,6 @@ namespace UnicornOne.Board
         [SerializeField] private Vector2Int _fillCenter = Vector2Int.zero;
         [SerializeField] private int _fillRadius = 12;
 
-        [SerializeField] private bool _randomGeneration = false;
-        [SerializeField] private int _generatedPathLength = 10;
-        [SerializeField] private Tile _startTile;
-        [SerializeField] private Tile _finishTile;
-        [SerializeField] private Tile _roadTile;
-
         private Vector3[] HexCorners => new Vector3[] {
             new Vector3(0f, 0f, HexOuterRadius),
             new Vector3(HexInnerRadius, 0f, 0.5f * HexOuterRadius),
@@ -39,25 +32,13 @@ namespace UnicornOne.Board
             new Vector3(0f, 0f, HexOuterRadius) // duplicate first
         };
 
-        void Start()
+        public void Setup(TilePath tilePath)
         {
-            if (_randomGeneration)
+            foreach (Transform child in transform)
             {
-                Setup(TilePathGenerator.Generate(_startTile, _finishTile, _roadTile, _generatedPathLength));
+                GameObject.Destroy(child.gameObject);
             }
-            else
-            {
-                Setup(_tilePath);
-            }
-        }
 
-        void Update()
-        {
-        
-        }
-
-        private void Setup(TilePath tilePath)
-        {
             var tileMesh = GetTileMesh();
             var borderMesh = GetTileBorderMesh();
 

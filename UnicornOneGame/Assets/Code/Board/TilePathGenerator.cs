@@ -8,7 +8,7 @@ namespace UnicornOne.Board
 {
     public static class TilePathGenerator
     {
-        private static HexCoordinates[] Directions = new HexCoordinates[]
+        public static HexCoordinates[] Directions = new HexCoordinates[]
         {
             new HexCoordinates(new Vector2Int(1, 0)),
             new HexCoordinates(new Vector2Int(0, 1)),

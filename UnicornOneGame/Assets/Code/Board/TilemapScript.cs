@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 using static UnicornOne.Board.TilePath;
 
 namespace UnicornOne.Board
@@ -15,9 +16,10 @@ namespace UnicornOne.Board
 
         [SerializeField] private float _tileHeight = 4.0f;
 
+        [SerializeField] private bool _fill = true;
         [SerializeField] private Tile _fillTile;
-        [SerializeField] private Vector2Int _fillFieldXRange;
-        [SerializeField] private Vector2Int _fillFieldYRange;
+        [SerializeField] private Vector2Int _fillCenter = Vector2Int.zero;
+        [SerializeField] private int _fillRadius = 12;
 
         [SerializeField] private bool _randomGeneration = false;
         [SerializeField] private int _generatedPathLength = 10;
@@ -56,26 +58,48 @@ namespace UnicornOne.Board
         {
             var mesh = GetHexMesh();
 
-            HashSet<(int, int)> existingTilesSet = new();
+            HashSet<HexCoordinates> existingTilesSet = new();
             foreach (var tileEntry in tilePath.Tiles)
             {
                 CreateTile(tileEntry.Position, mesh, tileEntry.Tile);
-                existingTilesSet.Add((tileEntry.Position.X, tileEntry.Position.Y));
+                existingTilesSet.Add(tileEntry.Position);
             }
 
-            for (int i = _fillFieldXRange.x; i <= _fillFieldXRange.y; i++)
+            if (_fill)
             {
-                for (int j = _fillFieldYRange.x; j <= _fillFieldYRange.y; j++)
+                FillTiles(mesh, existingTilesSet);
+            }
+        }
+
+        private void FillTiles(Mesh mesh, HashSet<HexCoordinates> existingTilesSet)
+        {
+            HexCoordinates center = new HexCoordinates(_fillCenter);
+
+            if (!existingTilesSet.Contains(center))
+                CreateTile(center, mesh, _fillTile);
+
+            for (int i = 1; i <= _fillRadius; i++)
+            {
+                for (int j = 0; j < 6; j++)
                 {
-                    if (!existingTilesSet.Contains((i, j)))
+                    HexCoordinates position = center + TilePathGenerator.Directions[(j + 4) % 6] * i;
+
+                    if (!existingTilesSet.Contains(position))
+                        CreateTile(position, mesh, _fillTile);
+
+                    for (int k = 0; k < i; k++)
                     {
-                        CreateTile(new HexCoordinates(i, j), mesh, _fillTile);
+                        position += TilePathGenerator.Directions[j];
+
+                        if (!existingTilesSet.Contains(position))
+                            CreateTile(position, mesh, _fillTile);
                     }
                 }
             }
         }
 
-        void CreateTile(HexCoordinates coords, Mesh mesh, Tile tile)
+
+        private void CreateTile(HexCoordinates coords, Mesh mesh, Tile tile)
         {
             Vector3 position = coords.ToWorldCoords(HexOuterRadius, HexInnerRadius);
 

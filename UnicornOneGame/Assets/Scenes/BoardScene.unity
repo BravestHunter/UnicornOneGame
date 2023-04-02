@@ -171,9 +171,10 @@ MonoBehaviour:
   _tilePrefab: {fileID: 7040366892123135674, guid: b4dd67c6fbe8f4f04a573effd26684d7, type: 3}
   HexOuterRadius: 1
   _tileHeight: 4
+  _fill: 1
   _fillTile: {fileID: 11400000, guid: 1cc474152b6c54b1ab80a7112a31a128, type: 2}
-  _fillFieldXRange: {x: -4, y: 8}
-  _fillFieldYRange: {x: -8, y: 3}
+  _fillCenter: {x: 0, y: 0}
+  _fillRadius: 12
   _randomGeneration: 1
   _generatedPathLength: 10
   _startTile: {fileID: 11400000, guid: d3c009f44b6a5465f962668cc33781cd, type: 2}

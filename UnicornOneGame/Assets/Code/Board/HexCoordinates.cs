@@ -40,5 +40,10 @@ namespace UnicornOne.Board
         {
             return new HexCoordinates(a.X + b.X, a.Y + b.Y);
         }
+
+        public static HexCoordinates operator *(HexCoordinates a, int b)
+        {
+            return new HexCoordinates(a.X * b, a.Y * b);
+        }
     }
 }

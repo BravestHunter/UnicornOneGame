@@ -35,7 +35,8 @@ namespace UnicornOne.Board
 
             if (GUILayout.Button("Regenerate", GUILayout.Height(50 * aspect)))
             {
-                _logicScript.RegenerateTilePath();
+                if (!_logicScript.IsMoving)
+                    _logicScript.RegenerateTilePath();
             }
 
             GUILayout.BeginHorizontal();

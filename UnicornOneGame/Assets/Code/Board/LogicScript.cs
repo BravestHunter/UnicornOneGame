@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 namespace UnicornOne.Board
@@ -20,6 +22,8 @@ namespace UnicornOne.Board
         private int _playerTileIndex = 0;
         private GameObject _playerGameObject = null;
 
+        public bool IsMoving { get; private set; } = false;
+
         void Start()
         {
             if (_randomGeneration || _tilePath == null)
@@ -34,6 +38,8 @@ namespace UnicornOne.Board
 
         public void SetupBoard()
         {
+            _playerTileIndex = 0;
+
             // Set chip to face next tile
             _playerGameObject.transform.position =
                 _tilePath.Tiles[0].Position.ToWorldCoords(_tilemapScript.HexOuterRadius, _tilemapScript.HexInnerRadius);
@@ -53,7 +59,41 @@ namespace UnicornOne.Board
 
         public void MovePlayer(int tilesNumber)
         {
+            int newTileIndex = _playerTileIndex + tilesNumber;
+            if (newTileIndex < 0 || newTileIndex >= _tilePath.Tiles.Length)
+            {
+                return;
+            }
 
+            if (IsMoving)
+            {
+                return;
+            }
+            IsMoving = true;
+
+            int increment = Math.Sign(tilesNumber);
+            StartCoroutine(MovePlayerCoroutine(newTileIndex, increment));
+        }
+
+        private IEnumerator MovePlayerCoroutine(int newTileIndex, int increment)
+        {
+            while (_playerTileIndex != newTileIndex)
+            {
+                _playerTileIndex += increment;
+
+                _playerGameObject.transform.position =
+                    _tilePath.Tiles[_playerTileIndex].Position.ToWorldCoords(_tilemapScript.HexOuterRadius, _tilemapScript.HexInnerRadius);
+                if (_playerTileIndex < _tilePath.Tiles.Length - 1)
+                {
+                    _playerGameObject.transform.LookAt(
+                        _tilePath.Tiles[_playerTileIndex + 1].Position.ToWorldCoords(_tilemapScript.HexOuterRadius, _tilemapScript.HexInnerRadius)
+                    );
+                }
+
+                yield return null;
+            }
+
+            IsMoving = false;
         }
     }
 }

@@ -444,6 +444,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _tilemapScript: {fileID: 136823785}
   _tilePath: {fileID: 11400000, guid: 06777365808954817993b3eae8f2c056, type: 2}
+  _playerChipPrefab: {fileID: 107724, guid: 7248632fb471af143947a88a47eae959, type: 3}
   _randomGeneration: 1
   _generatedPathLength: 20
   _startTile: {fileID: 11400000, guid: d3c009f44b6a5465f962668cc33781cd, type: 2}

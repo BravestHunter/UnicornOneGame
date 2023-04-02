@@ -10,8 +10,8 @@ namespace UnicornOne.Board
     {
         [SerializeField] private GameObject _tilePrefab;
 
-        [SerializeField] private float HexOuterRadius = 1.0f;
-        private float HexInnerRadius => HexOuterRadius * 0.866025404f; // * sqrRoot(3) / 2
+        [SerializeField] public float HexOuterRadius = 1.0f;
+        public float HexInnerRadius => HexOuterRadius * 0.866025404f; // * sqrRoot(3) / 2
 
         [SerializeField] private float _tileHeight = 4.0f;
 

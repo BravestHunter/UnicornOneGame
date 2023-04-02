@@ -38,6 +38,17 @@ namespace UnicornOne.Board
                 _logicScript.RegenerateTilePath();
             }
 
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Backward", GUILayout.Height(50 * aspect)))
+            {
+                _logicScript.MovePlayer(-1);
+            }
+            if (GUILayout.Button("Forward", GUILayout.Height(50 * aspect)))
+            {
+                _logicScript.MovePlayer(1);
+            }
+            GUILayout.EndHorizontal();
+
             GUILayout.EndVertical();
             GUILayout.EndArea();
         }

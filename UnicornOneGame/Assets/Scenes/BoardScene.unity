@@ -171,12 +171,13 @@ MonoBehaviour:
   _tilePrefab: {fileID: 7040366892123135674, guid: b4dd67c6fbe8f4f04a573effd26684d7, type: 3}
   HexOuterRadius: 1
   _tileHeight: 4
+  _tileBorderSize: 0.05
   _fill: 1
   _fillTile: {fileID: 11400000, guid: 1cc474152b6c54b1ab80a7112a31a128, type: 2}
   _fillCenter: {x: 0, y: 0}
   _fillRadius: 12
   _randomGeneration: 1
-  _generatedPathLength: 10
+  _generatedPathLength: 20
   _startTile: {fileID: 11400000, guid: d3c009f44b6a5465f962668cc33781cd, type: 2}
   _finishTile: {fileID: 11400000, guid: 05ee652bf47004f90bb6aaab47149af0, type: 2}
   _roadTile: {fileID: 11400000, guid: b977ea59ca4e0490b871c4a8f37beded, type: 2}
@@ -233,7 +234,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 8
+  orthographic size: 32
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -256,14 +257,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 695850534}
-  m_LocalRotation: {x: 0.35355338, y: -0.35355338, z: 0.1464466, w: 0.8535535}
-  m_LocalPosition: {x: 7, y: 5.86, z: -7.5}
+  m_LocalRotation: {x: 0.35355338, y: 0.35355338, z: -0.1464466, w: 0.8535535}
+  m_LocalPosition: {x: -5.23, y: 19.68, z: -5.23}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 45, y: -45, z: 0}
+  m_LocalEulerAnglesHint: {x: 45, y: 45, z: 0}
 --- !u!1 &1380811105
 GameObject:
   m_ObjectHideFlags: 0

@@ -6,13 +6,17 @@ namespace UnicornOne.Board
 {
     public class TileScript : MonoBehaviour
     {
-        [SerializeField] private MeshFilter _meshFilter;
-        [SerializeField] private MeshRenderer _meshRenderer;
+        [SerializeField] private MeshFilter _tileMeshFilter;
+        [SerializeField] private MeshRenderer _tileMeshRenderer;
 
-        public void Init(Tile tile, Mesh mesh)
+        [SerializeField] private MeshFilter _borderMeshFilter;
+
+        public void Init(Tile tile, Mesh tileMesh, Mesh borderMesh)
         {
-            _meshFilter.mesh = mesh;
-            _meshRenderer.material = tile.Material;
+            _tileMeshRenderer.material = tile.Material;
+            _tileMeshFilter.mesh = tileMesh;
+
+            _borderMeshFilter.mesh = borderMesh;
         }
     }
 }

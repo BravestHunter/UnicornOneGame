@@ -71,7 +71,7 @@ namespace UnicornOne.Board
                     if (!existingTilesSet.Contains(position))
                         CreateTile(position, _fillTile, tileMesh, borderMesh);
 
-                    for (int k = 0; k < i; k++)
+                    for (int k = 1; k < i; k++)
                     {
                         position += TilePathGenerator.Directions[j];
 

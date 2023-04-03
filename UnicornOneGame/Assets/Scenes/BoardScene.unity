@@ -484,4 +484,4 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  _rotationDuration: 0.2
+  _rotationDuration: 0.1

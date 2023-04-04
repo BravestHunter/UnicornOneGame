@@ -74,6 +74,27 @@ namespace UnicornOne.Board
             }
         }
 
+        public void ShuffleNoise(Vector2 heightRange)
+        {
+            Debug.Assert(heightRange.y >= heightRange.x);
+            if (heightRange.y < heightRange.x)
+            {
+                return;
+            }
+
+            float diff = heightRange.y - heightRange.x;
+            float xOffset = Random.Range(0, 10_000);
+            float yOffset = Random.Range(0, 10_000);
+            float scale = 0.1f;
+
+            foreach (GameObject fillTile in _fillTiles)
+            {
+                Vector3 position = fillTile.transform.position;
+                position.y = heightRange.x + Mathf.PerlinNoise(position.x * scale + xOffset, position.z * scale + yOffset) * diff;
+                fillTile.transform.position = position;
+            }
+        }
+
         private void FillTiles(Mesh tileMesh, Mesh borderMesh, HashSet<HexCoordinates> existingTilesSet)
         {
             HexCoordinates center = new HexCoordinates(_fillCenter);

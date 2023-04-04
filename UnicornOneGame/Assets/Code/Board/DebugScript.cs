@@ -10,7 +10,7 @@ namespace UnicornOne.Board
         [SerializeField] private LogicScript _logicScript;
         [SerializeField] private TilemapScript _tilemapScript;
 
-        [SerializeField] private Vector2 _shuffleHeightRange;
+        [SerializeField] private Vector2 _fillTilesHeightRange;
 
         void Start()
         {
@@ -42,10 +42,16 @@ namespace UnicornOne.Board
                     _logicScript.RegenerateTilePath();
             }
 
+            GUILayout.BeginHorizontal();
             if (GUILayout.Button("Shuffle", GUILayout.Height(50 * aspect)))
             {
-                _tilemapScript.Shuffle(_shuffleHeightRange);
+                _tilemapScript.Shuffle(_fillTilesHeightRange);
             }
+            if (GUILayout.Button("Noise", GUILayout.Height(50 * aspect)))
+            {
+                _tilemapScript.ShuffleNoise(_fillTilesHeightRange);
+            }
+            GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("Backward", GUILayout.Height(50 * aspect)))

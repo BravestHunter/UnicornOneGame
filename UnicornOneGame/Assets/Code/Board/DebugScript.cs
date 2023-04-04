@@ -8,6 +8,9 @@ namespace UnicornOne.Board
     public class DebugScript : MonoBehaviour
     {
         [SerializeField] private LogicScript _logicScript;
+        [SerializeField] private TilemapScript _tilemapScript;
+
+        [SerializeField] private Vector2 _shuffleHeightRange;
 
         void Start()
         {
@@ -37,6 +40,11 @@ namespace UnicornOne.Board
             {
                 if (!_logicScript.IsMoving)
                     _logicScript.RegenerateTilePath();
+            }
+
+            if (GUILayout.Button("Shuffle", GUILayout.Height(50 * aspect)))
+            {
+                _tilemapScript.Shuffle(_shuffleHeightRange);
             }
 
             GUILayout.BeginHorizontal();

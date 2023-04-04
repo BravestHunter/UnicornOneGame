@@ -32,8 +32,11 @@ namespace UnicornOne.Board
             new Vector3(0f, 0f, HexOuterRadius) // duplicate first
         };
 
+        private List<GameObject> _fillTiles = new List<GameObject>();
+
         public void Setup(TilePath tilePath)
         {
+            _fillTiles.Clear();
             foreach (Transform child in transform)
             {
                 GameObject.Destroy(child.gameObject);
@@ -55,12 +58,30 @@ namespace UnicornOne.Board
             }
         }
 
+        public void Shuffle(Vector2 heightRange)
+        {
+            Debug.Assert(heightRange.y >= heightRange.x);
+            if (heightRange.y < heightRange.x)
+            {
+                return;
+            }
+
+            foreach (GameObject fillTile in _fillTiles)
+            {
+                Vector3 position = fillTile.transform.position;
+                position.y = Random.Range(heightRange.x, heightRange.y);
+                fillTile.transform.position = position;
+            }
+        }
+
         private void FillTiles(Mesh tileMesh, Mesh borderMesh, HashSet<HexCoordinates> existingTilesSet)
         {
             HexCoordinates center = new HexCoordinates(_fillCenter);
 
             if (!existingTilesSet.Contains(center))
-                CreateTile(center, _fillTile, tileMesh, borderMesh);
+            {
+                _fillTiles.Add(CreateTile(center, _fillTile, tileMesh, borderMesh));
+            }
 
             for (int i = 1; i <= _fillRadius; i++)
             {
@@ -69,21 +90,25 @@ namespace UnicornOne.Board
                     HexCoordinates position = center + TilePathGenerator.Directions[(j + 4) % 6] * i;
 
                     if (!existingTilesSet.Contains(position))
-                        CreateTile(position, _fillTile, tileMesh, borderMesh);
+                    {
+                        _fillTiles.Add(CreateTile(position, _fillTile, tileMesh, borderMesh));
+                    }
 
                     for (int k = 1; k < i; k++)
                     {
                         position += TilePathGenerator.Directions[j];
 
                         if (!existingTilesSet.Contains(position))
-                            CreateTile(position, _fillTile, tileMesh, borderMesh);
+                        {
+                            _fillTiles.Add(CreateTile(position, _fillTile, tileMesh, borderMesh));
+                        }
                     }
                 }
             }
         }
 
 
-        private void CreateTile(HexCoordinates coords, Tile tile, Mesh tileMesh, Mesh borderMesh)
+        private GameObject CreateTile(HexCoordinates coords, Tile tile, Mesh tileMesh, Mesh borderMesh)
         {
             Vector3 position = coords.ToWorldCoords(HexOuterRadius, HexInnerRadius);
 
@@ -92,6 +117,8 @@ namespace UnicornOne.Board
 
             var tileScript = tileObject.GetComponent<TileScript>();
             tileScript.Init(tile, tileMesh, borderMesh);
+
+            return tileObject;
         }
 
         private Mesh GetTileMesh()

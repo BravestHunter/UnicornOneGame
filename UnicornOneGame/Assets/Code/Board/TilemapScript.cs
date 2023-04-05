@@ -10,17 +10,10 @@ namespace UnicornOne.Board
     {
         [SerializeField] private GameObject _tilePrefab;
 
-        [SerializeField] public float HexOuterRadius = 1.0f;
-        public float HexInnerRadius => HexOuterRadius * 0.866025404f; // * sqrRoot(3) / 2
+        [SerializeField] private TilemapSettings _settings;
 
-        [SerializeField] private float _tileHeight = 4.0f;
-
-        [SerializeField] private float _tileBorderSize = 0.05f;
-
-        [SerializeField] private bool _fill = true;
-        [SerializeField] private Tile _fillTile;
-        [SerializeField] private Vector2Int _fillCenter = Vector2Int.zero;
-        [SerializeField] private int _fillRadius = 12;
+        public float HexOuterRadius => _settings.TileParameters.HexOuterRadius;
+        public float HexInnerRadius => _settings.TileParameters.HexInnerRadius;
 
         private Vector3[] HexCorners => new Vector3[] {
             new Vector3(0f, 0f, HexOuterRadius),
@@ -52,7 +45,7 @@ namespace UnicornOne.Board
                 existingTilesSet.Add(tileEntry.Position);
             }
 
-            if (_fill)
+            if (_settings.FillParameters.Fill)
             {
                 FillTiles(tileMesh, borderMesh, existingTilesSet);
             }
@@ -97,14 +90,14 @@ namespace UnicornOne.Board
 
         private void FillTiles(Mesh tileMesh, Mesh borderMesh, HashSet<HexCoordinates> existingTilesSet)
         {
-            HexCoordinates center = new HexCoordinates(_fillCenter);
+            HexCoordinates center = new HexCoordinates(_settings.FillParameters.Center);
 
             if (!existingTilesSet.Contains(center))
             {
-                _fillTiles.Add(CreateTile(center, _fillTile, tileMesh, borderMesh));
+                _fillTiles.Add(CreateTile(center, _settings.FillParameters.Tile, tileMesh, borderMesh));
             }
 
-            for (int i = 1; i <= _fillRadius; i++)
+            for (int i = 1; i <= _settings.FillParameters.Radius; i++)
             {
                 for (int j = 0; j < 6; j++)
                 {
@@ -112,7 +105,7 @@ namespace UnicornOne.Board
 
                     if (!existingTilesSet.Contains(position))
                     {
-                        _fillTiles.Add(CreateTile(position, _fillTile, tileMesh, borderMesh));
+                        _fillTiles.Add(CreateTile(position, _settings.FillParameters.Tile, tileMesh, borderMesh));
                     }
 
                     for (int k = 1; k < i; k++)
@@ -121,7 +114,7 @@ namespace UnicornOne.Board
 
                         if (!existingTilesSet.Contains(position))
                         {
-                            _fillTiles.Add(CreateTile(position, _fillTile, tileMesh, borderMesh));
+                            _fillTiles.Add(CreateTile(position, _settings.FillParameters.Tile, tileMesh, borderMesh));
                         }
                     }
                 }
@@ -167,7 +160,7 @@ namespace UnicornOne.Board
             }
 
             // Side
-            Vector3 verticalOffset = -Vector3.up * _tileHeight;
+            Vector3 verticalOffset = -Vector3.up * _settings.TileParameters.Height;
             for (int i = 0; i < 6; i++)
             {
                 AddTriangle(hexCorners[i], hexCorners[i] + verticalOffset, hexCorners[i + 1] + verticalOffset);
@@ -201,7 +194,7 @@ namespace UnicornOne.Board
 
             var hexCorners = HexCorners;
 
-            float borderOffset = 1.0f - _tileBorderSize;
+            float borderOffset = 1.0f - _settings.TileParameters.BorderSize;
             // Top border
             for (int i = 0; i < 6; i++)
             {

@@ -2,9 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
-using static UnicornOne.Board.TilePath;
 
-namespace UnicornOne.Board
+namespace UnicornOne.Board.MonoBehaviours
 {
     public class TilemapScript : MonoBehaviour
     {

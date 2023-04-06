@@ -2,9 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using UnicornOne.Board.MonoBehaviours;
 using UnityEngine;
 
-namespace UnicornOne.Board
+namespace UnicornOne.Board.MonoBehaviours
 {
     public class LogicScript : MonoBehaviour
     {
@@ -128,6 +129,8 @@ namespace UnicornOne.Board
 
                 yield return null;
             }
+
+            _tilePath.Tiles[_playerTileIndex].Tile.Script.Activate();
 
             IsMoving = false;
         }

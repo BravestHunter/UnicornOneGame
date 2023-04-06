@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.Collections;
 using UnityEngine;
 
-namespace UnicornOne.Board
+namespace UnicornOne.Board.MonoBehaviours
 {
     public class DebugScript : MonoBehaviour
     {

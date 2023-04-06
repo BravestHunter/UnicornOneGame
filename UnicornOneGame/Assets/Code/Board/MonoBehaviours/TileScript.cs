@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace UnicornOne.Board
+namespace UnicornOne.Board.MonoBehaviours
 {
     public class TileScript : MonoBehaviour
     {

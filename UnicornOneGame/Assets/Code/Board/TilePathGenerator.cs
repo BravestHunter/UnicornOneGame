@@ -19,19 +19,19 @@ namespace UnicornOne.Board
             new HexCoordinates(new Vector2Int(1, -1))
         };
 
-        public static TilePath Generate(Tile startTile, Tile finishTile, Tile roadTile, int length)
+        public static TilePath Generate(TilepathGeneratorParameters parameters)
         {
-            Debug.Assert(length >= 3);
+            Debug.Assert(parameters.Length >= 3);
 
-            var pathTiles = GeneratePathTiles(length);
+            var pathTiles = GeneratePathTiles(parameters.Length);
             CentralizeTiles(pathTiles, new HexCoordinates(0, 0));
 
             TilePath.TileEntry[] tiles = pathTiles.Select(c => new TilePath.TileEntry() { Position = c }).ToArray();
-            tiles[0].Tile = startTile;
-            tiles[tiles.Length - 1].Tile = finishTile;
+            tiles[0].Tile = parameters.StartTile;
+            tiles[tiles.Length - 1].Tile = parameters.FinishTile;
             for (int i = 1; i < tiles.Length - 1; i++)
             {
-                tiles[i].Tile = roadTile;
+                tiles[i].Tile = parameters.RoadTile;
             }
 
             TilePath tilePath = new();

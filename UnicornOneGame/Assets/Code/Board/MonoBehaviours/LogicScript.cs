@@ -10,20 +10,15 @@ namespace UnicornOne.Board.MonoBehaviours
     public class LogicScript : MonoBehaviour
     {
         [SerializeField] private TilemapScript _tilemapScript;
+        [SerializeField] private TilepathGeneratorParameters _tilepathGeneratorParameters;
 
-        [SerializeField] private TilePath _tilePath;
         [SerializeField] private GameObject _playerChipPrefab;
-
-        [SerializeField] private bool _randomGeneration = false;
-        [SerializeField] private int _generatedPathLength = 10;
-        [SerializeField] private Tile _startTile;
-        [SerializeField] private Tile _finishTile;
-        [SerializeField] private Tile _roadTile;
 
         [SerializeField] private float _movementDuration = 0.3f;
         [SerializeField] private AnimationCurve _movementAnimationCurve;
         [SerializeField] private float _rotationDuration = 0.1f;
 
+        private TilePath _tilePath;
         private int _playerTileIndex = 0;
         private GameObject _playerGameObject = null;
 
@@ -31,12 +26,14 @@ namespace UnicornOne.Board.MonoBehaviours
 
         void Start()
         {
-            if (_randomGeneration || _tilePath == null)
-            {
-                _tilePath = TilePathGenerator.Generate(_startTile, _finishTile, _roadTile, _generatedPathLength);
-            }
-
             _playerGameObject = Instantiate(_playerChipPrefab);
+
+            RegenerateTilePath();
+        }
+
+        public void RegenerateTilePath()
+        {
+            _tilePath = TilePathGenerator.Generate(_tilepathGeneratorParameters);
 
             SetupBoard();
         }
@@ -54,14 +51,7 @@ namespace UnicornOne.Board.MonoBehaviours
 
             _tilemapScript.Setup(_tilePath);
         }
-
-        public void RegenerateTilePath()
-        {
-            _tilePath = TilePathGenerator.Generate(_startTile, _finishTile, _roadTile, _generatedPathLength);
-
-            SetupBoard();
-        }
-
+        
         public void MovePlayer(int tilesNumber)
         {
             int newTileIndex = _playerTileIndex + tilesNumber;

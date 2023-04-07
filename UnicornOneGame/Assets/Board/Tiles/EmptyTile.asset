@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbeec0540732c4da4b264183f64211b8, type: 3}
   m_Name: EmptyTile
   m_EditorClassIdentifier: 
+  Script: {fileID: 0}
   Material: {fileID: 2100000, guid: 89b4412eb347543189c67c2fdd44c760, type: 2}

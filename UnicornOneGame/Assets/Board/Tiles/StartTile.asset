@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbeec0540732c4da4b264183f64211b8, type: 3}
+  m_Name: StartTile
+  m_EditorClassIdentifier: 
+  Script: {fileID: 11400000, guid: 97ce87eb54647d941952cc66d95969e7, type: 2}
+  Material: {fileID: 2100000, guid: d48a4a4f4dbba4178953463b8e6613f0, type: 2}

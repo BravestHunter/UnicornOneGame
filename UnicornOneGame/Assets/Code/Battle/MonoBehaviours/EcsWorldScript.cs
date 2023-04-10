@@ -1,47 +1,51 @@
 using Leopotam.EcsLite;
+using Leopotam.EcsLite.Di;
 using System.Collections;
 using System.Collections.Generic;
+using UnicornOne.Battle.Ecs.Services;
+using UnicornOne.Battle.Ecs.Systems;
 using UnityEngine;
 using UnityEngine.Rendering.VirtualTexturing;
 
 namespace UnicornOne.Battle.MonoBehaviours
 {
-    public class EcsWorldScript : MonoBehaviour
+    internal class EcsWorldScript : MonoBehaviour
     {
+        [SerializeField] private GameObject _heroPrefab;
+
+        private TimeService _timeService;
+
         private EcsWorld _world;
         private IEcsSystems _systems;
-#if UNITY_EDITOR
         private IEcsSystems _debugSystems;
-#endif
 
         private void Start()
         {
+            _timeService = new TimeService();
+
             _world = new EcsWorld();
 
             _systems = new EcsSystems(_world);
+            _systems.Add(new HeroInitSystem(_heroPrefab));
+            _systems.Inject(_timeService);
             _systems.Init();
 
-#if UNITY_EDITOR
             _debugSystems = new EcsSystems(_world);
             _debugSystems.Add(new Leopotam.EcsLite.UnityEditor.EcsWorldDebugSystem());
             _debugSystems.Init();
-#endif
         }
 
         private void Update()
         {
-            _systems.Run();
+            _timeService.Delta = Time.deltaTime;
 
-#if UNITY_EDITOR
+            _systems.Run();
             _debugSystems.Run();
-#endif
         }
 
         private void OnDestroy()
         {
-#if UNITY_EDITOR
             _debugSystems.Destroy();
-#endif
             _systems.Destroy();
             _world.Destroy();
         }

@@ -1,0 +1,20 @@
+{
+    "name": "UnicornOne.Battle",
+    "rootNamespace": "UnicornOne.Battle",
+    "references": [
+        "GUID:17eddc7c4a22489449456dfe411ef1a6",
+        "GUID:e59bf9fc7d5a44b18a819a92edd46163",
+        "GUID:f5f01a091e0d746659b4380253d52f4e",
+        "GUID:206779980ac58453ea65e900299ccf71",
+        "GUID:a22362b82293644e1bbe51356c008d63"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

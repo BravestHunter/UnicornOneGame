@@ -18,7 +18,7 @@ namespace UnicornOne.Battle.MonoBehaviours
             get => Time.timeScale;
             set
             {
-                if (value < 0)
+                if (value == Time.timeScale || value < 0)
                 {
                     return;
                 }

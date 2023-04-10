@@ -232,7 +232,7 @@ GameObject:
   - component: {fileID: 627502251}
   - component: {fileID: 627502250}
   m_Layer: 0
-  m_Name: Debug
+  m_Name: DebugUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -294,7 +294,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 946a12f2843e18a42b293b167b69fef9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _camera: {fileID: 1620004392}
   _heroPrefab: {fileID: 6718588461118902311, guid: 338097dc3c0187f42a8a49e673ed32d4, type: 3}
+  _debugStatusUIPrefab: {fileID: 3878117087197096768, guid: c261ba9ff34007244a3170e4ea4f5c49, type: 3}
 --- !u!4 &1101821059
 Transform:
   m_ObjectHideFlags: 0
@@ -322,7 +324,7 @@ GameObject:
   - component: {fileID: 1620004392}
   - component: {fileID: 1620004391}
   m_Layer: 0
-  m_Name: Main Camera
+  m_Name: Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -387,7 +389,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1620004390}
   m_LocalRotation: {x: 0.38268343, y: 0, z: 0, w: 0.92387956}
-  m_LocalPosition: {x: 0, y: 6, z: -5}
+  m_LocalPosition: {x: 0, y: 10.78, z: -11.42}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

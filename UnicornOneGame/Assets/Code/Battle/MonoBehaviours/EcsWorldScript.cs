@@ -13,6 +13,7 @@ namespace UnicornOne.Battle.MonoBehaviours
         [SerializeField] private Camera _camera;
 
         [SerializeField] private GameObject _heroPrefab;
+        [SerializeField] private GameObject _enemyPrefab;
         [SerializeField] private GameObject _debugStatusUIPrefab;
 
         private TimeService _timeService;
@@ -30,13 +31,14 @@ namespace UnicornOne.Battle.MonoBehaviours
             _world = new EcsWorld();
 
             _systems = new EcsSystems(_world);
-            _systems.Add(new HeroInitSystem(_heroPrefab, _debugStatusUIPrefab));
+            _systems.Add(new HeroInitSystem(_heroPrefab));
+            _systems.Add(new EnemyInitSystem(_enemyPrefab));
             _systems.Inject(_timeService, _cameraService);
             _systems.Init();
 
             _debugSystems = new EcsSystems(_world);
             _debugSystems.Add(new Leopotam.EcsLite.UnityEditor.EcsWorldDebugSystem());
-            _debugSystems.Add(new DebugStatusUISystem());
+            _debugSystems.Add(new DebugStatusUISystem(_debugStatusUIPrefab));
             _debugSystems.Inject(_timeService, _cameraService);
             _debugSystems.Init();
         }

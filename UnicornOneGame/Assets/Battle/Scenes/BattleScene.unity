@@ -296,6 +296,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _camera: {fileID: 1620004392}
   _heroPrefab: {fileID: 6718588461118902311, guid: 338097dc3c0187f42a8a49e673ed32d4, type: 3}
+  _enemyPrefab: {fileID: 6718588461118902311, guid: 338097dc3c0187f42a8a49e673ed32d4, type: 3}
   _debugStatusUIPrefab: {fileID: 3878117087197096768, guid: c261ba9ff34007244a3170e4ea4f5c49, type: 3}
 --- !u!4 &1101821059
 Transform:

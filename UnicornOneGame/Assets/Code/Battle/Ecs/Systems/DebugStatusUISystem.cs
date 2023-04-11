@@ -1,13 +1,8 @@
-﻿using Codice.CM.Client.Differences;
-using Leopotam.EcsLite;
+﻿using Leopotam.EcsLite;
 using Leopotam.EcsLite.Di;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnicornOne.Battle.Ecs.Components;
 using UnicornOne.Battle.Ecs.Services;
+using UnicornOne.Battle.MonoBehaviours;
 using UnityEngine;
 using static UnityEngine.EventSystems.EventTrigger;
 
@@ -15,17 +10,65 @@ namespace UnicornOne.Battle.Ecs.Systems
 {
     internal class DebugStatusUISystem : IEcsRunSystem
     {
+        private const float DistanceFromCamera = 10.0f;
+        private static readonly Vector3 OffsetFromObject = new Vector3(0.0f, 2.0f, 0.0f);
+
         private readonly EcsCustomInject<ICameraService> _cameraService;
 
+        private readonly GameObject _debugStatusUIPrefab;
+
+        private EcsFilter _addFilter;
         private EcsFilter _positionFilter;
         private EcsFilter _healthFilter;
+
+        public DebugStatusUISystem(GameObject debugStatusUIPrefab)
+        {
+            _debugStatusUIPrefab = debugStatusUIPrefab;
+        }
 
         public void Run(IEcsSystems systems)
         {
             var world = systems.GetWorld();
 
+            AddDebugStatusUIs(world);
             UpdatePosition(world);
             UpdateHealthData(world);
+        }
+
+        private void AddDebugStatusUIs(EcsWorld world)
+        {
+            if (_addFilter == null)
+            {
+                _addFilter = world
+                    .Filter<UnitFlag>()
+                    .Inc<GameObjectUnityRefComponent>()
+                    .Exc<DebugStatusUIComponent>()
+                .End();
+            }
+
+            var gameObjectUnityRefComponentPool = world.GetPool<GameObjectUnityRefComponent>();
+            var debugStatusUIComponentPool = world.GetPool<DebugStatusUIComponent>();
+            var allyFlagPool = world.GetPool<AllyFlag>();
+            var enemyFlagPool = world.GetPool<EnemyFlag>();
+
+            foreach (var entity in _addFilter)
+            {
+                var gameObjectUnityRefComponent = gameObjectUnityRefComponentPool.Get(entity);
+
+                ref var debugStatusUIComponent = ref debugStatusUIComponentPool.Add(entity);
+                debugStatusUIComponent.GameObject = GameObject.Instantiate(_debugStatusUIPrefab, gameObjectUnityRefComponent.GameObject.transform);
+                debugStatusUIComponent.GameObject.transform.rotation = _cameraService.Value.Camera.transform.rotation * Quaternion.Euler(0.0f, 180.0f, 0.0f);
+                debugStatusUIComponent.Script = debugStatusUIComponent.GameObject.GetComponent<DebugStatusUIScript>();
+
+                if (allyFlagPool.Has(entity))
+                {
+                    debugStatusUIComponent.Script.Role = Utils.Role.Ally;
+                }
+                else if (enemyFlagPool.Has(entity))
+                {
+                    debugStatusUIComponent.Script.Role = Utils.Role.Enemy;
+                }
+            }
         }
 
         private void UpdatePosition(EcsWorld world)
@@ -43,11 +86,11 @@ namespace UnicornOne.Battle.Ecs.Systems
             {
                 ref var debugStatusUIComponent = ref debugStatusUIComponentPool.Get(entity);
 
-                Vector3 upPosition = debugStatusUIComponent.GameObject.transform.parent.position + new Vector3(0.0f, 2.0f, 0.0f);
+                Vector3 upPosition = debugStatusUIComponent.GameObject.transform.parent.position + OffsetFromObject;
                 Vector3 cameraPosition = _cameraService.Value.Camera.transform.position;
                 Vector3 directionFromCamera = (upPosition - cameraPosition).normalized;
 
-                debugStatusUIComponent.GameObject.transform.position = cameraPosition + 10.0f * directionFromCamera;
+                debugStatusUIComponent.GameObject.transform.position = cameraPosition + DistanceFromCamera * directionFromCamera;
             }
         }
 
@@ -69,7 +112,8 @@ namespace UnicornOne.Battle.Ecs.Systems
                 var healthComponent = healthComponentPool.Get(entity);
                 ref var debugStatusUIComponent = ref debugStatusUIComponentPool.Get(entity);
 
-                debugStatusUIComponent.Script.SetText($"HP: {healthComponent.Health}/{healthComponent.MaxHealth}");
+                debugStatusUIComponent.Script.MaxHealth = healthComponent.MaxHealth;
+                debugStatusUIComponent.Script.CurrentHealth = healthComponent.CurrentHealth;
             }
         }
     }

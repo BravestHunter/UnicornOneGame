@@ -1,16 +1,16 @@
-using Leopotam.EcsLite;
+﻿using Leopotam.EcsLite;
 using UnicornOne.Battle.Ecs.Components;
 using UnityEngine;
 
 namespace UnicornOne.Battle.Ecs.Systems
 {
-    internal class HeroInitSystem : IEcsInitSystem
+    internal class EnemyInitSystem : IEcsInitSystem
     {
-        private readonly GameObject _heroPrefab;
+        private readonly GameObject _enemyPrefab;
 
-        public HeroInitSystem(GameObject heroPrefab)
+        public EnemyInitSystem(GameObject enemyPrefab)
         {
-            _heroPrefab = heroPrefab;
+            _enemyPrefab = enemyPrefab;
         }
 
         public void Init(IEcsSystems systems)
@@ -22,17 +22,17 @@ namespace UnicornOne.Battle.Ecs.Systems
             var unitFlagPool = world.GetPool<UnitFlag>();
             unitFlagPool.Add(entity);
 
-            var allyFlagPool = world.GetPool<AllyFlag>();
-            allyFlagPool.Add(entity);
+            var enemyFlagPool = world.GetPool<EnemyFlag>();
+            enemyFlagPool.Add(entity);
 
             var gameObjectUnityRefComponentPool = world.GetPool<GameObjectUnityRefComponent>();
             ref var gameObjectUnityRefComponent = ref gameObjectUnityRefComponentPool.Add(entity);
-            gameObjectUnityRefComponent.GameObject = Object.Instantiate(_heroPrefab, Vector3.left * 2.5f, Quaternion.identity);
+            gameObjectUnityRefComponent.GameObject = Object.Instantiate(_enemyPrefab, Vector3.right * 2.5f, Quaternion.identity);
 
             var healthComponentPool = world.GetPool<HealthComponent>();
             ref var healthComponent = ref healthComponentPool.Add(entity);
-            healthComponent.MaxHealth = 100;
-            healthComponent.CurrentHealth = 100;
+            healthComponent.MaxHealth = 200;
+            healthComponent.CurrentHealth = 200;
         }
     }
 }

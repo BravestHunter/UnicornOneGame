@@ -7,10 +7,7 @@ using UnityEngine;
 
 namespace UnicornOne.ScriptableObjects
 {
-    [CreateAssetMenu(fileName = "Unit", menuName = "Custom/Unit")]
-    public class Unit : ScriptableObject
+    public abstract class UnitComponent : ScriptableObject
     {
-        public GameObject Prefab;
-        public UnitComponent[] Components;
     }
 }

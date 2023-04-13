@@ -299,7 +299,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a23b4bfab8474a74fa27c71892236eff, type: 2}
   - {fileID: 11400000, guid: a23b4bfab8474a74fa27c71892236eff, type: 2}
   _enemyTeam:
-  - {fileID: 11400000, guid: a23b4bfab8474a74fa27c71892236eff, type: 2}
+  - {fileID: 11400000, guid: 27250eb72bbe7264abbf216c5e3d4e95, type: 2}
   _debugStatusUIPrefab: {fileID: 3878117087197096768, guid: c261ba9ff34007244a3170e4ea4f5c49, type: 3}
 --- !u!4 &1101821059
 Transform:

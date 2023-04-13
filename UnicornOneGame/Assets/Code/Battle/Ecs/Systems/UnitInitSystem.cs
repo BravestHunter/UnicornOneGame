@@ -61,10 +61,26 @@ namespace UnicornOne.Battle.Ecs.Systems
             ref var gameObjectUnityRefComponent = ref gameObjectUnityRefComponentPool.Add(entity);
             gameObjectUnityRefComponent.GameObject = Object.Instantiate(unit.Prefab, position, Quaternion.identity);
 
-            var healthComponentPool = world.GetPool<HealthComponent>();
-            ref var healthComponent = ref healthComponentPool.Add(entity);
-            healthComponent.MaxHealth = 100;
-            healthComponent.CurrentHealth = 100;
+            foreach (var component in unit.Components)
+            {
+                ProcessComponent(world, entity, component);
+            }
+        }
+
+        private void ProcessComponent(EcsWorld world, int entity, UnitComponent component)
+        {
+            // TODO: refactor this sh*t
+            switch (component)
+            {
+                case ScriptableObjects.HealthComponent health:
+                    {
+                        var healthComponentPool = world.GetPool<Components.HealthComponent>();
+                        ref var healthComponent = ref healthComponentPool.Add(entity);
+                        healthComponent.MaxHealth = health.Health;
+                        healthComponent.CurrentHealth = health.Health;
+                    }
+                    break;
+            }
         }
     }
 }

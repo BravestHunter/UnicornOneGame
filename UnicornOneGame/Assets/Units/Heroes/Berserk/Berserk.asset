@@ -13,3 +13,5 @@ MonoBehaviour:
   m_Name: Berserk
   m_EditorClassIdentifier: 
   Prefab: {fileID: 6718588461118902311, guid: 338097dc3c0187f42a8a49e673ed32d4, type: 3}
+  Components:
+  - {fileID: 11400000, guid: 09552f65d1d27dd40b4caced0ddcb698, type: 2}

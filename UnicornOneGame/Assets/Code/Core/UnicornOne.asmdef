@@ -1,10 +1,7 @@
 {
-    "name": "UnicornOne.Board",
-    "rootNamespace": "UnicornOne.Board",
-    "references": [
-        "GUID:ad5dd79122d194a4c934c8a9fe4b23b3",
-        "GUID:17eddc7c4a22489449456dfe411ef1a6"
-    ],
+    "name": "UnicornOne",
+    "rootNamespace": "UnicornOne",
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

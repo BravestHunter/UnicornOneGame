@@ -4,7 +4,6 @@ using UnicornOne.Battle.Ecs.Components;
 using UnicornOne.Battle.Ecs.Services;
 using UnicornOne.Battle.MonoBehaviours;
 using UnityEngine;
-using static UnityEngine.EventSystems.EventTrigger;
 
 namespace UnicornOne.Battle.Ecs.Systems
 {

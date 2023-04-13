@@ -7,9 +7,9 @@ using UnityEngine;
 
 namespace UnicornOne.ScriptableObjects
 {
+    [CreateAssetMenu(fileName = "Unit", menuName = "Custom/Unit")]
     public class Unit : ScriptableObject
     {
-        public string Name;
         public GameObject Prefab;
     }
 }

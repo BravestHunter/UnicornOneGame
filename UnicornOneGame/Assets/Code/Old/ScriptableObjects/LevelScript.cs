@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace UnicornOne.ScriptableObjects
 {
-    [CreateAssetMenu(fileName = "LevelScript", menuName = "Custom/LevelScript")]
+    [CreateAssetMenu(fileName = "LevelScript", menuName = "Custom/Old/LevelScript")]
     public class LevelScript : ScriptableObject, ILevelScript
     {
         public WaveInfo[] Waves;

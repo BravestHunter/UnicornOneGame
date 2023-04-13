@@ -10,7 +10,7 @@ using UnityEngine.AI;
 
 namespace UnicornOne.ScriptableObjects
 {
-    [CreateAssetMenu(fileName = "Level", menuName = "Custom/Level")]
+    [CreateAssetMenu(fileName = "Level", menuName = "Custom/Old/Level")]
     public class Level : ScriptableObject, ILevel
     {
         public PrefabInfo Prefab;

@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace UnicornOne.ScriptableObjects
 {
-    [CreateAssetMenu(fileName = "Hero", menuName = "Custom/Hero")]
+    [CreateAssetMenu(fileName = "Hero", menuName = "Custom/Old/Hero")]
     public class Hero : ScriptableObject, IHero
     {
         public PrefabInfo Prefab;

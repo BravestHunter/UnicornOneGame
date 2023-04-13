@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace UnicornOne.ScriptableObjects
 {
-    [CreateAssetMenu(fileName = "GameSettings", menuName = "Custom/GameSettings")]
+    [CreateAssetMenu(fileName = "GameSettings", menuName = "Custom/Old/GameSettings")]
     public class GameSettings : ScriptableObject, IGameSettings
     {
         public CameraSettings Camera;

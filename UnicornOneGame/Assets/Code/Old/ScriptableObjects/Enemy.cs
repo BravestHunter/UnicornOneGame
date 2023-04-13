@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace UnicornOne.ScriptableObjects
 {
-    [CreateAssetMenu(fileName = "Enemy", menuName = "Custom/Enemy")]
+    [CreateAssetMenu(fileName = "Enemy", menuName = "Custom/Old/Enemy")]
     public class Enemy : ScriptableObject, IEnemy
     {
         public PrefabInfo Prefab;

@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace UnicornOne.ScriptableObjects
 {
-    [CreateAssetMenu(fileName = "Effect", menuName = "Custom/Effect")]
+    [CreateAssetMenu(fileName = "Effect", menuName = "Custom/Old/Effect")]
     public class Effect : ScriptableObject, IEffect
     {
         public PrefabInfo Prefab;

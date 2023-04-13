@@ -2,6 +2,8 @@ using Leopotam.EcsLite;
 using UnicornOne.Battle.Ecs.Components;
 using UnicornOne.ScriptableObjects;
 using UnityEngine;
+using UnityEngine.AI;
+using UnityEngine.UIElements;
 
 namespace UnicornOne.Battle.Ecs.Systems
 {
@@ -63,11 +65,11 @@ namespace UnicornOne.Battle.Ecs.Systems
 
             foreach (var component in unit.Components)
             {
-                ProcessComponent(world, entity, component);
+                ProcessComponent(world, entity, gameObjectUnityRefComponent.GameObject, component);
             }
         }
 
-        private void ProcessComponent(EcsWorld world, int entity, UnitComponent component)
+        private void ProcessComponent(EcsWorld world, int entity, GameObject gameObject, UnitComponent component)
         {
             // TODO: refactor this sh*t
             switch (component)
@@ -78,6 +80,19 @@ namespace UnicornOne.Battle.Ecs.Systems
                         ref var healthComponent = ref healthComponentPool.Add(entity);
                         healthComponent.MaxHealth = health.Health;
                         healthComponent.CurrentHealth = health.Health;
+                    }
+                    break;
+
+                case ScriptableObjects.MovementComponent movement: 
+                    {
+                        var navMeshAgent = gameObject.AddComponent<NavMeshAgent>();
+                        navMeshAgent.speed = movement.Speed;
+                        navMeshAgent.angularSpeed = movement.AngularSpeed;
+                        navMeshAgent.acceleration = movement.Acceleration;
+
+                        var navMeshAgentUnityRefComponentPool = world.GetPool<NavMeshAgentUnityRefComponent>();
+                        ref var navMeshAgentUnityRefComponent = ref navMeshAgentUnityRefComponentPool.Add(entity);
+                        navMeshAgentUnityRefComponent.NavMeshAgent = navMeshAgent;
                     }
                     break;
             }

@@ -55,9 +55,10 @@ namespace UnicornOne.Battle.Ecs.Systems
                 var gameObjectUnityRefComponent = gameObjectUnityRefComponentPool.Get(entity);
 
                 ref var debugStatusUIComponent = ref debugStatusUIComponentPool.Add(entity);
-                debugStatusUIComponent.GameObject = GameObject.Instantiate(_debugStatusUIPrefab, gameObjectUnityRefComponent.GameObject.transform);
+                debugStatusUIComponent.GameObject = GameObject.Instantiate(_debugStatusUIPrefab, gameObjectUnityRefComponent.GameObject.transform.position, Quaternion.identity);
                 debugStatusUIComponent.GameObject.transform.rotation = _cameraService.Value.Camera.transform.rotation * Quaternion.Euler(0.0f, 180.0f, 0.0f);
                 debugStatusUIComponent.Script = debugStatusUIComponent.GameObject.GetComponent<DebugStatusUIScript>();
+                debugStatusUIComponent.TargetGameObject = gameObjectUnityRefComponent.GameObject;
 
                 if (allyFlagPool.Has(entity))
                 {
@@ -85,7 +86,7 @@ namespace UnicornOne.Battle.Ecs.Systems
             {
                 ref var debugStatusUIComponent = ref debugStatusUIComponentPool.Get(entity);
 
-                Vector3 upPosition = debugStatusUIComponent.GameObject.transform.parent.position + OffsetFromObject;
+                Vector3 upPosition = debugStatusUIComponent.TargetGameObject.transform.position + OffsetFromObject;
                 Vector3 cameraPosition = _cameraService.Value.Camera.transform.position;
                 Vector3 directionFromCamera = (upPosition - cameraPosition).normalized;
 

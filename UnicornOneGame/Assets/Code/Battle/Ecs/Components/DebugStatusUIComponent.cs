@@ -7,5 +7,6 @@ namespace UnicornOne.Battle.Ecs.Components
     {
         public GameObject GameObject;
         public DebugStatusUIScript Script;
+        public GameObject TargetGameObject;
     }
 }

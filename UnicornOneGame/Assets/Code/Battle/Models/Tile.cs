@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using UnityEngine;
 
-namespace UnicornOne.ScriptableObjects
+namespace UnicornOne.Battle.Models
 {
-    public abstract class UnitComponent : ScriptableObject
+    internal struct Tile
     {
     }
 }

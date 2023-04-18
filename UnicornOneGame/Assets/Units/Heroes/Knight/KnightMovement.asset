@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e7a45c6520ce1448b713f368b2f5d42, type: 3}
   m_Name: KnightMovement
   m_EditorClassIdentifier: 
-  Speed: 4
+  Speed: 3
   AngularSpeed: 10000
   Acceleration: 10000

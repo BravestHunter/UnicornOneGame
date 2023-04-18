@@ -11,6 +11,6 @@ namespace UnicornOne.ScriptableObjects
     public class Unit : ScriptableObject
     {
         public GameObject Prefab;
-        public UnitComponent[] Components;
+        public int Health;
     }
 }

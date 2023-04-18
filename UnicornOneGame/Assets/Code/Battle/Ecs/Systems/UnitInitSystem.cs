@@ -2,8 +2,6 @@ using Leopotam.EcsLite;
 using UnicornOne.Battle.Ecs.Components;
 using UnicornOne.ScriptableObjects;
 using UnityEngine;
-using UnityEngine.AI;
-using UnityEngine.UIElements;
 
 namespace UnicornOne.Battle.Ecs.Systems
 {
@@ -63,39 +61,10 @@ namespace UnicornOne.Battle.Ecs.Systems
             ref var gameObjectUnityRefComponent = ref gameObjectUnityRefComponentPool.Add(entity);
             gameObjectUnityRefComponent.GameObject = Object.Instantiate(unit.Prefab, position, Quaternion.identity);
 
-            foreach (var component in unit.Components)
-            {
-                ProcessComponent(world, entity, gameObjectUnityRefComponent.GameObject, component);
-            }
-        }
-
-        private void ProcessComponent(EcsWorld world, int entity, GameObject gameObject, UnitComponent component)
-        {
-            // TODO: refactor this sh*t
-            switch (component)
-            {
-                case ScriptableObjects.HealthComponent health:
-                    {
-                        var healthComponentPool = world.GetPool<Components.HealthComponent>();
-                        ref var healthComponent = ref healthComponentPool.Add(entity);
-                        healthComponent.MaxHealth = health.Health;
-                        healthComponent.CurrentHealth = health.Health;
-                    }
-                    break;
-
-                case ScriptableObjects.MovementComponent movement: 
-                    {
-                        var navMeshAgent = gameObject.AddComponent<NavMeshAgent>();
-                        navMeshAgent.speed = movement.Speed;
-                        navMeshAgent.angularSpeed = movement.AngularSpeed;
-                        navMeshAgent.acceleration = movement.Acceleration;
-
-                        var navMeshAgentUnityRefComponentPool = world.GetPool<NavMeshAgentUnityRefComponent>();
-                        ref var navMeshAgentUnityRefComponent = ref navMeshAgentUnityRefComponentPool.Add(entity);
-                        navMeshAgentUnityRefComponent.NavMeshAgent = navMeshAgent;
-                    }
-                    break;
-            }
+            var healthComponentPool = world.GetPool<HealthComponent>();
+            ref var healthComponent = ref healthComponentPool.Add(entity);
+            healthComponent.MaxHealth = unit.Health;
+            healthComponent.CurrentHealth = unit.Health;
         }
     }
 }

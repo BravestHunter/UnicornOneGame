@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnicornOne.Battle.Models;
+using UnicornOne.Core.Utils;
 using UnityEngine;
 
 namespace UnicornOne.Battle.Ecs.Services
@@ -12,5 +13,6 @@ namespace UnicornOne.Battle.Ecs.Services
     {
         public GameObject TilePrefab { get; }
         public Tilemap Tilemap { get; }
+        public HexParams HexParams { get; }
     }
 }

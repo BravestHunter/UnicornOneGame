@@ -8,5 +8,6 @@ namespace UnicornOne.Battle.Models
 {
     internal struct Tile
     {
+        public bool IsReserved;
     }
 }

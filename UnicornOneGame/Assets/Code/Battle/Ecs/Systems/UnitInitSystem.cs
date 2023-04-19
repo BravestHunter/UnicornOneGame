@@ -1,5 +1,8 @@
 using Leopotam.EcsLite;
+using Leopotam.EcsLite.Di;
 using UnicornOne.Battle.Ecs.Components;
+using UnicornOne.Battle.Ecs.Services;
+using UnicornOne.Core.Utils;
 using UnicornOne.ScriptableObjects;
 using UnityEngine;
 
@@ -7,15 +10,25 @@ namespace UnicornOne.Battle.Ecs.Systems
 {
     internal class UnitInitSystem : IEcsInitSystem
     {
+        private readonly EcsCustomInject<ITilemapService> _tilemapService;
+
         private readonly Unit[] _heroTeam;
         private readonly Unit[] _enemyTeam;
 
-        private static Vector3 RandomPosition
+        private HexCoords RandomTilePosition
         {
             get
             {
-                Vector2 random = Random.insideUnitCircle * 5.0f;
-                return new Vector3(random.x, 0.0f, random.y);
+                HexCoords coords;
+                do
+                {
+                    int q = Random.Range(-5, 6);
+                    int r = Random.Range(-5, 6);
+                    coords = HexCoords.FromCube(q, r);
+                }
+                while (!_tilemapService.Value.Tilemap[coords].HasValue || _tilemapService.Value.Tilemap[coords].Value.IsReserved);
+
+                return coords;
             }
         }
 
@@ -31,15 +44,15 @@ namespace UnicornOne.Battle.Ecs.Systems
 
             foreach (var hero in _heroTeam)
             {
-                SpawnUnit(world, hero, RandomPosition, true);
+                SpawnUnit(world, hero, RandomTilePosition, true);
             }
             foreach (var enemy in _enemyTeam)
             {
-                SpawnUnit(world, enemy, RandomPosition, false);
+                SpawnUnit(world, enemy, RandomTilePosition, false);
             }
         }
 
-        private void SpawnUnit(EcsWorld world, Unit unit, Vector3 position, bool isAlly)
+        private void SpawnUnit(EcsWorld world, Unit unit, HexCoords tilePosition, bool isAlly)
         {
             var entity = world.NewEntity();
 
@@ -57,9 +70,13 @@ namespace UnicornOne.Battle.Ecs.Systems
                 enemyFlagPool.Add(entity);
             }
 
+            var tilePositionComponentPool = world.GetPool<TilePositionComponent>();
+            ref var tilePositionComponent = ref tilePositionComponentPool.Add(entity);
+            tilePositionComponent.Position = tilePosition;
+
             var gameObjectUnityRefComponentPool = world.GetPool<GameObjectUnityRefComponent>();
             ref var gameObjectUnityRefComponent = ref gameObjectUnityRefComponentPool.Add(entity);
-            gameObjectUnityRefComponent.GameObject = Object.Instantiate(unit.Prefab, position, Quaternion.identity);
+            gameObjectUnityRefComponent.GameObject = Object.Instantiate(unit.Prefab, tilePosition.ToWorldCoordsXZ(_tilemapService.Value.HexParams), Quaternion.identity);
 
             var healthComponentPool = world.GetPool<HealthComponent>();
             ref var healthComponent = ref healthComponentPool.Add(entity);

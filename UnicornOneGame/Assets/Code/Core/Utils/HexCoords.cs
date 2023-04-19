@@ -40,5 +40,12 @@ namespace UnicornOne.Core.Utils
 
             return position;
         }
+
+        public Vector3 ToWorldCoordsXZ(in HexParams hexParams)
+        {
+            Vector2 coords = ToWorldCoords(hexParams);
+
+            return new Vector3(coords.x, 0.0f, coords.y);
+        }
     }
 }

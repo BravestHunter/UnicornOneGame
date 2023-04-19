@@ -15,7 +15,7 @@ namespace UnicornOne.Battle.Ecs.Systems
         {
             var world = systems.GetWorld();
 
-            HexParams hexParams = HexParams.FromInnerRadius(1.0f);
+            HexParams hexParams = _tilemapService.Value.HexParams;
             var tileMesh = MeshGenerator.TileMesh(hexParams, 4.0f);
             var borderMesh = MeshGenerator.TileBorderMesh(hexParams, 0.95f);
 

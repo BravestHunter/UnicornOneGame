@@ -13,12 +13,13 @@ namespace UnicornOne.Battle.Ecs.Services
     {
         public GameObject TilePrefab { get; private set; }
         public Tilemap Tilemap { get; private set; }
+        public HexParams HexParams { get; private set; }
 
         public TilemapService(GameObject tilePrefab, int radius) 
         {
             TilePrefab = tilePrefab;
-
             Tilemap = new Tilemap();
+            HexParams = HexParams.FromInnerRadius(1.0f);
 
             for (int q = -radius; q <= radius; q++)
             {

@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using Leopotam.EcsLite;
 using UnicornOne.Battle.Ecs.Components;
+using UnicornOne.Battle.Ecs.Components.Flags;
 using UnicornOne.Core.Utils;
 using UnityEngine;
-using static log4net.Appender.ColoredConsoleAppender;
 
 namespace UnicornOne.Battle.Ecs.Systems
 {
@@ -30,18 +30,18 @@ namespace UnicornOne.Battle.Ecs.Systems
             {
                 _filter = world
                     .Filter<UnitFlag>()
-                    .Exc<TargetTileMoveComponent>()
-                    .Exc<TargetPositionMoveComponent>()
+                    .Inc<TilePositionComponent>()
+                    .Exc<DestinationTileComponent>()
                     .End();
             }
 
-            var targetTileMoveComponentPool = world.GetPool<TargetTileMoveComponent>();
+            var destinationTileComponentPool = world.GetPool<DestinationTileComponent>();
 
             foreach (var entity in _filter)
             {
-                ref var targetTileMoveComponent = ref targetTileMoveComponentPool.Add(entity);
+                ref var destinationTileComponent = ref destinationTileComponentPool.Add(entity);
 
-                targetTileMoveComponent.Coords = RandomHexCoords;
+                destinationTileComponent.Position = RandomHexCoords;
             }
         }
     }

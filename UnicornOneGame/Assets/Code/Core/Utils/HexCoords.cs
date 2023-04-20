@@ -11,7 +11,7 @@ namespace UnicornOne.Core.Utils
     /// Represents universal hexagonal grid coordinates.
     /// Internally implemented as axial coordiantes.
     /// </summary>
-    public struct HexCoords
+    public readonly struct HexCoords
     {
         public readonly int Q;
         public readonly int R;
@@ -22,9 +22,29 @@ namespace UnicornOne.Core.Utils
             R = r;
         }
 
-        public static HexCoords FromAxial(int r, int s)
+        public override bool Equals(object obj)
         {
-            return new HexCoords(r, s);
+            if (obj is HexCoords hexCoords)
+            {
+                return hexCoords == this;
+            }
+
+            return false;
+        }
+
+        public static bool operator==(HexCoords a, HexCoords b)
+        {
+            return a.Q == b.Q && a.R == b.R;
+        }
+
+        public static bool operator !=(HexCoords a, HexCoords b)
+        {
+            return !(a == b);
+        }
+
+        public static HexCoords FromAxial(int q, int r)
+        {
+            return new HexCoords(q, r);
         }
 
         public static HexCoords FromCube(int q, int r, int s = 0)
@@ -46,6 +66,16 @@ namespace UnicornOne.Core.Utils
             Vector2 coords = ToWorldCoords(hexParams);
 
             return new Vector3(coords.x, 0.0f, coords.y);
+        }
+
+        public int DistanceTo(in HexCoords hexCoords)
+        {
+            return Distance(this, hexCoords);
+        }
+
+        public static int Distance(in HexCoords a, in HexCoords b)
+        {
+            return (Math.Abs(a.Q - b.Q) + Math.Abs(a.Q + a.R - b.Q - b.R) + Math.Abs(a.R - b.R)) / 2;
         }
     }
 }

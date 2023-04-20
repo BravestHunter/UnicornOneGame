@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnicornOne.Battle.Ecs.Services;
 using UnicornOne.Battle.Ecs.Systems;
+using UnicornOne.Battle.Ecs.Systems.Movement;
 using UnicornOne.ScriptableObjects;
 using UnityEngine;
 
@@ -37,16 +38,17 @@ namespace UnicornOne.Battle.MonoBehaviours
             _systems = new EcsSystems(_world);
             _systems.Add(new UnitInitSystem(_allyTeam, _enemyTeam));
             _systems.Add(new TilemapInitSystem());
-            _systems.Add(new MoveSystem());
-            _systems.Add(new TilepathMoveSystem());
             _systems.Add(new RandomUnitMoveTargetSystem());
+            _systems.Add(new NavigationSystem());
+            _systems.Add(new TilepathMoveSystem());
+            _systems.Add(new TileMoveSystem());
+            _systems.Add(new MoveSystem());
             _systems.Inject(_timeService, _cameraService, _tilemapService);
             _systems.Init();
 
             _debugSystems = new EcsSystems(_world);
             _debugSystems.Add(new Leopotam.EcsLite.UnityEditor.EcsWorldDebugSystem());
             _debugSystems.Add(new DebugMoveSystem());
-            _debugSystems.Add(new DebugStatusUISystem(_debugStatusUIPrefab));
             _debugSystems.Inject(_timeService, _cameraService, _tilemapService);
             _debugSystems.Init();
         }

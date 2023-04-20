@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using Leopotam.EcsLite;
 using Leopotam.EcsLite.Di;
 using UnicornOne.Battle.Ecs.Components;
@@ -10,8 +12,6 @@ namespace UnicornOne.Battle.Ecs.Systems
 {
     public class TilepathMoveSystem : IEcsRunSystem
     {
-        private readonly EcsCustomInject<ITilemapService> _tilemapService;
-
         private EcsFilter _filter;
 
         public void Run(IEcsSystems systems)
@@ -21,23 +21,38 @@ namespace UnicornOne.Battle.Ecs.Systems
             if (_filter == null)
             {
                 _filter = world
-                    .Filter<TargetTileMoveComponent>()
-                    .Exc<TargetPositionMoveComponent>()
+                    .Filter<TilepathMoveComponent>()
+                    .Inc<TilePositionComponent>()
+                    .Exc<TargetTileMoveComponent>()
                     .End();
             }
 
+            var tilepathMoveComponentPool = world.GetPool<TilepathMoveComponent>();
+            var tilePositionComponentPool = world.GetPool<TilePositionComponent>();
             var targetTileMoveComponentPool = world.GetPool<TargetTileMoveComponent>();
-            var targetPositionMoveComponentPool = world.GetPool<TargetPositionMoveComponent>();
 
             foreach (var entity in _filter)
             {
-                var targetTileMoveComponent = targetTileMoveComponentPool.Get(entity);
-                ref var targetPositionMoveComponent = ref targetPositionMoveComponentPool.Add(entity);
+                var tilepathMoveComponent = tilepathMoveComponentPool.Get(entity);
+                if (tilepathMoveComponent.Path == null || tilepathMoveComponent.Path.Count == 0)
+                {
+                    // Invalid path
+                    tilepathMoveComponentPool.Del(entity);
+                    continue;
+                }
 
-                targetPositionMoveComponent.Position =
-                    targetTileMoveComponent.Coords.ToWorldCoordsXZ(_tilemapService.Value.HexParams);
+                var tilePositionComponent = tilePositionComponentPool.Get(entity);
+                if (tilePositionComponent.Position.DistanceTo(tilepathMoveComponent.Path.Last()) > 1)
+                {
+                    // Something wrong with next tile in path,
+                    // it should be neghibor cell to current one
+                    tilepathMoveComponentPool.Del(entity);
+                    continue;
+                }
 
-                targetTileMoveComponentPool.Del(entity);
+                ref var targetTileMoveComponent = ref targetTileMoveComponentPool.Add(entity);
+                targetTileMoveComponent.Position = tilepathMoveComponent.Path.Last();
+                tilepathMoveComponent.Path.RemoveAt(tilepathMoveComponent.Path.Count - 1);
             }
         }
     }

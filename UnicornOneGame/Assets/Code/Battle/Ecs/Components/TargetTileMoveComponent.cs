@@ -7,6 +7,6 @@ namespace UnicornOne.Battle.Ecs.Components
 {
     internal struct TargetTileMoveComponent
     {
-        public HexCoords Coords;
+        public HexCoords Position;
     }
 }

@@ -19,7 +19,7 @@ namespace UnicornOne.Battle.Ecs.Systems
             var tileMesh = MeshGenerator.TileMesh(hexParams, 4.0f);
             var borderMesh = MeshGenerator.TileBorderMesh(hexParams, 0.95f);
 
-            GameObject tilemapGameObject = new GameObject();
+            GameObject tilemapGameObject = new GameObject("Tilemap");
             foreach (var pair in _tilemapService.Value.Tilemap)
             {
                 Vector2 flatPosition = pair.Key.ToWorldCoords(hexParams);

@@ -52,7 +52,38 @@ namespace UnicornOne.Core.Utils
             return new HexCoords(q, r);
         }
 
-        public Vector2 ToWorldCoords(in HexParams hexParams)
+        public static HexCoords FromWorldCoords(in Vector2 position, in HexParams hexParams)
+        {
+            // Calculate float coords
+            var qF = (2.0f / 3 * position.x) / hexParams.OuterRadius;
+            var rF = (-1.0f / 3 * position.x + MathF.Sqrt(3) / 3 * position.y) / hexParams.OuterRadius;
+            float sF = -qF - rF;
+
+            int q = (int)MathF.Round(qF);
+            int r = (int)MathF.Round(rF);
+            int s = (int)MathF.Round(sF);
+
+            var qDiff = MathF.Abs(q - qF);
+            var rDiff = MathF.Abs(r - rF);
+            var sDiff = MathF.Abs(s - sF);
+
+            if (qDiff > rDiff && qDiff > sDiff)
+            {
+                q = -r - s;
+            }
+            else if (rDiff > sDiff)
+            {
+                r = -q - s;
+            }
+            else
+            {
+                s = -q - r;
+            }
+
+            return FromCube(q, r, s);
+        }
+
+        public Vector2 ToWorldCoords(in HexParams hexParams)    
         {
             Vector2 position;
             position.x = (Q + R * 0.5f) * (hexParams.InnerRadius * 2f);

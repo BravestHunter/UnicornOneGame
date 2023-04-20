@@ -37,6 +37,8 @@ namespace UnicornOne.Battle.MonoBehaviours
             _systems = new EcsSystems(_world);
             _systems.Add(new UnitInitSystem(_allyTeam, _enemyTeam));
             _systems.Add(new TilemapInitSystem());
+            _systems.Add(new MoveSystem());
+            _systems.Add(new RandomUnitMoveTargetSystem());
             _systems.Inject(_timeService, _cameraService, _tilemapService);
             _systems.Init();
 

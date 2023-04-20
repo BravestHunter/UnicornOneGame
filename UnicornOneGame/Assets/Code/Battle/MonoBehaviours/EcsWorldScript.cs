@@ -38,12 +38,14 @@ namespace UnicornOne.Battle.MonoBehaviours
             _systems.Add(new UnitInitSystem(_allyTeam, _enemyTeam));
             _systems.Add(new TilemapInitSystem());
             _systems.Add(new MoveSystem());
+            _systems.Add(new TilepathMoveSystem());
             _systems.Add(new RandomUnitMoveTargetSystem());
             _systems.Inject(_timeService, _cameraService, _tilemapService);
             _systems.Init();
 
             _debugSystems = new EcsSystems(_world);
             _debugSystems.Add(new Leopotam.EcsLite.UnityEditor.EcsWorldDebugSystem());
+            _debugSystems.Add(new DebugMoveSystem());
             _debugSystems.Add(new DebugStatusUISystem(_debugStatusUIPrefab));
             _debugSystems.Inject(_timeService, _cameraService, _tilemapService);
             _debugSystems.Init();

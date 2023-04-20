@@ -2,7 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using Leopotam.EcsLite;
 using UnicornOne.Battle.Ecs.Components;
+using UnicornOne.Core.Utils;
 using UnityEngine;
+using static log4net.Appender.ColoredConsoleAppender;
 
 namespace UnicornOne.Battle.Ecs.Systems
 {
@@ -10,12 +12,13 @@ namespace UnicornOne.Battle.Ecs.Systems
     {
         private EcsFilter _filter;
 
-        private Vector3 RandomTargetPosition
+        private HexCoords RandomHexCoords
         {
             get
             {
-                Vector2 random = Random.insideUnitCircle * 15.0f;
-                return new Vector3(random.x, 0.0f, random.y);
+                int q = Random.Range(-6, 7);
+                int r = Random.Range(-6, 7);
+                return HexCoords.FromCube(q, r);
             }
         }
 
@@ -27,17 +30,18 @@ namespace UnicornOne.Battle.Ecs.Systems
             {
                 _filter = world
                     .Filter<UnitFlag>()
-                    .Exc<MoveTargetComponent>()
+                    .Exc<TargetTileMoveComponent>()
+                    .Exc<TargetPositionMoveComponent>()
                     .End();
             }
 
-            var moveTargetComponentPool = world.GetPool<MoveTargetComponent>();
+            var targetTileMoveComponentPool = world.GetPool<TargetTileMoveComponent>();
 
             foreach (var entity in _filter)
             {
-                ref var moveTargetComponent = ref moveTargetComponentPool.Add(entity);
+                ref var targetTileMoveComponent = ref targetTileMoveComponentPool.Add(entity);
 
-                moveTargetComponent.Position = RandomTargetPosition;
+                targetTileMoveComponent.Coords = RandomHexCoords;
             }
         }
     }

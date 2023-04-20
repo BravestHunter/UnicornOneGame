@@ -26,30 +26,30 @@ namespace UnicornOne.Battle.Ecs.Systems
             {
                 _filter = world
                     .Filter<GameObjectUnityRefComponent>()
-                    .Inc<MoveTargetComponent>()
+                    .Inc<TargetPositionMoveComponent>()
                     .End();
             }
 
             var gameObjectUnityRefComponentPool = world.GetPool<GameObjectUnityRefComponent>();
-            var moveTargetComponentPool = world.GetPool<MoveTargetComponent>();
+            var targetPositionMoveComponentPool = world.GetPool<TargetPositionMoveComponent>();
 
             foreach (var entity in _filter)
             {
                 var gameObjectUnityRefComponent = gameObjectUnityRefComponentPool.Get(entity);
-                var moveTargetComponent = moveTargetComponentPool.Get(entity);
+                var targetPositionMoveComponent = targetPositionMoveComponentPool.Get(entity);
 
                 // Move object
                 gameObjectUnityRefComponent.GameObject.transform.position =
                     Vector3.MoveTowards(
                         gameObjectUnityRefComponent.GameObject.transform.position,
-                        moveTargetComponent.Position,
+                        targetPositionMoveComponent.Position,
                         DeltaSpeed
-                        );
+                    );
 
                 // Remove moveTarget if target is acquired
-                if (gameObjectUnityRefComponent.GameObject.transform.position == moveTargetComponent.Position)
+                if (gameObjectUnityRefComponent.GameObject.transform.position == targetPositionMoveComponent.Position)
                 {
-                    moveTargetComponentPool.Del(entity);
+                    targetPositionMoveComponentPool.Del(entity);
                 }
             }
         }

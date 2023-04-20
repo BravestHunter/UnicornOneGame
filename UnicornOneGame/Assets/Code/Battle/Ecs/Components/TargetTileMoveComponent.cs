@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnicornOne.Core.Utils;
 using UnityEngine;
 
 namespace UnicornOne.Battle.Ecs.Components
 {
-    internal struct MoveTargetComponent
+    internal struct TargetTileMoveComponent
     {
-        public Vector3 Position;
+        public HexCoords Coords;
     }
 }

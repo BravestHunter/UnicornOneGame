@@ -1,5 +1,4 @@
 ﻿using Leopotam.EcsLite;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,7 +24,7 @@ namespace UnicornOne.Battle.MonoBehaviours
 
         [SerializeField] private Camera _camera;
         [SerializeField] private GameObject _tilePrefab;
-        [SerializeField] private GameObject _unitPrefab;
+        [SerializeField] private GameObject _playerPrefab;
 
         private TimeService _timeService;
         private TilemapService _tilemapService;
@@ -33,7 +32,7 @@ namespace UnicornOne.Battle.MonoBehaviours
         private EcsWorld _world;
         private IEcsSystems _systems;
         private IEcsSystems _debugSystems;
-        private int _unitEntity;
+        private int _playerEntity;
 
         private void Start()
         {
@@ -77,21 +76,36 @@ namespace UnicornOne.Battle.MonoBehaviours
             _world.Destroy();
         }
 
-        private void InitPlayer()
+        public void TeleportPlayerRandomly()
         {
-            _unitEntity = _world.NewEntity();
-
-            var unitFlagPool = _world.GetPool<UnitFlag>();
-            unitFlagPool.Add(_unitEntity);
+            int q = Random.Range(-6, 7);
+            int r = Random.Range(-6, 7);
+            var newHexPosition = HexCoords.FromCube(q, r);
 
             var tilePositionComponentPool = _world.GetPool<TilePositionComponent>();
-            ref var tilePositionComponent = ref tilePositionComponentPool.Add(_unitEntity);
+            ref var tilePositionComponent = ref tilePositionComponentPool.Get(_playerEntity);
+            tilePositionComponent.Position = newHexPosition;
+
+            var gameObjectUnityRefComponentPool = _world.GetPool<GameObjectUnityRefComponent>();
+            var gameObjectUnityRefComponent = gameObjectUnityRefComponentPool.Get(_playerEntity);
+            gameObjectUnityRefComponent.GameObject.transform.position = newHexPosition.ToWorldCoordsXZ(_tilemapService.HexParams);
+        }
+
+        private void InitPlayer()
+        {
+            _playerEntity = _world.NewEntity();
+
+            var unitFlagPool = _world.GetPool<UnitFlag>();
+            unitFlagPool.Add(_playerEntity);
+
+            var tilePositionComponentPool = _world.GetPool<TilePositionComponent>();
+            ref var tilePositionComponent = ref tilePositionComponentPool.Add(_playerEntity);
             tilePositionComponent.Position = HexCoords.FromAxial(0, 0);
 
             var gameObjectUnityRefComponentPool = _world.GetPool<GameObjectUnityRefComponent>();
-            ref var gameObjectUnityRefComponent = ref gameObjectUnityRefComponentPool.Add(_unitEntity);
+            ref var gameObjectUnityRefComponent = ref gameObjectUnityRefComponentPool.Add(_playerEntity);
             gameObjectUnityRefComponent.GameObject = 
-                GameObject.Instantiate(_unitPrefab, tilePositionComponent.Position.ToWorldCoordsXZ(_tilemapService.HexParams), Quaternion.identity);
+                GameObject.Instantiate(_playerPrefab, tilePositionComponent.Position.ToWorldCoordsXZ(_tilemapService.HexParams), Quaternion.identity);
         }
 
         private void ProcessMouse()
@@ -109,12 +123,12 @@ namespace UnicornOne.Battle.MonoBehaviours
                     HexCoords destinationTile = HexCoords.FromWorldCoords(new Vector2(intersectionPoint.x, intersectionPoint.z), _tilemapService.HexParams);
 
                     var destinationTileComponentPool = _world.GetPool<DestinationTileComponent>();
-                    if (destinationTileComponentPool.Has(_unitEntity))
+                    if (destinationTileComponentPool.Has(_playerEntity))
                     {
-                        destinationTileComponentPool.Del(_unitEntity);
+                        destinationTileComponentPool.Del(_playerEntity);
                     }
 
-                    ref var destinationTileComponent = ref destinationTileComponentPool.Add(_unitEntity);
+                    ref var destinationTileComponent = ref destinationTileComponentPool.Add(_playerEntity);
                     destinationTileComponent.Position = destinationTile;
                 }
             }

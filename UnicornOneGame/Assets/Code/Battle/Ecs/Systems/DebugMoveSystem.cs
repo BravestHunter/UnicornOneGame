@@ -4,6 +4,7 @@ using Leopotam.EcsLite;
 using Leopotam.EcsLite.Di;
 using UnicornOne.Battle.Ecs.Components;
 using UnicornOne.Battle.Ecs.Services;
+using UnicornOne.Core.Geometry;
 using UnityEngine;
 
 namespace UnicornOne.Battle.Ecs.Systems

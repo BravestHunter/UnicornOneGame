@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028305, g: 0.22571313, b: 0.3069213, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -217,6 +217,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1353720634}
   - component: {fileID: 1353720633}
+  - component: {fileID: 1353720635}
   m_Layer: 0
   m_Name: DebugUI
   m_TagString: Untagged
@@ -251,6 +252,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1353720635
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1353720632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8143630b33d2248449f052ce6b52d79e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _ecsWorldScript: {fileID: 1473974527}
 --- !u!1 &1473974524
 GameObject:
   m_ObjectHideFlags: 0
@@ -297,8 +311,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _tilemapRadius: 10
   _camera: {fileID: 566767213}
+  _gizmoDrawer: {fileID: 0}
   _tilePrefab: {fileID: 7040366892123135674, guid: c79a5c0003283b94d8b7a305b5c72757, type: 3}
-  _unitPrefab: {fileID: 8927972613739172143, guid: 0d2501336b7e5ee489fbdcb52429dc1b, type: 3}
+  _playerPrefab: {fileID: 8927972613739172143, guid: 0d2501336b7e5ee489fbdcb52429dc1b, type: 3}
 --- !u!1 &1560452118
 GameObject:
   m_ObjectHideFlags: 0

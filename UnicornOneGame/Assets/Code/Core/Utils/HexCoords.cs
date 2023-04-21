@@ -55,8 +55,8 @@ namespace UnicornOne.Core.Utils
         public static HexCoords FromWorldCoords(in Vector2 position, in HexParams hexParams)
         {
             // Calculate float coords
-            var qF = (2.0f / 3 * position.x) / hexParams.OuterRadius;
-            var rF = (-1.0f / 3 * position.x + MathF.Sqrt(3) / 3 * position.y) / hexParams.OuterRadius;
+            var qF = (MathF.Sqrt(3) / 3.0f * position.x - 1.0f / 3.0f * position.y) / hexParams.OuterRadius;
+            var rF = (2.0f / 3.0f * position.y) / hexParams.OuterRadius;
             float sF = -qF - rF;
 
             int q = (int)MathF.Round(qF);

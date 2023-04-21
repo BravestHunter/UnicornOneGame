@@ -12,9 +12,7 @@ using UnityEngine.InputSystem;
 using Leopotam.EcsLite.Di;
 using UnicornOne.Battle.Ecs.Components;
 using UnicornOne.Core.Utils;
-using System.Diagnostics;
 using Codice.CM.Client.Differences;
-using UnicornOne.Battle.Ecs.Components.Flags;
 
 namespace UnicornOne.Battle.MonoBehaviours
 {
@@ -98,8 +96,8 @@ namespace UnicornOne.Battle.MonoBehaviours
 
         private void ProcessMouse()
         {
-            Mouse mouse = Mouse.current;
-            if (mouse.rightButton.wasPressedThisFrame)
+            var mouse = Mouse.current;
+            if (mouse.leftButton.wasPressedThisFrame)
             {
                 Vector3 mousePosition = mouse.position.ReadValue();
                 Ray ray = _camera.ScreenPointToRay(mousePosition);
@@ -113,14 +111,11 @@ namespace UnicornOne.Battle.MonoBehaviours
                     var destinationTileComponentPool = _world.GetPool<DestinationTileComponent>();
                     if (destinationTileComponentPool.Has(_unitEntity))
                     {
-                        ref var destinationTileComponent = ref destinationTileComponentPool.Get(_unitEntity);
-                        destinationTileComponent.Position = destinationTile;
+                        destinationTileComponentPool.Del(_unitEntity);
                     }
-                    else
-                    {
-                        ref var destinationTileComponent = ref destinationTileComponentPool.Add(_unitEntity);
-                        destinationTileComponent.Position = destinationTile;
-                    }
+
+                    ref var destinationTileComponent = ref destinationTileComponentPool.Add(_unitEntity);
+                    destinationTileComponent.Position = destinationTile;
                 }
             }
         }

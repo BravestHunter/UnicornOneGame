@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using Leopotam.EcsLite;
 using UnicornOne.Battle.Ecs.Components;
-using UnicornOne.Battle.Ecs.Components.Flags;
 using UnicornOne.Core.Utils;
 using UnityEngine;
 

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnicornOne.Core.Utils;
 
-namespace UnicornOne.Battle.Ecs.Components.Flags
+namespace UnicornOne.Battle.Ecs.Components
 {
     internal struct DestinationTileComponent
     {

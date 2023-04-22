@@ -94,6 +94,7 @@ GameObject:
   - component: {fileID: 7040366892123135678}
   - component: {fileID: 7040366892123135673}
   - component: {fileID: 7040366892123135672}
+  - component: {fileID: 3597522027778965064}
   m_Layer: 0
   m_Name: Tile
   m_TagString: Untagged
@@ -145,7 +146,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c0f96e6b229bfe24d85d8b8190d83096, type: 2}
+  - {fileID: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -167,3 +168,18 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &3597522027778965064
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7040366892123135674}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 943bbfe4fa122457aa0433a67da65be4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _tileMeshFilter: {fileID: 7040366892123135673}
+  _tileMeshRenderer: {fileID: 7040366892123135672}
+  _borderMeshFilter: {fileID: 1374351939233055556}

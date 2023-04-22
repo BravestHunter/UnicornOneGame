@@ -11,8 +11,9 @@ namespace UnicornOne.Battle.Ecs.Services
 {
     internal interface ITilemapService
     {
-        public GameObject TilePrefab { get; }
         public Tilemap Tilemap { get; }
         public HexParams HexParams { get; }
+
+        public HexCoords GetRandomAvailablePosition();
     }
 }

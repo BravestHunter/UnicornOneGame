@@ -311,8 +311,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _tilemapRadius: 10
   _camera: {fileID: 566767213}
-  _gizmoDrawer: {fileID: 0}
   _tilePrefab: {fileID: 7040366892123135674, guid: c79a5c0003283b94d8b7a305b5c72757, type: 3}
+  _tileAvailableMaterial: {fileID: 2100000, guid: df64b2ddea7920a40962d7aac24b2869, type: 2}
+  _tileUnavailableMaterial: {fileID: 2100000, guid: a0eb1ba83e4b048409871a19b9850bb6, type: 2}
   _playerPrefab: {fileID: 8927972613739172143, guid: 0d2501336b7e5ee489fbdcb52429dc1b, type: 3}
 --- !u!1 &1560452118
 GameObject:

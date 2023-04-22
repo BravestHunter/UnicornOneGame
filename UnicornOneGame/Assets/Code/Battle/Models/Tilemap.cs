@@ -6,39 +6,16 @@ namespace UnicornOne.Battle.Models
 {
     internal class Tilemap : IEnumerable<KeyValuePair<HexCoords, Tile>>
     {
-        private readonly Dictionary<HexCoords, Tile> _tiles;
-
-        public Tile? this[HexCoords coords]
-        {
-            get
-            {
-                Tile tile;
-                if (_tiles.TryGetValue(coords, out tile))
-                {
-                    return tile;
-                }
-
-                return null;
-            }
-            set
-            {
-                if (!value.HasValue)
-                {
-                    return;
-                }
-
-                _tiles[coords] = value.Value;
-            }
-        }
+        public Dictionary<HexCoords, Tile> Tiles { get; private set; }
 
         public Tilemap()
         {
-            _tiles = new Dictionary<HexCoords, Tile>();
+            Tiles = new Dictionary<HexCoords, Tile>();
         }
 
         public IEnumerator<KeyValuePair<HexCoords, Tile>> GetEnumerator()
         {
-            return _tiles.GetEnumerator();
+            return Tiles.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

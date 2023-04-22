@@ -1,35 +1,57 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnicornOne.Battle.Models;
+using UnicornOne.Battle.MonoBehaviours;
 using UnicornOne.Core.Utils;
 using UnityEngine;
+using UnityEngine.XR;
 
 namespace UnicornOne.Battle.Ecs.Services
 {
     internal class TilemapService : ITilemapService
     {
-        public GameObject TilePrefab { get; private set; }
         public Tilemap Tilemap { get; private set; }
         public HexParams HexParams { get; private set; }
 
-        public TilemapService(GameObject tilePrefab, int radius) 
+        public TilemapService(Tilemap tilemap, GameObject tilePrefab, Material availableMaterial, Material unavailableMaterial) 
         {
-            TilePrefab = tilePrefab;
-            Tilemap = new Tilemap();
+            Tilemap = tilemap;
             HexParams = HexParams.FromInnerRadius(1.0f);
 
-            for (int q = -radius; q <= radius; q++)
+            InitializeTilemap(tilePrefab, availableMaterial, unavailableMaterial);
+        }
+
+        public HexCoords GetRandomAvailablePosition()
+        {
+            KeyValuePair<HexCoords, Tile> tileEntry;
+            do
             {
-                int rFrom = Math.Max(-radius, -q - radius);
-                int rTo = Math.Min(radius, -q + radius);
-                for (int r = rFrom; r <= rTo; r++)
-                {
-                    int s = -q - r;
-                    Tilemap[HexCoords.FromCube(q, r, s)] = new Tile();
-                }
+                tileEntry = Tilemap.Tiles.ElementAt(Random.Range(0, Tilemap.Tiles.Count));
+            }
+            while (!tileEntry.Value.IsAvailable);
+
+            return tileEntry.Key;
+        }
+
+        private void InitializeTilemap(GameObject tilePrefab, Material availableMaterial, Material unavailableMaterial)
+        {
+            var tileMesh = MeshGenerator.TileMesh(HexParams, 4.0f);
+            var borderMesh = MeshGenerator.TileBorderMesh(HexParams, 0.95f);
+
+            GameObject tilemapGameObject = new GameObject("Tilemap");
+            foreach (var pair in Tilemap)
+            {
+                Vector2 flatPosition = pair.Key.ToWorldCoords(HexParams);
+                Vector3 worldPosition = new Vector3(flatPosition.x, 0.0f, flatPosition.y);
+
+                var gameObject = GameObject.Instantiate(tilePrefab, worldPosition, Quaternion.identity, tilemapGameObject.transform);
+
+                var tileMaterial = pair.Value.IsAvailable ? availableMaterial : unavailableMaterial;
+
+                var tileScript = gameObject.GetComponent<TileScript>();
+                tileScript.Setup(tileMesh, tileMaterial, borderMesh);
             }
         }
     }

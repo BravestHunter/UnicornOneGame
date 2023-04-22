@@ -1,16 +1,21 @@
 ﻿using Leopotam.EcsLite;
+using Leopotam.EcsLite.Di;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnicornOne.Battle.Ecs.Components;
+using UnicornOne.Battle.Ecs.Services;
+using UnicornOne.Battle.Models;
 using UnicornOne.Core.Utils;
 
 namespace UnicornOne.Battle.Ecs.Systems
 {
     internal class NavigationSystem : IEcsRunSystem
     {
+        private readonly EcsCustomInject<ITilemapService> _tilemapService;
+
         private static readonly HexPathFinder _pathFinder = new HexPathFinder();
 
         private EcsFilter _tilepathDeletionFilter;
@@ -83,8 +88,19 @@ namespace UnicornOne.Battle.Ecs.Systems
                 }
 
                 ref var tilepathMoveComponent = ref tilepathMoveComponentPool.Add(entity);
-                tilepathMoveComponent.Path = _pathFinder.FindPath(tilePositionComponent.Position, destinationTileComponent.Position);
+                tilepathMoveComponent.Path = _pathFinder.FindPath(tilePositionComponent.Position, destinationTileComponent.Position, IsTileAvailable);
             }
+        }
+
+        private bool IsTileAvailable(HexCoords coords)
+        {
+            Tile tile;
+            if (!_tilemapService.Value.Tilemap.Tiles.TryGetValue(coords, out tile))
+            {
+                return false;
+            }
+
+            return tile.IsAvailable;
         }
     }
 }

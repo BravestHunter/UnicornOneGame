@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using Leopotam.EcsLite;
+using Leopotam.EcsLite.Di;
 using UnicornOne.Battle.Ecs.Components;
+using UnicornOne.Battle.Ecs.Services;
 using UnicornOne.Core.Utils;
 using UnityEngine;
 
@@ -9,17 +11,9 @@ namespace UnicornOne.Battle.Ecs.Systems
 {
     internal class RandomUnitMoveTargetSystem : IEcsRunSystem
     {
-        private EcsFilter _filter;
+        private readonly EcsCustomInject<ITilemapService> _tilemapService;
 
-        private HexCoords RandomHexCoords
-        {
-            get
-            {
-                int q = Random.Range(-6, 7);
-                int r = Random.Range(-6, 7);
-                return HexCoords.FromCube(q, r);
-            }
-        }
+        private EcsFilter _filter;
 
         public void Run(IEcsSystems systems)
         {
@@ -40,7 +34,7 @@ namespace UnicornOne.Battle.Ecs.Systems
             {
                 ref var destinationTileComponent = ref destinationTileComponentPool.Add(entity);
 
-                destinationTileComponent.Position = RandomHexCoords;
+                destinationTileComponent.Position = _tilemapService.Value.GetRandomAvailablePosition();
             }
         }
     }

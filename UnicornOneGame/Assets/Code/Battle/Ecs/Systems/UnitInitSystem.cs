@@ -15,23 +15,6 @@ namespace UnicornOne.Battle.Ecs.Systems
         private readonly Unit[] _heroTeam;
         private readonly Unit[] _enemyTeam;
 
-        private HexCoords RandomTilePosition
-        {
-            get
-            {
-                HexCoords coords;
-                do
-                {
-                    int q = Random.Range(-5, 6);
-                    int r = Random.Range(-5, 6);
-                    coords = HexCoords.FromCube(q, r);
-                }
-                while (!_tilemapService.Value.Tilemap[coords].HasValue || _tilemapService.Value.Tilemap[coords].Value.IsReserved);
-
-                return coords;
-            }
-        }
-
         public UnitInitSystem(Unit[] heroTeam, Unit[] enemyTeam)
         {
             _heroTeam = heroTeam;
@@ -44,11 +27,11 @@ namespace UnicornOne.Battle.Ecs.Systems
 
             foreach (var hero in _heroTeam)
             {
-                SpawnUnit(world, hero, RandomTilePosition, true);
+                SpawnUnit(world, hero, _tilemapService.Value.GetRandomAvailablePosition(), true);
             }
             foreach (var enemy in _enemyTeam)
             {
-                SpawnUnit(world, enemy, RandomTilePosition, false);
+                SpawnUnit(world, enemy, _tilemapService.Value.GetRandomAvailablePosition(), false);
             }
         }
 

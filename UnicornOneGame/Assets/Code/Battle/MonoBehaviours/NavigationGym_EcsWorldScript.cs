@@ -12,6 +12,7 @@ using Leopotam.EcsLite.Di;
 using UnicornOne.Battle.Ecs.Components;
 using UnicornOne.Core.Utils;
 using Codice.CM.Client.Differences;
+using UnicornOne.Battle.Models;
 
 namespace UnicornOne.Battle.MonoBehaviours
 {
@@ -24,6 +25,8 @@ namespace UnicornOne.Battle.MonoBehaviours
 
         [SerializeField] private Camera _camera;
         [SerializeField] private GameObject _tilePrefab;
+        [SerializeField] private Material _tileAvailableMaterial;
+        [SerializeField] private Material _tileUnavailableMaterial;
         [SerializeField] private GameObject _playerPrefab;
 
         private TimeService _timeService;
@@ -37,12 +40,13 @@ namespace UnicornOne.Battle.MonoBehaviours
         private void Start()
         {
             _timeService = new TimeService();
-            _tilemapService = new TilemapService(_tilePrefab, _tilemapRadius);
+
+            var tilemap = GenerateTilemap();
+            _tilemapService = new TilemapService(tilemap, _tilePrefab, _tileAvailableMaterial, _tileUnavailableMaterial);
 
             _world = new EcsWorld();
 
             _systems = new EcsSystems(_world);
-            _systems.Add(new TilemapInitSystem());
             _systems.Add(new NavigationSystem());
             _systems.Add(new TilepathMoveSystem());
             _systems.Add(new TileMoveSystem());
@@ -122,6 +126,11 @@ namespace UnicornOne.Battle.MonoBehaviours
                     Vector3 intersectionPoint = ray.GetPoint(distande);
                     HexCoords destinationTile = HexCoords.FromWorldCoords(new Vector2(intersectionPoint.x, intersectionPoint.z), _tilemapService.HexParams);
 
+                    if (!_tilemapService.Tilemap.Tiles.TryGetValue(destinationTile, out Tile tile) || !tile.IsAvailable)
+                    {
+                        return;
+                    }
+
                     var destinationTileComponentPool = _world.GetPool<DestinationTileComponent>();
                     if (destinationTileComponentPool.Has(_playerEntity))
                     {
@@ -132,6 +141,27 @@ namespace UnicornOne.Battle.MonoBehaviours
                     destinationTileComponent.Position = destinationTile;
                 }
             }
+        }
+
+        private Tilemap GenerateTilemap()
+        {
+            Tilemap tilemap = new Tilemap();
+
+            for (int q = -_tilemapRadius; q <= _tilemapRadius; q++)
+            {
+                int rFrom = System.Math.Max(-_tilemapRadius, -q - _tilemapRadius);
+                int rTo = System.Math.Min(_tilemapRadius, -q + _tilemapRadius);
+                for (int r = rFrom; r <= rTo; r++)
+                {
+                    int s = -q - r;
+
+                    var tile = new Tile();
+                    tile.IsAvailable = Random.value >= 0.15f;
+                    tilemap.Tiles[HexCoords.FromCube(q, r, s)] = tile;
+                }
+            }
+
+            return tilemap;
         }
     }
 }

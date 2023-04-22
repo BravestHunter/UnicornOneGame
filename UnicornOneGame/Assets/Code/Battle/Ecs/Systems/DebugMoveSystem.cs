@@ -24,7 +24,6 @@ namespace UnicornOne.Battle.Ecs.Systems
             var world = systems.GetWorld();
 
             VisualizeMovepath(world);
-            VisualizeTilepath(world);
             VisualizeDestinationTile(world);
         }
 
@@ -51,32 +50,6 @@ namespace UnicornOne.Battle.Ecs.Systems
                     targetPositionMoveComponent.Position + GroundLineOffset,
                     Color.red
                 );
-            }
-        }
-
-        private void VisualizeTilepath(EcsWorld world)
-        {
-            if (_tilepathFilter == null)
-            {
-                _tilepathFilter = world
-                    .Filter<TilepathMoveComponent>()
-                    .End();
-            }
-
-            var tilepathMoveComponentPool = world.GetPool<TilepathMoveComponent>();
-
-            foreach (var entity in _tilepathFilter)
-            {
-                var tilepathMoveComponent = tilepathMoveComponentPool.Get(entity);
-
-                for (int i = 1; i < tilepathMoveComponent.Path.Count; i++)
-                {
-                    Debug.DrawLine(
-                        tilepathMoveComponent.Path[i - 1].ToWorldCoordsXZ(_tilemapService.Value.HexParams) + GroundLineOffset,
-                        tilepathMoveComponent.Path[i].ToWorldCoordsXZ(_tilemapService.Value.HexParams) + GroundLineOffset,
-                        Color.blue
-                    );
-                }
             }
         }
 

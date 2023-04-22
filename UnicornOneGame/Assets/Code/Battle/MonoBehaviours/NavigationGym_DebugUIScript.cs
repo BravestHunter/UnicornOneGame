@@ -9,11 +9,11 @@ namespace UnicornOne.Battle.MonoBehaviours
     {
         [SerializeField] private NavigationGym_EcsWorldScript _ecsWorldScript;
 
-        private Rect _navigationGymWindowRect = new Rect(20, 150, 200, 80);
+        private Rect _navigationGymWindowRect = new Rect(20, 120, 200, 60);
 
         private void OnGUI()
         {
-            _navigationGymWindowRect = GUILayout.Window(1, _navigationGymWindowRect, DoNavigationGymWindow, "NavigationGym");
+            _navigationGymWindowRect = GUILayout.Window(1, _navigationGymWindowRect, DoNavigationGymWindow, "Navigation Gym Parameters");
         }
 
         void DoNavigationGymWindow(int windowID)

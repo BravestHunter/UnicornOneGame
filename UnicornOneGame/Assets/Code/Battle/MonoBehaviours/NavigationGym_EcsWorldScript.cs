@@ -10,7 +10,6 @@ using UnityEngine;
 using Leopotam.EcsLite.Di;
 using UnicornOne.Battle.Ecs.Components;
 using UnicornOne.Core.Utils;
-using Codice.CM.Client.Differences;
 using UnicornOne.Battle.Models;
 using UnicornOne.Battle.Utils;
 
@@ -30,6 +29,7 @@ namespace UnicornOne.Battle.MonoBehaviours
         [SerializeField] private GameObject _tilePrefab;
         [SerializeField] private Material _tileAvailableMaterial;
         [SerializeField] private Material _tileUnavailableMaterial;
+        [SerializeField] private Material _tileReservedMaterial;
         [SerializeField] private GameObject _playerPrefab;
         [SerializeField] private GameObject _rivalPrefab;
         [Range(MinRivalCount, MaxRivalCount)]
@@ -72,7 +72,6 @@ namespace UnicornOne.Battle.MonoBehaviours
             _systems = new EcsSystems(_world);
             _systems.Add(new RandomDestinationTileChooseSystem());
             _systems.Add(new NavigationSystem());
-            _systems.Add(new TilepathMoveSystem());
             _systems.Add(new TileMoveSystem());
             _systems.Add(new MoveSystem());
             _systems.Inject(_timeService, _tilemapService);
@@ -84,13 +83,14 @@ namespace UnicornOne.Battle.MonoBehaviours
             _debugSystems.Inject(_timeService, _tilemapService);
             _debugSystems.Init();
 
+            SetupTileReservationChangeHandlers();
             InitPlayer();
             UpdateRivals();
         }
 
         private void Update()
         {
-            ProcessMouse();
+            ProcessMouseClick();
 
             _timeService.Delta = Time.deltaTime;
 
@@ -103,6 +103,22 @@ namespace UnicornOne.Battle.MonoBehaviours
             _debugSystems.Destroy();
             _systems.Destroy();
             _world.Destroy();
+        }
+
+        private void SetupTileReservationChangeHandlers()
+        {
+            foreach (var tileEntry in _tilemapService.Tilemap)
+            {
+                HexCoords position = tileEntry.Key;
+                Tile tile = tileEntry.Value;
+
+                TileScript tileScript = _tilemapService.TileScripts[position];
+
+                tile.ReservationChanged += (bool isReserved) => 
+                {
+                    tileScript.SetMaterial(isReserved ? _tileReservedMaterial : _tileAvailableMaterial);
+                };
+            }
         }
 
         private void InitPlayer()
@@ -130,7 +146,7 @@ namespace UnicornOne.Battle.MonoBehaviours
             }
         }
 
-        private void ProcessMouse()
+        private void ProcessMouseClick()
         {
             if (Input.GetMouseButtonDown(0))
             {
@@ -194,6 +210,13 @@ namespace UnicornOne.Battle.MonoBehaviours
             var tilePositionComponentPool = world.GetPool<TilePositionComponent>();
             var tilePositionComponent = tilePositionComponentPool.Get(entity);
             tilemapService.Tilemap.Tiles[tilePositionComponent.Position].IsReserved = false;
+
+            var targetTileMoveComponentPool = world.GetPool<TargetTileMoveComponent>();
+            if (targetTileMoveComponentPool.Has(entity))
+            {
+                var targetTileMoveComponent = targetTileMoveComponentPool.Get(entity);
+                tilemapService.Tilemap.Tiles[targetTileMoveComponent.Position].IsReserved = false;
+            }
 
             world.DelEntity(entity);
         }

@@ -17,5 +17,10 @@ namespace UnicornOne.Battle.MonoBehaviours
 
             _borderMeshFilter.mesh = borderMesh;
         }
+
+        public void SetMaterial(Material material)
+        {
+            _tileMeshRenderer.material = material;
+        }
     }
 }

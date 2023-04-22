@@ -46,7 +46,6 @@ namespace UnicornOne.Battle.MonoBehaviours
             _systems.Add(new UnitInitSystem(_allyTeam, _enemyTeam));
             _systems.Add(new RandomDestinationTileChooseSystem());
             _systems.Add(new NavigationSystem());
-            _systems.Add(new TilepathMoveSystem());
             _systems.Add(new TileMoveSystem());
             _systems.Add(new MoveSystem());
             _systems.Inject(_timeService, _cameraService, _tilemapService);

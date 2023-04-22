@@ -25,8 +25,8 @@ namespace UnicornOne.Battle.Ecs.Systems.Movement
             {
                 _filter = world
                     .Filter<TargetTileMoveComponent>()
-                    .Inc<GameObjectUnityRefComponent>()
                     .Inc<TilePositionComponent>()
+                    .Inc<GameObjectUnityRefComponent>()
                     .Exc<TargetPositionMoveComponent>()
                     .End();
             }
@@ -57,6 +57,7 @@ namespace UnicornOne.Battle.Ecs.Systems.Movement
                 {
                     // Something wrong with target cell,
                     // it should only be one of neighbor cells
+                    _tilemapService.Value.Tilemap.Tiles[tilePositionComponent.Position].IsReserved = false;
                     targetTileMoveComponentPool.Del(entity);
                     continue;
                 }

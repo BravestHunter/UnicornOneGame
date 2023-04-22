@@ -19,14 +19,13 @@ namespace UnicornOne.Battle.Utils
                 for (int r = rFrom; r <= rTo; r++)
                 {
                     int s = -q - r;
+                    HexCoords coords = HexCoords.FromCube(q, r, s);
 
-                    var tile = new Tile();
-                    tile.IsWalkable = Random.value >= 0.15f;
-                    tilemap.Tiles[HexCoords.FromCube(q, r, s)] = tile;
+                    bool isWalkable = Random.value >= 0.15f || coords == HexCoords.Center;
+                    var tile = new Tile(isWalkable);
+                    tilemap.Tiles[coords] = tile;
                 }
             }
-
-            tilemap.Tiles[HexCoords.Center].IsWalkable = true;
 
             return tilemap;
         }

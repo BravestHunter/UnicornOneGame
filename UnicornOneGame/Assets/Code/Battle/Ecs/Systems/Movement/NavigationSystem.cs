@@ -18,81 +18,36 @@ namespace UnicornOne.Battle.Ecs.Systems
 
         private static readonly HexPathFinder _pathFinder = new HexPathFinder();
 
-        private EcsFilter _tilepathDeletionFilter;
-        private EcsFilter _tilepathGenerationFilter;
+        private EcsFilter _filter;
 
         public void Run(IEcsSystems systems)
         {
             var world = systems.GetWorld();
 
-            //ProcessInvalidTilepathDeletion(world);
             ProcessTilepathsGeneration(world);
-        }
-
-        private void ProcessInvalidTilepathDeletion(EcsWorld world)
-        {
-            if (_tilepathDeletionFilter == null)
-            {
-                _tilepathDeletionFilter = world
-                    .Filter<DestinationTileComponent>()
-                    .Inc<TilePositionComponent>()
-                    .Inc<TilepathMoveComponent>()
-                    .Exc<TargetTileMoveComponent>()
-                    .End();
-            }
-
-            var destinationTileComponentPool = world.GetPool<DestinationTileComponent>();
-            var tilepathMoveComponentPool = world.GetPool<TilepathMoveComponent>();
-
-            foreach (var entity in _tilepathDeletionFilter)
-            {
-                var tilepathMoveComponent = tilepathMoveComponentPool.Get(entity);
-
-                if (tilepathMoveComponent.Path == null || tilepathMoveComponent.Path.Count == 0)
-                {
-                    tilepathMoveComponentPool.Del(entity);
-                    continue;
-                }
-
-                var destinationTileComponent = destinationTileComponentPool.Get(entity);
-                if (destinationTileComponent.Position != tilepathMoveComponent.Path.First())
-                {
-                    tilepathMoveComponentPool.Del(entity);
-                    continue;
-                }
-
-                if (tilepathMoveComponent.Path.Any(tile => !IsTileAvailable(tile)))
-                {
-                    tilepathMoveComponentPool.Del(entity);
-                    continue;
-                }
-            }
         }
 
         private void ProcessTilepathsGeneration(EcsWorld world)
         {
-            if (_tilepathGenerationFilter == null)
+            if (_filter == null)
             {
-                _tilepathGenerationFilter = world
+                _filter = world
                     .Filter<DestinationTileComponent>()
                     .Inc<TilePositionComponent>()
-                    //.Exc<TilepathMoveComponent>()
                     .Exc<TargetTileMoveComponent>()
                     .End();
             }
 
             var destinationTileComponentPool = world.GetPool<DestinationTileComponent>();
             var tilePositionComponentPool = world.GetPool<TilePositionComponent>();
-            var tilepathMoveComponentPool = world.GetPool<TilepathMoveComponent>();
             var targetTileMoveComponentPool = world.GetPool<TargetTileMoveComponent>();
 
-            foreach (var entity in _tilepathGenerationFilter)
+            foreach (var entity in _filter)
             {
                 var destinationTileComponent = destinationTileComponentPool.Get(entity);
                 var tilePositionComponent = tilePositionComponentPool.Get(entity);
 
-                if (tilePositionComponent.Position == destinationTileComponent.Position ||
-                    !IsTileAvailable(destinationTileComponent.Position))
+                if (tilePositionComponent.Position == destinationTileComponent.Position)
                 {
                     destinationTileComponentPool.Del(entity);
                     continue;
@@ -107,8 +62,7 @@ namespace UnicornOne.Battle.Ecs.Systems
                 ref var targetTileMoveComponent = ref targetTileMoveComponentPool.Add(entity);
                 targetTileMoveComponent.Position = path[path.Count - 2];
 
-                //ref var tilepathMoveComponent = ref tilepathMoveComponentPool.Add(entity);
-                //tilepathMoveComponent.Path = _pathFinder.FindPath(tilePositionComponent.Position, destinationTileComponent.Position, IsTileAvailable);
+                _tilemapService.Value.Tilemap.Tiles[targetTileMoveComponent.Position].IsReserved = true;
             }
         }
 

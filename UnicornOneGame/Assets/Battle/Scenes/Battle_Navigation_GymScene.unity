@@ -315,6 +315,8 @@ MonoBehaviour:
   _tileAvailableMaterial: {fileID: 2100000, guid: df64b2ddea7920a40962d7aac24b2869, type: 2}
   _tileUnavailableMaterial: {fileID: 2100000, guid: a0eb1ba83e4b048409871a19b9850bb6, type: 2}
   _playerPrefab: {fileID: 8927972613739172143, guid: 0d2501336b7e5ee489fbdcb52429dc1b, type: 3}
+  _rivalPrefab: {fileID: 8927972613739172143, guid: d15f65f80c0d64fc48e1318e3d35f275, type: 3}
+  _rivalCount: 0
 --- !u!1 &1560452118
 GameObject:
   m_ObjectHideFlags: 0

@@ -13,6 +13,8 @@ namespace UnicornOne.Core.Utils
     /// </summary>
     public readonly struct HexCoords
     {
+        public static HexCoords Center => FromAxial(0, 0);
+
         public readonly int Q;
         public readonly int R;
 

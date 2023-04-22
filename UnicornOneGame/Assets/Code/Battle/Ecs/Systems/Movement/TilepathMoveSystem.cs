@@ -16,6 +16,8 @@ namespace UnicornOne.Battle.Ecs.Systems
 
         public void Run(IEcsSystems systems)
         {
+            return;
+
             var world = systems.GetWorld();
 
             if (_filter == null)

@@ -20,14 +20,15 @@ namespace UnicornOne.Battle.MonoBehaviours
         {
             GUI.DragWindow(new Rect(0, 0, 10000, 30));
 
-            GUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField($"Rivals count: {_ecsWorldScript.RivalCount}");
 
-            if (GUILayout.Button("Random Teleport"))
-            {
-                _ecsWorldScript.TeleportPlayerRandomly();
-            }
-
-            GUILayout.EndHorizontal();
+            _ecsWorldScript.RivalCount = Mathf.RoundToInt(
+                GUILayout.HorizontalSlider(
+                    _ecsWorldScript.RivalCount,
+                    NavigationGym_EcsWorldScript.MinRivalCount,
+                    NavigationGym_EcsWorldScript.MaxRivalCount
+                )
+            );
         }
     }
 }

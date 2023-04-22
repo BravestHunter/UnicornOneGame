@@ -9,6 +9,9 @@ namespace UnicornOne.Battle.Models
 {
     internal class Tile
     {
-        public bool IsAvailable { get; set; }
+        public bool IsWalkable { get; set; }
+        public bool IsReserved { get; set; }
+
+        public bool IsAvailable => IsWalkable && !IsReserved;
     }
 }

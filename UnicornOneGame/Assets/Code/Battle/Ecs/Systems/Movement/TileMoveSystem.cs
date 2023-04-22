@@ -47,6 +47,7 @@ namespace UnicornOne.Battle.Ecs.Systems.Movement
                 if (targetWorldPosition == gameObjectUnityRefComponent.GameObject.transform.position)
                 {
                     // So we already reached target cell
+                    _tilemapService.Value.Tilemap.Tiles[tilePositionComponent.Position].IsReserved = false;
                     tilePositionComponent.Position = targetTileMoveComponent.Position;
                     targetTileMoveComponentPool.Del(entity);
                     continue;
@@ -55,13 +56,14 @@ namespace UnicornOne.Battle.Ecs.Systems.Movement
                 if (targetTileMoveComponent.Position.DistanceTo(tilePositionComponent.Position) > 1)
                 {
                     // Something wrong with target cell,
-                    // we should only target neighbor cells
+                    // it should only be one of neighbor cells
                     targetTileMoveComponentPool.Del(entity);
                     continue;
                 }
 
                 ref var targetPositionMoveComponent = ref targetPositionMoveComponentPool.Add(entity);
                 targetPositionMoveComponent.Position = targetWorldPosition;
+                _tilemapService.Value.Tilemap.Tiles[targetTileMoveComponent.Position].IsReserved = true;
             }
         }
     }

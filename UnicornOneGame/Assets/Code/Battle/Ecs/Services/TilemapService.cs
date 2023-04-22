@@ -30,7 +30,7 @@ namespace UnicornOne.Battle.Ecs.Services
             {
                 tileEntry = Tilemap.Tiles.ElementAt(Random.Range(0, Tilemap.Tiles.Count));
             }
-            while (!tileEntry.Value.IsAvailable);
+            while (!tileEntry.Value.IsWalkable);
 
             return tileEntry.Key;
         }
@@ -48,7 +48,7 @@ namespace UnicornOne.Battle.Ecs.Services
 
                 var gameObject = GameObject.Instantiate(tilePrefab, worldPosition, Quaternion.identity, tilemapGameObject.transform);
 
-                var tileMaterial = pair.Value.IsAvailable ? availableMaterial : unavailableMaterial;
+                var tileMaterial = pair.Value.IsWalkable ? availableMaterial : unavailableMaterial;
 
                 var tileScript = gameObject.GetComponent<TileScript>();
                 tileScript.Setup(tileMesh, tileMaterial, borderMesh);

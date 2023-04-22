@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace UnicornOne.Battle.Ecs.Systems
 {
-    internal class RandomUnitMoveTargetSystem : IEcsRunSystem
+    internal class RandomDestinationTileChooseSystem : IEcsRunSystem
     {
         private readonly EcsCustomInject<ITilemapService> _tilemapService;
 
@@ -24,6 +24,7 @@ namespace UnicornOne.Battle.Ecs.Systems
                 _filter = world
                     .Filter<UnitFlag>()
                     .Inc<TilePositionComponent>()
+                    .Inc<RangomDestinationTileChoseFlag>()
                     .Exc<DestinationTileComponent>()
                     .End();
             }

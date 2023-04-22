@@ -7,7 +7,7 @@ namespace UnicornOne.Core.Utils
     {
         public delegate bool IsAvailable(HexCoords coords);
 
-        public List<HexCoords> FindPath(HexCoords from, HexCoords to, IsAvailable isAvailable)
+        public List<HexCoords> FindPath(HexCoords from, HexCoords to, IsAvailable isAvailableFunc)
         {
             PriorityQueue<HexCoords, int> queue = new();
             queue.Enqueue(from, 0);
@@ -28,7 +28,7 @@ namespace UnicornOne.Core.Utils
                 int lastCost = costMap[lastPosition];
                 foreach (HexCoords newPosition in HexUtils.GetNeighbors(lastPosition))
                 {
-                    if (!isAvailable(newPosition))
+                    if (!isAvailableFunc(newPosition))
                     {
                         continue;
                     }
@@ -50,6 +50,11 @@ namespace UnicornOne.Core.Utils
                         cameFromMap[newPosition] = lastPosition;
                     }
                 }
+            }
+
+            if (!costMap.ContainsKey(to))
+            {
+                return null;
             }
 
             int pathLength = costMap[to];

@@ -6,6 +6,7 @@ using UnicornOne.Battle.Ecs.Services;
 using UnicornOne.Battle.Ecs.Systems;
 using UnicornOne.Battle.Ecs.Systems.Movement;
 using UnicornOne.Battle.Models;
+using UnicornOne.Battle.Utils;
 using UnicornOne.Core.Utils;
 using UnicornOne.ScriptableObjects;
 using UnityEngine;
@@ -35,13 +36,15 @@ namespace UnicornOne.Battle.MonoBehaviours
         {
             _timeService = new TimeService();
             _cameraService = new CameraService(_camera);
-            _tilemapService = new TilemapService(GenerateTilemap(10), _tilePrefab, _tileAvailableMaterial, _tileUnavailableMaterial);
+
+            var tilemap = TilemapGenerator.Generate(10);
+            _tilemapService = new TilemapService(tilemap, _tilePrefab, _tileAvailableMaterial, _tileUnavailableMaterial);
 
             _world = new EcsWorld();
 
             _systems = new EcsSystems(_world);
             _systems.Add(new UnitInitSystem(_allyTeam, _enemyTeam));
-            _systems.Add(new RandomUnitMoveTargetSystem());
+            _systems.Add(new RandomDestinationTileChooseSystem());
             _systems.Add(new NavigationSystem());
             _systems.Add(new TilepathMoveSystem());
             _systems.Add(new TileMoveSystem());
@@ -69,27 +72,6 @@ namespace UnicornOne.Battle.MonoBehaviours
             _debugSystems.Destroy();
             _systems.Destroy();
             _world.Destroy();
-        }
-
-        private Tilemap GenerateTilemap(int radius)
-        {
-            Tilemap tilemap = new Tilemap();
-
-            for (int q = -radius; q <= radius; q++)
-            {
-                int rFrom = System.Math.Max(-radius, -q - radius);
-                int rTo = System.Math.Min(radius, -q + radius);
-                for (int r = rFrom; r <= rTo; r++)
-                {
-                    int s = -q - r;
-
-                    var tile = new Tile();
-                    tile.IsAvailable = Random.value >= 0.15f;
-                    tilemap.Tiles[HexCoords.FromCube(q, r, s)] = tile;
-                }
-            }
-
-            return tilemap;
         }
     }
 }

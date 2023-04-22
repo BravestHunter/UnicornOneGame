@@ -7,17 +7,20 @@ using UnicornOne.Battle.Ecs.Services;
 using UnicornOne.Battle.Ecs.Systems.Movement;
 using UnicornOne.Battle.Ecs.Systems;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using Leopotam.EcsLite.Di;
 using UnicornOne.Battle.Ecs.Components;
 using UnicornOne.Core.Utils;
 using Codice.CM.Client.Differences;
 using UnicornOne.Battle.Models;
+using UnicornOne.Battle.Utils;
 
 namespace UnicornOne.Battle.MonoBehaviours
 {
     internal class NavigationGym_EcsWorldScript : MonoBehaviour
     {
+        public const int MinRivalCount = 0;
+        public const int MaxRivalCount = 40;
+
         private static readonly Plane _plane = new Plane(Vector3.up, 0.0f);
 
         [Range(1, 15)]
@@ -28,6 +31,24 @@ namespace UnicornOne.Battle.MonoBehaviours
         [SerializeField] private Material _tileAvailableMaterial;
         [SerializeField] private Material _tileUnavailableMaterial;
         [SerializeField] private GameObject _playerPrefab;
+        [SerializeField] private GameObject _rivalPrefab;
+        [Range(MinRivalCount, MaxRivalCount)]
+        [SerializeField] private int _rivalCount;
+
+        public int RivalCount
+        {
+            get { return _rivalCount; }
+            set
+            {
+                if (value < MinRivalCount || value > MaxRivalCount)
+                {
+                    return;
+                }
+
+                _rivalCount = value;
+                UpdateRivals();
+            }
+        }
 
         private TimeService _timeService;
         private TilemapService _tilemapService;
@@ -35,18 +56,21 @@ namespace UnicornOne.Battle.MonoBehaviours
         private EcsWorld _world;
         private IEcsSystems _systems;
         private IEcsSystems _debugSystems;
+
         private int _playerEntity;
+        private readonly List<int> _rivalEntities = new();
 
         private void Start()
         {
             _timeService = new TimeService();
 
-            var tilemap = GenerateTilemap();
+            var tilemap = TilemapGenerator.Generate(_tilemapRadius);
             _tilemapService = new TilemapService(tilemap, _tilePrefab, _tileAvailableMaterial, _tileUnavailableMaterial);
 
             _world = new EcsWorld();
 
             _systems = new EcsSystems(_world);
+            _systems.Add(new RandomDestinationTileChooseSystem());
             _systems.Add(new NavigationSystem());
             _systems.Add(new TilepathMoveSystem());
             _systems.Add(new TileMoveSystem());
@@ -61,6 +85,7 @@ namespace UnicornOne.Battle.MonoBehaviours
             _debugSystems.Init();
 
             InitPlayer();
+            UpdateRivals();
         }
 
         private void Update()
@@ -80,44 +105,36 @@ namespace UnicornOne.Battle.MonoBehaviours
             _world.Destroy();
         }
 
-        public void TeleportPlayerRandomly()
-        {
-            int q = Random.Range(-6, 7);
-            int r = Random.Range(-6, 7);
-            var newHexPosition = HexCoords.FromCube(q, r);
-
-            var tilePositionComponentPool = _world.GetPool<TilePositionComponent>();
-            ref var tilePositionComponent = ref tilePositionComponentPool.Get(_playerEntity);
-            tilePositionComponent.Position = newHexPosition;
-
-            var gameObjectUnityRefComponentPool = _world.GetPool<GameObjectUnityRefComponent>();
-            var gameObjectUnityRefComponent = gameObjectUnityRefComponentPool.Get(_playerEntity);
-            gameObjectUnityRefComponent.GameObject.transform.position = newHexPosition.ToWorldCoordsXZ(_tilemapService.HexParams);
-        }
-
         private void InitPlayer()
         {
-            _playerEntity = _world.NewEntity();
+            _playerEntity = InstantiateUnit(_world, _playerPrefab, HexCoords.Center, 5.0f, _tilemapService);
+        }
 
-            var unitFlagPool = _world.GetPool<UnitFlag>();
-            unitFlagPool.Add(_playerEntity);
+        private void UpdateRivals()
+        {
+            while (_rivalEntities.Count < _rivalCount)
+            {
+                float movementSpeed = Random.Range(1.0f, 10.0f);
+                int rivalEntity = InstantiateUnit(_world, _rivalPrefab, _tilemapService.GetRandomAvailablePosition(), movementSpeed, _tilemapService);
 
-            var tilePositionComponentPool = _world.GetPool<TilePositionComponent>();
-            ref var tilePositionComponent = ref tilePositionComponentPool.Add(_playerEntity);
-            tilePositionComponent.Position = HexCoords.FromAxial(0, 0);
+                var raangomDestinationTileChoseFlagPool = _world.GetPool<RangomDestinationTileChoseFlag>();
+                raangomDestinationTileChoseFlagPool.Add(rivalEntity);
 
-            var gameObjectUnityRefComponentPool = _world.GetPool<GameObjectUnityRefComponent>();
-            ref var gameObjectUnityRefComponent = ref gameObjectUnityRefComponentPool.Add(_playerEntity);
-            gameObjectUnityRefComponent.GameObject = 
-                GameObject.Instantiate(_playerPrefab, tilePositionComponent.Position.ToWorldCoordsXZ(_tilemapService.HexParams), Quaternion.identity);
+                _rivalEntities.Add(rivalEntity);
+            }
+
+            while (_rivalEntities.Count > _rivalCount)
+            {
+                DestroyUnit(_rivalEntities.Last(), _world, _tilemapService);
+                _rivalEntities.RemoveAt(_rivalEntities.Count - 1);
+            }
         }
 
         private void ProcessMouse()
         {
-            var mouse = Mouse.current;
-            if (mouse.leftButton.wasPressedThisFrame)
+            if (Input.GetMouseButtonDown(0))
             {
-                Vector3 mousePosition = mouse.position.ReadValue();
+                Vector3 mousePosition = Input.mousePosition;
                 Ray ray = _camera.ScreenPointToRay(mousePosition);
 
                 float distande;
@@ -126,7 +143,7 @@ namespace UnicornOne.Battle.MonoBehaviours
                     Vector3 intersectionPoint = ray.GetPoint(distande);
                     HexCoords destinationTile = HexCoords.FromWorldCoords(new Vector2(intersectionPoint.x, intersectionPoint.z), _tilemapService.HexParams);
 
-                    if (!_tilemapService.Tilemap.Tiles.TryGetValue(destinationTile, out Tile tile) || !tile.IsAvailable)
+                    if (!_tilemapService.Tilemap.Tiles.TryGetValue(destinationTile, out Tile tile) || !tile.IsWalkable)
                     {
                         return;
                     }
@@ -143,25 +160,42 @@ namespace UnicornOne.Battle.MonoBehaviours
             }
         }
 
-        private Tilemap GenerateTilemap()
+        private static int InstantiateUnit(EcsWorld world, GameObject prefab, in HexCoords position, float movementSpeed, ITilemapService tilemapService)
         {
-            Tilemap tilemap = new Tilemap();
+            int entity = world.NewEntity();
 
-            for (int q = -_tilemapRadius; q <= _tilemapRadius; q++)
-            {
-                int rFrom = System.Math.Max(-_tilemapRadius, -q - _tilemapRadius);
-                int rTo = System.Math.Min(_tilemapRadius, -q + _tilemapRadius);
-                for (int r = rFrom; r <= rTo; r++)
-                {
-                    int s = -q - r;
+            var unitFlagPool = world.GetPool<UnitFlag>();
+            unitFlagPool.Add(entity);
 
-                    var tile = new Tile();
-                    tile.IsAvailable = Random.value >= 0.15f;
-                    tilemap.Tiles[HexCoords.FromCube(q, r, s)] = tile;
-                }
-            }
+            var movementComponentPool = world.GetPool<MovementComponent>();
+            ref var movementComponent = ref movementComponentPool.Add(entity);
+            movementComponent.Speed = movementSpeed;
 
-            return tilemap;
+            var tilePositionComponentPool = world.GetPool<TilePositionComponent>();
+            ref var tilePositionComponent = ref tilePositionComponentPool.Add(entity);
+            tilePositionComponent.Position = position;
+            tilemapService.Tilemap.Tiles[position].IsReserved = true;
+
+            var gameObjectUnityRefComponentPool = world.GetPool<GameObjectUnityRefComponent>();
+            ref var gameObjectUnityRefComponent = ref gameObjectUnityRefComponentPool.Add(entity);
+            gameObjectUnityRefComponent.GameObject = GameObject.Instantiate(
+                prefab, tilePositionComponent.Position.ToWorldCoordsXZ(tilemapService.HexParams), Quaternion.identity
+            );
+
+            return entity;
+        }
+
+        private static void DestroyUnit(int entity, EcsWorld world, ITilemapService tilemapService)
+        {
+            var gameObjectUnityRefComponentPool = world.GetPool<GameObjectUnityRefComponent>();
+            var gameObjectUnityRefComponent = gameObjectUnityRefComponentPool.Get(entity);
+            GameObject.Destroy(gameObjectUnityRefComponent.GameObject);
+
+            var tilePositionComponentPool = world.GetPool<TilePositionComponent>();
+            var tilePositionComponent = tilePositionComponentPool.Get(entity);
+            tilemapService.Tilemap.Tiles[tilePositionComponent.Position].IsReserved = false;
+
+            world.DelEntity(entity);
         }
     }
 }

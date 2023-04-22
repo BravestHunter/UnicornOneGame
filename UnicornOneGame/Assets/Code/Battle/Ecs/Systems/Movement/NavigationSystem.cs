@@ -25,7 +25,7 @@ namespace UnicornOne.Battle.Ecs.Systems
         {
             var world = systems.GetWorld();
 
-            ProcessInvalidTilepathDeletion(world);
+            //ProcessInvalidTilepathDeletion(world);
             ProcessTilepathsGeneration(world);
         }
 
@@ -35,7 +35,9 @@ namespace UnicornOne.Battle.Ecs.Systems
             {
                 _tilepathDeletionFilter = world
                     .Filter<DestinationTileComponent>()
+                    .Inc<TilePositionComponent>()
                     .Inc<TilepathMoveComponent>()
+                    .Exc<TargetTileMoveComponent>()
                     .End();
             }
 
@@ -46,14 +48,20 @@ namespace UnicornOne.Battle.Ecs.Systems
             {
                 var tilepathMoveComponent = tilepathMoveComponentPool.Get(entity);
 
-                if (tilepathMoveComponent.Path == null)
+                if (tilepathMoveComponent.Path == null || tilepathMoveComponent.Path.Count == 0)
                 {
                     tilepathMoveComponentPool.Del(entity);
                     continue;
                 }
 
                 var destinationTileComponent = destinationTileComponentPool.Get(entity);
-                if (tilepathMoveComponent.Path.Count > 0 && destinationTileComponent.Position != tilepathMoveComponent.Path.First())
+                if (destinationTileComponent.Position != tilepathMoveComponent.Path.First())
+                {
+                    tilepathMoveComponentPool.Del(entity);
+                    continue;
+                }
+
+                if (tilepathMoveComponent.Path.Any(tile => !IsTileAvailable(tile)))
                 {
                     tilepathMoveComponentPool.Del(entity);
                     continue;
@@ -68,27 +76,39 @@ namespace UnicornOne.Battle.Ecs.Systems
                 _tilepathGenerationFilter = world
                     .Filter<DestinationTileComponent>()
                     .Inc<TilePositionComponent>()
-                    .Exc<TilepathMoveComponent>()
+                    //.Exc<TilepathMoveComponent>()
+                    .Exc<TargetTileMoveComponent>()
                     .End();
             }
 
             var destinationTileComponentPool = world.GetPool<DestinationTileComponent>();
             var tilePositionComponentPool = world.GetPool<TilePositionComponent>();
             var tilepathMoveComponentPool = world.GetPool<TilepathMoveComponent>();
+            var targetTileMoveComponentPool = world.GetPool<TargetTileMoveComponent>();
 
             foreach (var entity in _tilepathGenerationFilter)
             {
                 var destinationTileComponent = destinationTileComponentPool.Get(entity);
                 var tilePositionComponent = tilePositionComponentPool.Get(entity);
 
-                if (tilePositionComponent.Position == destinationTileComponent.Position)
+                if (tilePositionComponent.Position == destinationTileComponent.Position ||
+                    !IsTileAvailable(destinationTileComponent.Position))
                 {
                     destinationTileComponentPool.Del(entity);
                     continue;
                 }
 
-                ref var tilepathMoveComponent = ref tilepathMoveComponentPool.Add(entity);
-                tilepathMoveComponent.Path = _pathFinder.FindPath(tilePositionComponent.Position, destinationTileComponent.Position, IsTileAvailable);
+                var path = _pathFinder.FindPath(tilePositionComponent.Position, destinationTileComponent.Position, IsTileAvailable);
+                if (path == null)
+                {
+                    continue;
+                }
+
+                ref var targetTileMoveComponent = ref targetTileMoveComponentPool.Add(entity);
+                targetTileMoveComponent.Position = path[path.Count - 2];
+
+                //ref var tilepathMoveComponent = ref tilepathMoveComponentPool.Add(entity);
+                //tilepathMoveComponent.Path = _pathFinder.FindPath(tilePositionComponent.Position, destinationTileComponent.Position, IsTileAvailable);
             }
         }
 

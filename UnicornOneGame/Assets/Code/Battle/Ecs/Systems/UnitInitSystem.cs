@@ -35,7 +35,7 @@ namespace UnicornOne.Battle.Ecs.Systems
             }
         }
 
-        private void SpawnUnit(EcsWorld world, Unit unit, HexCoords tilePosition, bool isAlly)
+        private void SpawnUnit(EcsWorld world, Unit unit, HexCoords position, bool isAlly)
         {
             var entity = world.NewEntity();
 
@@ -53,13 +53,20 @@ namespace UnicornOne.Battle.Ecs.Systems
                 enemyFlagPool.Add(entity);
             }
 
+            var movementComponentPool = world.GetPool<MovementComponent>();
+            ref var movementComponent = ref movementComponentPool.Add(entity);
+            movementComponent.Speed = Random.Range(1.0f, 10.0f);
+
             var tilePositionComponentPool = world.GetPool<TilePositionComponent>();
             ref var tilePositionComponent = ref tilePositionComponentPool.Add(entity);
-            tilePositionComponent.Position = tilePosition;
+            tilePositionComponent.Position = position;
+
+            _tilemapService.Value.Tilemap.Tiles[position].IsReserved = true;
 
             var gameObjectUnityRefComponentPool = world.GetPool<GameObjectUnityRefComponent>();
             ref var gameObjectUnityRefComponent = ref gameObjectUnityRefComponentPool.Add(entity);
-            gameObjectUnityRefComponent.GameObject = Object.Instantiate(unit.Prefab, tilePosition.ToWorldCoordsXZ(_tilemapService.Value.HexParams), Quaternion.identity);
+            gameObjectUnityRefComponent.GameObject =
+                Object.Instantiate(unit.Prefab, position.ToWorldCoordsXZ(_tilemapService.Value.HexParams), Quaternion.identity);
 
             var healthComponentPool = world.GetPool<HealthComponent>();
             ref var healthComponent = ref healthComponentPool.Add(entity);

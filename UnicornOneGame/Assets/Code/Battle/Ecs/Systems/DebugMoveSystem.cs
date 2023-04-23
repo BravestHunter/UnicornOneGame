@@ -16,8 +16,8 @@ namespace UnicornOne.Battle.Ecs.Systems
         private readonly EcsCustomInject<ITilemapService> _tilemapService;
 
         private EcsFilter _movepathFilter;
-        private EcsFilter _tilepathFilter;
         private EcsFilter _destinationTileFilter;
+        private EcsFilter _pathToDestinationFilter;
 
         public void Run(IEcsSystems systems)
         {
@@ -25,6 +25,7 @@ namespace UnicornOne.Battle.Ecs.Systems
 
             VisualizeMovepath(world);
             VisualizeDestinationTile(world);
+            VisualizePathToDestination(world);
         }
 
         private void VisualizeMovepath(EcsWorld world)
@@ -71,6 +72,32 @@ namespace UnicornOne.Battle.Ecs.Systems
                 DebugExtension.DebugPoint(
                     destinationTileMoveComponent.Position.ToWorldCoordsXZ(_tilemapService.Value.HexParams) + GroundLineOffset, Color.yellow
                 );
+            }
+        }
+
+        private void VisualizePathToDestination(EcsWorld world)
+        {
+            if (_pathToDestinationFilter == null)
+            {
+                _pathToDestinationFilter = world
+                    .Filter<DestinationTileComponent>()
+                    .Inc<GameObjectUnityRefComponent>()
+                    .End();
+            }
+
+            var destinationTileMoveComponentPool = world.GetPool<DestinationTileComponent>();
+            var gameObjectUnityRefComponentPool = world.GetPool<GameObjectUnityRefComponent>();
+
+            foreach (var entity in _pathToDestinationFilter)
+            {
+                var destinationTileMoveComponent = destinationTileMoveComponentPool.Get(entity);
+                var gameObjectUnityRefComponent = gameObjectUnityRefComponentPool.Get(entity);
+
+                Debug.DrawLine(
+                    destinationTileMoveComponent.Position.ToWorldCoordsXZ(_tilemapService.Value.HexParams),
+                    gameObjectUnityRefComponent.GameObject.transform.position,
+                    Color.green
+                    );
             }
         }
     }

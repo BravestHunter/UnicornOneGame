@@ -2,7 +2,7 @@ namespace UnicornOne.Battle.Ecs.Components
 {
     internal struct HealthComponent
     {
-        public int MaxHealth;
-        public int CurrentHealth;
+        public int Max;
+        public int Current;
     }
 }

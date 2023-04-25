@@ -10,6 +10,7 @@ using UnicornOne.Battle.Utils;
 using UnicornOne.Core.Utils;
 using UnicornOne.ScriptableObjects;
 using UnityEngine;
+using UnityEngine.Rendering.VirtualTexturing;
 
 namespace UnicornOne.Battle.MonoBehaviours
 {
@@ -43,11 +44,23 @@ namespace UnicornOne.Battle.MonoBehaviours
             _world = new EcsWorld();
 
             _systems = new EcsSystems(_world);
+
+            // Other
             _systems.Add(new UnitInitSystem(_allyTeam, _enemyTeam));
             _systems.Add(new RandomDestinationTileChooseSystem());
+
+            // Damage and health
+            _systems.Add(new DamageSystem());
+            _systems.Add(new HealthCheckSystem());
+
+            // Move and navigation
             _systems.Add(new NavigationSystem());
             _systems.Add(new TileMoveSystem());
             _systems.Add(new MoveSystem());
+
+            // Final systems
+            _systems.Add(new DestroySystem());
+
             _systems.Inject(_timeService, _cameraService, _tilemapService);
             _systems.Init();
 

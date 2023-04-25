@@ -70,8 +70,8 @@ namespace UnicornOne.Battle.Ecs.Systems
 
             var healthComponentPool = world.GetPool<HealthComponent>();
             ref var healthComponent = ref healthComponentPool.Add(entity);
-            healthComponent.MaxHealth = unit.Health;
-            healthComponent.CurrentHealth = unit.Health;
+            healthComponent.Max = unit.Health;
+            healthComponent.Current = unit.Health;
         }
     }
 }

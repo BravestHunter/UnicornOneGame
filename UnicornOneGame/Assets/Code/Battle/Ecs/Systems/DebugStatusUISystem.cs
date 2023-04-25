@@ -112,8 +112,8 @@ namespace UnicornOne.Battle.Ecs.Systems
                 var healthComponent = healthComponentPool.Get(entity);
                 ref var debugStatusUIComponent = ref debugStatusUIComponentPool.Get(entity);
 
-                debugStatusUIComponent.Script.MaxHealth = healthComponent.MaxHealth;
-                debugStatusUIComponent.Script.CurrentHealth = healthComponent.CurrentHealth;
+                debugStatusUIComponent.Script.MaxHealth = healthComponent.Max;
+                debugStatusUIComponent.Script.CurrentHealth = healthComponent.Current;
             }
         }
     }

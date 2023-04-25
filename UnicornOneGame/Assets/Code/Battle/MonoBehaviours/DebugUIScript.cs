@@ -11,6 +11,7 @@ namespace UnicornOne.Battle.MonoBehaviours
 {
     internal class DebugUIScript : MonoBehaviour
     {
+        private int _gameSpeedWindowId;
         private Rect _gameSpeedWindowRect = new Rect(20, 20, 200, 80);
 
         private float GameSpeed
@@ -27,9 +28,14 @@ namespace UnicornOne.Battle.MonoBehaviours
             }
         }
 
+        private void Awake()
+        {
+            _gameSpeedWindowId = GlobalDebug.NextDebugWindowId;
+        }
+
         private void OnGUI()
         {
-            _gameSpeedWindowRect = GUILayout.Window(0, _gameSpeedWindowRect, DoGameSpeedWindow, "Game Speed");
+            _gameSpeedWindowRect = GUILayout.Window(_gameSpeedWindowId, _gameSpeedWindowRect, DoGameSpeedWindow, "Game Speed");
         }
 
         void DoGameSpeedWindow(int windowID)

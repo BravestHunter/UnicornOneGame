@@ -13,6 +13,5 @@ MonoBehaviour:
   m_Name: Knight
   m_EditorClassIdentifier: 
   Prefab: {fileID: 6455139829038195398, guid: 7778632bf67024a46b1f78e3c03c216e, type: 3}
-  Components:
-  - {fileID: 11400000, guid: 4a973d6c8c9129149ad1c30d435b58e6, type: 2}
-  - {fileID: 11400000, guid: 74ccb7245d4b1ca469cb033a06b02a51, type: 2}
+  Health: 200
+  Damage: 15

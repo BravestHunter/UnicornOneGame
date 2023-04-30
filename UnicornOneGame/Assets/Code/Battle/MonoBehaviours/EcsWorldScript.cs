@@ -35,7 +35,7 @@ namespace UnicornOne.Battle.MonoBehaviours
 
         private void Start()
         {
-            _timeService = new TimeService();
+            _timeService = new TimeService(Time.timeSinceLevelLoad);
             _cameraService = new CameraService(_camera);
 
             var tilemap = TilemapGenerator.Generate(10);
@@ -47,7 +47,10 @@ namespace UnicornOne.Battle.MonoBehaviours
 
             // Other
             _systems.Add(new UnitInitSystem(_allyTeam, _enemyTeam));
-            _systems.Add(new RandomDestinationTileChooseSystem());
+
+            // AI
+            _systems.Add(new UnitAiSystem());
+            _systems.Add(new AttackSystem());
 
             // Damage and health
             _systems.Add(new DamageSystem());
@@ -74,6 +77,7 @@ namespace UnicornOne.Battle.MonoBehaviours
         private void Update()
         {
             _timeService.Delta = Time.deltaTime;
+            _timeService.CurrentTime = Time.timeSinceLevelLoad;
 
             _systems.Run();
             _debugSystems.Run();

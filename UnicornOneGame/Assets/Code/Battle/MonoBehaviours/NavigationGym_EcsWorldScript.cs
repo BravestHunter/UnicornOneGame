@@ -32,9 +32,8 @@ namespace UnicornOne.Battle.MonoBehaviours
         [SerializeField] private Material _tileReservedMaterial;
         [SerializeField] private GameObject _playerPrefab;
         [SerializeField] private GameObject _rivalPrefab;
-        [Range(MinRivalCount, MaxRivalCount)]
-        [SerializeField] private int _rivalCount;
 
+        private int _rivalCount;
         public int RivalCount
         {
             get { return _rivalCount; }
@@ -62,7 +61,7 @@ namespace UnicornOne.Battle.MonoBehaviours
 
         private void Start()
         {
-            _timeService = new TimeService();
+            _timeService = new TimeService(Time.timeSinceLevelLoad);
 
             var tilemap = TilemapGenerator.Generate(_tilemapRadius);
             _tilemapService = new TilemapService(tilemap, _tilePrefab, _tileAvailableMaterial, _tileUnavailableMaterial);
@@ -93,6 +92,7 @@ namespace UnicornOne.Battle.MonoBehaviours
             ProcessMouseClick();
 
             _timeService.Delta = Time.deltaTime;
+            _timeService.CurrentTime = Time.timeSinceLevelLoad;
 
             _systems.Run();
             _debugSystems.Run();

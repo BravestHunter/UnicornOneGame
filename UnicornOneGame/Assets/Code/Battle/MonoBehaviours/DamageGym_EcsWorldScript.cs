@@ -28,7 +28,7 @@ namespace UnicornOne.Battle.MonoBehaviours
 
         private void Start()
         {
-            _timeService = new TimeService();
+            _timeService = new TimeService(Time.timeSinceLevelLoad);
 
             _world = new EcsWorld();
 
@@ -49,6 +49,7 @@ namespace UnicornOne.Battle.MonoBehaviours
         private void Update()
         {
             _timeService.Delta = Time.deltaTime;
+            _timeService.CurrentTime = Time.timeSinceLevelLoad;
 
             _systems.Run();
             _debugSystems.Run();

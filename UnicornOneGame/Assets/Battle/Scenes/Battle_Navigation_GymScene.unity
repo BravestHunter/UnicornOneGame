@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028305, g: 0.22571313, b: 0.3069213, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -317,7 +317,6 @@ MonoBehaviour:
   _tileReservedMaterial: {fileID: 2100000, guid: a0eb1ba83e4b048409871a19b9850bb6, type: 2}
   _playerPrefab: {fileID: 8927972613739172143, guid: 0d2501336b7e5ee489fbdcb52429dc1b, type: 3}
   _rivalPrefab: {fileID: 8927972613739172143, guid: d15f65f80c0d64fc48e1318e3d35f275, type: 3}
-  _rivalCount: 0
 --- !u!1 &1560452118
 GameObject:
   m_ObjectHideFlags: 0

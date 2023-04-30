@@ -2,6 +2,7 @@ using Leopotam.EcsLite;
 using Leopotam.EcsLite.Di;
 using UnicornOne.Battle.Ecs.Components;
 using UnicornOne.Battle.Ecs.Services;
+using UnicornOne.Battle.Utils;
 using UnicornOne.Core.Utils;
 using UnicornOne.ScriptableObjects;
 using UnityEngine;
@@ -53,6 +54,10 @@ namespace UnicornOne.Battle.Ecs.Systems
                 enemyFlagPool.Add(entity);
             }
 
+            var unitAiComponentPool = world.GetPool<UnitAiComponent>();
+            ref var unitAiComponent = ref unitAiComponentPool.Add(entity);
+            unitAiComponent.State = UnitAiState.SearchingTarget;
+
             var movementComponentPool = world.GetPool<MovementComponent>();
             ref var movementComponent = ref movementComponentPool.Add(entity);
             movementComponent.Speed = Random.Range(1.0f, 10.0f);
@@ -72,6 +77,10 @@ namespace UnicornOne.Battle.Ecs.Systems
             ref var healthComponent = ref healthComponentPool.Add(entity);
             healthComponent.Max = unit.Health;
             healthComponent.Current = unit.Health;
+
+            var damageParamsComponentPool = world.GetPool<DamageParamsComponent>();
+            ref var damageParamsComponent = ref damageParamsComponentPool.Add(entity);
+            damageParamsComponent.Damage = unit.Damage;
         }
     }
 }

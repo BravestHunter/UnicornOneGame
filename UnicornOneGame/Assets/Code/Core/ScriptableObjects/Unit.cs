@@ -12,5 +12,6 @@ namespace UnicornOne.ScriptableObjects
     {
         public GameObject Prefab;
         public int Health;
+        public int Damage;
     }
 }

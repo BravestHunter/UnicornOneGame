@@ -60,7 +60,7 @@ namespace UnicornOne.Battle.Ecs.Systems
 
             var movementComponentPool = world.GetPool<MovementComponent>();
             ref var movementComponent = ref movementComponentPool.Add(entity);
-            movementComponent.Speed = Random.Range(1.0f, 10.0f);
+            movementComponent.Speed = unit.Speed;
 
             var tilePositionComponentPool = world.GetPool<TilePositionComponent>();
             ref var tilePositionComponent = ref tilePositionComponentPool.Add(entity);

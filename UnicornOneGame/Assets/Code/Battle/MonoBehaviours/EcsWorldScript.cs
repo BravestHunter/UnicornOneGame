@@ -45,7 +45,7 @@ namespace UnicornOne.Battle.MonoBehaviours
 
             _systems = new EcsSystems(_world);
 
-            // Other
+            // Init
             _systems.Add(new UnitInitSystem(_allyTeam, _enemyTeam));
 
             // AI

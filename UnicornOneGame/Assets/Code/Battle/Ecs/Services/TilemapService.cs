@@ -31,7 +31,7 @@ namespace UnicornOne.Battle.Ecs.Services
             {
                 tileEntry = Tilemap.Tiles.ElementAt(Random.Range(0, Tilemap.Tiles.Count));
             }
-            while (!tileEntry.Value.IsWalkable);
+            while (!tileEntry.Value.IsAvailable);
 
             return tileEntry.Key;
         }

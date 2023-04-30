@@ -199,7 +199,9 @@ MonoBehaviour:
   _camera: {fileID: 1620004392}
   _allyTeam:
   - {fileID: 11400000, guid: a23b4bfab8474a74fa27c71892236eff, type: 2}
+  - {fileID: 11400000, guid: a23b4bfab8474a74fa27c71892236eff, type: 2}
   _enemyTeam:
+  - {fileID: 11400000, guid: 27250eb72bbe7264abbf216c5e3d4e95, type: 2}
   - {fileID: 11400000, guid: 27250eb72bbe7264abbf216c5e3d4e95, type: 2}
   _tilePrefab: {fileID: 7040366892123135674, guid: c79a5c0003283b94d8b7a305b5c72757, type: 3}
   _tileAvailableMaterial: {fileID: 2100000, guid: df64b2ddea7920a40962d7aac24b2869, type: 2}

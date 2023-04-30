@@ -91,6 +91,8 @@ namespace UnicornOne.Battle.Ecs.Systems
                             int targetEntity;
                             if (!targetEntityComponent.PackedEntity.Unpack(world, out targetEntity))
                             {
+                                targetEntityComponentPool.Del(entity);
+
                                 unitAiComponent.State = UnitAiState.SearchingTarget;
                                 continue;
                             }
@@ -177,6 +179,8 @@ namespace UnicornOne.Battle.Ecs.Systems
                             int targetEntity;
                             if (!targetEntityComponent.PackedEntity.Unpack(world, out targetEntity))
                             {
+                                targetEntityComponentPool.Del(entity);
+
                                 unitAiComponent.State = UnitAiState.SearchingTarget;
                                 continue;
                             }

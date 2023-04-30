@@ -78,9 +78,10 @@ namespace UnicornOne.Battle.Ecs.Systems
             healthComponent.Max = unit.Health;
             healthComponent.Current = unit.Health;
 
-            var damageParamsComponentPool = world.GetPool<DamageParamsComponent>();
-            ref var damageParamsComponent = ref damageParamsComponentPool.Add(entity);
-            damageParamsComponent.Damage = unit.Damage;
+            var attackParamsComponentPool = world.GetPool<AttackParamsComponent>();
+            ref var attackParamsComponent = ref attackParamsComponentPool.Add(entity);
+            attackParamsComponent.Damage = unit.Damage;
+            attackParamsComponent.Cooldown = unit.AttackCooldown;
         }
     }
 }

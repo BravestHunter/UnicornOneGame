@@ -15,4 +15,5 @@ MonoBehaviour:
   Prefab: {fileID: 6455139829038195398, guid: 7778632bf67024a46b1f78e3c03c216e, type: 3}
   Health: 200
   Damage: 15
-  Speed: 4
+  AttackCooldown: 2
+  Speed: 3

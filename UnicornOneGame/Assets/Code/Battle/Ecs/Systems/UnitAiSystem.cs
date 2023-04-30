@@ -38,7 +38,7 @@ namespace UnicornOne.Battle.Ecs.Systems
             var targetTileMoveComponentPool = world.GetPool<TargetTileMoveComponent>();
             var destinationTileComponentPool = world.GetPool<DestinationTileComponent>();
             var attackInCooldownComponentPool = world.GetPool<AttackInCooldownComponent>();
-            var damageParamsComponentPool = world.GetPool<DamageParamsComponent>();
+            var attackParamsComponentPool = world.GetPool<AttackParamsComponent>();
             var attackComponentPool = world.GetPool<AttackComponent>();
 
             var allies = GetAllies(world);
@@ -217,11 +217,11 @@ namespace UnicornOne.Battle.Ecs.Systems
                             }
 
                             // Make attack
-                            var damageParamsComponent = damageParamsComponentPool.Get(entity);
+                            var attackParamsComponent = attackParamsComponentPool.Get(entity);
 
                             ref var attackComponent = ref attackComponentPool.Add(entity);
-                            attackComponent.Damage = damageParamsComponent.Damage;
-                            attackComponent.Cooldown = 3.0f;
+                            attackComponent.Damage = attackParamsComponent.Damage;
+                            attackComponent.Cooldown = attackParamsComponent.Cooldown;
 
                             break;
                         }

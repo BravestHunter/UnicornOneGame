@@ -4,8 +4,9 @@ using UnityEngine;
 
 namespace UnicornOne.Battle.Ecs.Components
 {
-    internal struct DamageParamsComponent
+    internal struct AttackParamsComponent
     {
         public int Damage;
+        public float Cooldown;
     }
 }

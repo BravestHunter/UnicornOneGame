@@ -8,5 +8,10 @@ namespace UnicornOne.Battle.Ecs.Components
     internal struct UnitAiComponent
     {
         public UnitAiState State;
+
+        public override string ToString()
+        {
+            return $"AI:{State}";
+        }
     }
 }

@@ -1,64 +1,77 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using TMPro;
-using UnicornOne.Battle.Utils;
+using UnicornOne.Battle.ScriptableObjects;
 using UnityEngine;
 
 namespace UnicornOne.Battle.MonoBehaviours
 {
     internal class DebugStatusUIScript : MonoBehaviour
     {
-        private static readonly Dictionary<Role, Color> RoleColorMap = new Dictionary<Role, Color>()
-        {
-            [Role.Ally] = Color.green,
-            [Role.Enemy] = Color.red
-        };
-        private static readonly Color DefaultColor = Color.grey;
-
         [SerializeField] private TMP_Text _text;
 
         private bool _isDirty = true;
-
-        public Role Role
+         
+        private string _hpInfo = string.Empty;
+        public string HpInfo
         {
+            get { return _hpInfo; }
             set
             {
-                Color color;
-                if (!RoleColorMap.TryGetValue(value, out color))
-                {
-                    color = DefaultColor;
-                }
-                _text.color = color;
-            }
-        }
-
-        private int _maxHealth = 0;
-        public int MaxHealth
-        {
-            get { return _maxHealth; }
-            set
-            {
-                if (_maxHealth == value)
+                if (_hpInfo == value)
                 {
                     return;
                 }
 
-                _maxHealth = value;
+                _hpInfo = value;
                 _isDirty = true;
             }
         }
 
-        private int _currentHealth = 0;
-        public int CurrentHealth
+        private bool _showHpInfo = false;
+        public bool ShowHpInfo
         {
-            get { return _currentHealth; }
-            set 
+            get { return _showHpInfo; }
+            set
             {
-                if (_currentHealth == value)
+                if (_showHpInfo == value)
                 {
                     return;
                 }
 
-                _currentHealth = value;
+                _showHpInfo = value;
+                _isDirty = true;
+            }
+        }
+
+        private string _aiInfo = string.Empty;
+        public string AiInfo
+        {
+            get { return _aiInfo; }
+            set
+            {
+                if (_aiInfo == value)
+                {
+                    return;
+                }
+
+                _aiInfo = value;
+                _isDirty = true;
+            }
+        }
+
+        private bool _showAiInfo = false;
+        public bool ShowAiInfo
+        {
+            get { return _showAiInfo; }
+            set
+            {
+                if (_showAiInfo == value)
+                {
+                    return;
+                }
+
+                _showAiInfo = value;
                 _isDirty = true;
             }
         }
@@ -67,10 +80,34 @@ namespace UnicornOne.Battle.MonoBehaviours
         {
             if (_isDirty)
             {
-                _text.text = $"HP: {CurrentHealth}/{MaxHealth}";
+                _text.text = AssembleInfoString();
 
                 _isDirty = false;
             }
+        }
+
+        public void UpdateSettings(DebugStatusUISettings settings, bool isAlly)
+        {
+            _text.fontSize = settings.FontSize;
+            _text.color = isAlly ? settings.AllyColor : settings.EnemyColor;
+            ShowHpInfo = settings.ShowHpInfo;
+            ShowAiInfo = settings.ShowAiInfo;
+        }
+
+        private string AssembleInfoString()
+        {
+            List<string> infos = new();
+
+            if (ShowAiInfo)
+            {
+                infos.Add(AiInfo);
+            }
+            if (ShowHpInfo)
+            {
+                infos.Add(HpInfo);
+            }
+
+            return string.Join('\n', infos.Where(str => !string.IsNullOrEmpty(str)));
         }
     }
 }

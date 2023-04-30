@@ -6,11 +6,11 @@ using UnicornOne.Battle.Ecs.Services;
 using UnicornOne.Battle.Ecs.Systems;
 using UnicornOne.Battle.Ecs.Systems.Movement;
 using UnicornOne.Battle.Models;
+using UnicornOne.Battle.ScriptableObjects;
 using UnicornOne.Battle.Utils;
 using UnicornOne.Core.Utils;
 using UnicornOne.ScriptableObjects;
 using UnityEngine;
-using UnityEngine.Rendering.VirtualTexturing;
 
 namespace UnicornOne.Battle.MonoBehaviours
 {
@@ -23,7 +23,8 @@ namespace UnicornOne.Battle.MonoBehaviours
         [SerializeField] private GameObject _tilePrefab;
         [SerializeField] private Material _tileAvailableMaterial;
         [SerializeField] private Material _tileUnavailableMaterial;
-        [SerializeField] private GameObject _debugStatusUIPrefab;
+
+        [SerializeField] private DebugStatusUISettings _debugStatusUISettings;
 
         private TimeService _timeService;
         private CameraService _cameraService;
@@ -70,7 +71,7 @@ namespace UnicornOne.Battle.MonoBehaviours
             _debugSystems = new EcsSystems(_world);
             _debugSystems.Add(new Leopotam.EcsLite.UnityEditor.EcsWorldDebugSystem());
             _debugSystems.Add(new DebugMoveSystem());
-            _debugSystems.Add(new DebugStatusUISystem(_debugStatusUIPrefab));
+            _debugSystems.Add(new DebugStatusUISystem(_debugStatusUISettings));
             _debugSystems.Inject(_timeService, _cameraService, _tilemapService);
             _debugSystems.Init();
         }

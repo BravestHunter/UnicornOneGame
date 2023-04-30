@@ -4,5 +4,10 @@ namespace UnicornOne.Battle.Ecs.Components
     {
         public int Max;
         public int Current;
+
+        public override string ToString()
+        {
+            return $"HP:{Current}/{Max}";
+        }
     }
 }

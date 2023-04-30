@@ -3,38 +3,38 @@ using Leopotam.EcsLite.Di;
 using UnicornOne.Battle.Ecs.Components;
 using UnicornOne.Battle.Ecs.Services;
 using UnicornOne.Battle.MonoBehaviours;
+using UnicornOne.Battle.ScriptableObjects;
 using UnityEngine;
 
 namespace UnicornOne.Battle.Ecs.Systems
 {
     internal class DebugStatusUISystem : IEcsRunSystem
     {
-        private const float DistanceFromCamera = 10.0f;
-        private static readonly Vector3 OffsetFromObject = new Vector3(0.0f, 2.0f, 0.0f);
-
         private readonly EcsCustomInject<ICameraService> _cameraService;
 
-        private readonly GameObject _debugStatusUIPrefab;
+        private readonly DebugStatusUISettings _settings;
 
         private EcsFilter _addFilter;
-        private EcsFilter _positionFilter;
+        private EcsFilter _updateFilter;
         private EcsFilter _healthFilter;
+        private EcsFilter _aiFilter;
 
-        public DebugStatusUISystem(GameObject debugStatusUIPrefab)
+        public DebugStatusUISystem(DebugStatusUISettings settings)
         {
-            _debugStatusUIPrefab = debugStatusUIPrefab;
+            _settings = settings;
         }
 
         public void Run(IEcsSystems systems)
         {
             var world = systems.GetWorld();
 
-            AddDebugStatusUIs(world);
-            UpdatePosition(world);
-            UpdateHealthData(world);
+            ProcessAdd(world);
+            ProcessUpdate(world);
+            ProcessAiUpdate(world);
+            ProcessHealthUpdate(world);
         }
 
-        private void AddDebugStatusUIs(EcsWorld world)
+        private void ProcessAdd(EcsWorld world)
         {
             if (_addFilter == null)
             {
@@ -42,78 +42,93 @@ namespace UnicornOne.Battle.Ecs.Systems
                     .Filter<UnitFlag>()
                     .Inc<GameObjectUnityRefComponent>()
                     .Exc<DebugStatusUIComponent>()
-                .End();
+                    .End();
             }
 
             var gameObjectUnityRefComponentPool = world.GetPool<GameObjectUnityRefComponent>();
             var debugStatusUIComponentPool = world.GetPool<DebugStatusUIComponent>();
-            var allyFlagPool = world.GetPool<AllyFlag>();
-            var enemyFlagPool = world.GetPool<EnemyFlag>();
 
             foreach (var entity in _addFilter)
             {
                 var gameObjectUnityRefComponent = gameObjectUnityRefComponentPool.Get(entity);
 
                 ref var debugStatusUIComponent = ref debugStatusUIComponentPool.Add(entity);
-                debugStatusUIComponent.GameObject = GameObject.Instantiate(_debugStatusUIPrefab, gameObjectUnityRefComponent.GameObject.transform.position, Quaternion.identity);
+                debugStatusUIComponent.GameObject = GameObject.Instantiate(_settings.Prefab, gameObjectUnityRefComponent.GameObject.transform.position, Quaternion.identity);
                 debugStatusUIComponent.GameObject.transform.rotation = _cameraService.Value.Camera.transform.rotation * Quaternion.Euler(0.0f, 180.0f, 0.0f);
                 debugStatusUIComponent.Script = debugStatusUIComponent.GameObject.GetComponent<DebugStatusUIScript>();
-                debugStatusUIComponent.TargetGameObject = gameObjectUnityRefComponent.GameObject;
-
-                if (allyFlagPool.Has(entity))
-                {
-                    debugStatusUIComponent.Script.Role = Utils.Role.Ally;
-                }
-                else if (enemyFlagPool.Has(entity))
-                {
-                    debugStatusUIComponent.Script.Role = Utils.Role.Enemy;
-                }
             }
         }
 
-        private void UpdatePosition(EcsWorld world)
+        private void ProcessUpdate(EcsWorld world)
         {
-            if (_positionFilter == null)
+            if (_updateFilter == null)
             {
-                _positionFilter = world
+                _updateFilter = world
                     .Filter<DebugStatusUIComponent>()
-                .End();
+                    .Inc<GameObjectUnityRefComponent>()
+                    .End();
             }
 
             var debugStatusUIComponentPool = world.GetPool<DebugStatusUIComponent>();
+            var gameObjectUnityRefComponentPool = world.GetPool<GameObjectUnityRefComponent>();
+            var allyFlagPool = world.GetPool<AllyFlag>();
 
-            foreach (var entity in _positionFilter)
+            foreach (var entity in _updateFilter)
             {
                 ref var debugStatusUIComponent = ref debugStatusUIComponentPool.Get(entity);
+                var gameObjectUnityRefComponent = gameObjectUnityRefComponentPool.Get(entity);
 
-                Vector3 upPosition = debugStatusUIComponent.TargetGameObject.transform.position + OffsetFromObject;
+                debugStatusUIComponent.Script.UpdateSettings(_settings, allyFlagPool.Has(entity));
+
+                // Update position
+                Vector3 upPosition = gameObjectUnityRefComponent.GameObject.transform.position + _settings.OffsetFromObject;
                 Vector3 cameraPosition = _cameraService.Value.Camera.transform.position;
                 Vector3 directionFromCamera = (upPosition - cameraPosition).normalized;
-
-                debugStatusUIComponent.GameObject.transform.position = cameraPosition + DistanceFromCamera * directionFromCamera;
+                debugStatusUIComponent.GameObject.transform.position = cameraPosition + _settings.DistanceFromCamera * directionFromCamera;
             }
         }
 
-        private void UpdateHealthData(EcsWorld world)
+        private void ProcessAiUpdate(EcsWorld world)
+        {
+            if (_aiFilter == null)
+            {
+                _aiFilter = world
+                    .Filter<DebugStatusUIComponent>()
+                    .Inc<UnitAiComponent>()
+                    .End();
+            }
+
+            var debugStatusUIComponentPool = world.GetPool<DebugStatusUIComponent>();
+            var unitAiComponentPool = world.GetPool<UnitAiComponent>();
+
+            foreach (var entity in _aiFilter)
+            {
+                ref var debugStatusUIComponent = ref debugStatusUIComponentPool.Get(entity);
+                var unitAiComponent = unitAiComponentPool.Get(entity);
+
+                debugStatusUIComponent.Script.AiInfo = unitAiComponent.ToString();
+            }
+        }
+
+        private void ProcessHealthUpdate(EcsWorld world)
         {
             if (_healthFilter == null)
             {
                 _healthFilter = world
                     .Filter<DebugStatusUIComponent>()
                     .Inc<HealthComponent>()
-                .End();
+                    .End();
             }
 
-            var healthComponentPool = world.GetPool<HealthComponent>();
             var debugStatusUIComponentPool = world.GetPool<DebugStatusUIComponent>();
+            var healthComponentPool = world.GetPool<HealthComponent>();
 
             foreach (var entity in _healthFilter)
             {
-                var healthComponent = healthComponentPool.Get(entity);
                 ref var debugStatusUIComponent = ref debugStatusUIComponentPool.Get(entity);
+                var healthComponent = healthComponentPool.Get(entity);
 
-                debugStatusUIComponent.Script.MaxHealth = healthComponent.Max;
-                debugStatusUIComponent.Script.CurrentHealth = healthComponent.Current;
+                debugStatusUIComponent.Script.HpInfo = healthComponent.ToString();
             }
         }
     }

@@ -6,15 +6,17 @@ using UnityEngine;
 
 namespace UnicornOne.Battle.Ecs.Systems
 {
-    public class AnimationSystem : IEcsRunSystem
+    internal class AnimationSystem : IEcsRunSystem
     {
         private EcsFilter _updateFilter;
+        private EcsFilter _triggerFilter;
 
         public void Run(IEcsSystems systems)
         {
             var world = systems.GetWorld();
 
             ProcessUpdate(world);
+            ProcessTriggers(world);
         }
 
         private void ProcessUpdate(EcsWorld world)
@@ -39,6 +41,30 @@ namespace UnicornOne.Battle.Ecs.Systems
 
                 var movementComponent = movementComponentPool.Get(entity);
                 animatorUnityRefComponent.Animator.SetFloat("VelocityZ", movementComponent.Speed);
+            }
+        }
+
+        private void ProcessTriggers(EcsWorld world)
+        {
+            if (_triggerFilter == null)
+            {
+                _triggerFilter = world
+                    .Filter<AnimatorUnityRefComponent>()
+                    .Inc<AnimationTriggerComponent>()
+                    .End();
+            }
+
+            var animatorUnityRefComponentPool = world.GetPool<AnimatorUnityRefComponent>();
+            var animationTriggerComponentPool = world.GetPool<AnimationTriggerComponent>();
+
+            foreach (var entity in _triggerFilter)
+            {
+                var animatorUnityRefComponent = animatorUnityRefComponentPool.Get(entity);
+                var animationTriggerComponent = animationTriggerComponentPool.Get(entity);
+
+                animatorUnityRefComponent.Animator.SetTrigger(animationTriggerComponent.Name);
+
+                animationTriggerComponentPool.Del(entity);
             }
         }
     }

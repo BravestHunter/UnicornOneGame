@@ -35,6 +35,7 @@ namespace UnicornOne.Battle.Ecs.Systems
             var attackComponentPool = world.GetPool<AttackComponent>();
             var targetEntityComponentPool = world.GetPool<TargetEntityComponent>();
             var damageComponentPool = world.GetPool<DamageComponent>();
+            var animationTriggerComponentPool = world.GetPool<AnimationTriggerComponent>();
             var attackInCooldownComponentPool = world.GetPool<AttackInCooldownComponent>();
 
             foreach (var entity in _attackFilter)
@@ -47,6 +48,9 @@ namespace UnicornOne.Battle.Ecs.Systems
                 damageComponent.Amount = attackComponent.Damage;
 
                 targetEntityComponentPool.Copy(entity, damageEntity);
+
+                ref var animationTriggerComponent = ref animationTriggerComponentPool.Add(entity);
+                animationTriggerComponent.Name = "AttackTrigger";
 
                 ref var attackInCooldownComponent = ref attackInCooldownComponentPool.Add(entity);
                 attackInCooldownComponent.EndTime = _timeService.Value.TimeSinceStart + attackComponent.Cooldown;

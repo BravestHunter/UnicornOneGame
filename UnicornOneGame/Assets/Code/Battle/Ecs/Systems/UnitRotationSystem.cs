@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace UnicornOne.Battle.Ecs.Systems
 {
-    public class UnitRotationSystem : IEcsRunSystem
+    internal class UnitRotationSystem : IEcsRunSystem
     {
         private readonly EcsCustomInject<ITilemapService> _tilemapService;
 

@@ -123,8 +123,8 @@ BlendTree:
     m_CycleOffset: 0
     m_DirectBlendParameter: Blend
     m_Mirror: 0
-  m_BlendParameter: Velocity X
-  m_BlendParameterY: Velocity Z
+  m_BlendParameter: VelocityX
+  m_BlendParameterY: VelocityZ
   m_MinThreshold: 0
   m_MaxThreshold: 0.28235295
   m_UseAutomaticThresholds: 1
@@ -1338,8 +1338,8 @@ BlendTree:
     m_CycleOffset: 0
     m_DirectBlendParameter: Blend
     m_Mirror: 0
-  m_BlendParameter: Velocity X
-  m_BlendParameterY: Velocity Z
+  m_BlendParameter: VelocityX
+  m_BlendParameterY: VelocityZ
   m_MinThreshold: 0
   m_MaxThreshold: 0.3764706
   m_UseAutomaticThresholds: 1
@@ -2184,8 +2184,8 @@ BlendTree:
     m_CycleOffset: 0
     m_DirectBlendParameter: Blend
     m_Mirror: 0
-  m_BlendParameter: Velocity X
-  m_BlendParameterY: Velocity Z
+  m_BlendParameter: VelocityX
+  m_BlendParameterY: VelocityZ
   m_MinThreshold: 0
   m_MaxThreshold: 0.28235295
   m_UseAutomaticThresholds: 1
@@ -2424,13 +2424,13 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 0}
-  - m_Name: Velocity X
+  - m_Name: VelocityX
     m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 0}
-  - m_Name: Velocity Z
+  - m_Name: VelocityZ
     m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0
@@ -3445,7 +3445,7 @@ AnimatorStateMachine:
     m_Position: {x: -10, y: 40, z: 0}
   - serializedVersion: 1
     m_StateMachine: {fileID: 7647134506833167060}
-    m_Position: {x: 220.15027, y: 91.07678, z: 0}
+    m_Position: {x: 220, y: 90, z: 0}
   - serializedVersion: 1
     m_StateMachine: {fileID: 7936923684145864110}
     m_Position: {x: 440.15027, y: 41.076782, z: 0}
@@ -3493,6 +3493,10 @@ AnimatorStateMachine:
   - {fileID: 4727882872323219200}
   m_EntryTransitions: []
   m_StateMachineTransitions:
+  - first: {fileID: 7936923684145864110}
+    second:
+    - {fileID: -5122330161707290742}
+    - {fileID: 1074847820079406359}
   - first: {fileID: 4855288292544608120}
     second:
     - {fileID: -6380871157197419954}
@@ -3501,10 +3505,6 @@ AnimatorStateMachine:
     second:
     - {fileID: -1957449190882282236}
     - {fileID: -2794740425064176458}
-  - first: {fileID: 7936923684145864110}
-    second:
-    - {fileID: -5122330161707290742}
-    - {fileID: 1074847820079406359}
   - first: {fileID: -867237243359443122}
     second:
     - {fileID: 5639530301350041877}

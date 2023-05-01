@@ -73,6 +73,10 @@ namespace UnicornOne.Battle.Ecs.Systems
             gameObjectUnityRefComponent.GameObject =
                 Object.Instantiate(unit.Prefab, position.ToWorldCoordsXZ(_tilemapService.Value.HexParams), Quaternion.identity);
 
+            var animatorUnityRefComponentPool = world.GetPool<AnimatorUnityRefComponent>();
+            ref var animatorUnityRefComponent = ref animatorUnityRefComponentPool.Add(entity);
+            animatorUnityRefComponent.Animator = gameObjectUnityRefComponent.GameObject.GetComponentInChildren<Animator>();
+
             var healthComponentPool = world.GetPool<HealthComponent>();
             ref var healthComponent = ref healthComponentPool.Add(entity);
             healthComponent.Max = unit.Health;

@@ -62,6 +62,9 @@ namespace UnicornOne.Battle.MonoBehaviours
             _systems.Add(new TileMoveSystem());
             _systems.Add(new MoveSystem());
 
+            // Animation
+            _systems.Add(new AnimationSystem());
+
             // Final systems
             _systems.Add(new DestroySystem());
 

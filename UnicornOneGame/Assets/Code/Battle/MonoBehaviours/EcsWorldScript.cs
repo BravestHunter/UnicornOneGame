@@ -57,10 +57,11 @@ namespace UnicornOne.Battle.MonoBehaviours
             _systems.Add(new DamageSystem());
             _systems.Add(new HealthCheckSystem());
 
-            // Move and navigation
+            // Navigation and movement
             _systems.Add(new NavigationSystem());
             _systems.Add(new TileMoveSystem());
             _systems.Add(new MoveSystem());
+            _systems.Add(new UnitRotationSystem());
 
             // Animation
             _systems.Add(new AnimationSystem());

@@ -29,13 +29,13 @@ namespace UnicornOne.Battle.Ecs.Systems
 
             var animatorUnityRefComponentPool = world.GetPool<AnimatorUnityRefComponent>();
             var movementComponentPool = world.GetPool<MovementComponent>();
-            var targetPositionMoveComponentPool = world.GetPool<TargetPositionMoveComponent>();
+            var destinationTileComponentPool = world.GetPool<DestinationTileComponent>();
 
             foreach (var entity in _updateFilter)
             {
                 var animatorUnityRefComponent = animatorUnityRefComponentPool.Get(entity);
 
-                animatorUnityRefComponent.Animator.SetBool("Moving", targetPositionMoveComponentPool.Has(entity));
+                animatorUnityRefComponent.Animator.SetBool("Moving", destinationTileComponentPool.Has(entity));
 
                 var movementComponent = movementComponentPool.Get(entity);
                 animatorUnityRefComponent.Animator.SetFloat("VelocityZ", movementComponent.Speed);

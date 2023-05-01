@@ -8,6 +8,7 @@ namespace UnicornOne.Battle.Ecs.Components
     internal struct UnitAiComponent
     {
         public UnitAiState State;
+        public float TargetSetTime;
 
         public override string ToString()
         {

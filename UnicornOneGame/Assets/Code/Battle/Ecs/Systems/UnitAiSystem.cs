@@ -14,6 +14,15 @@ namespace UnicornOne.Battle.Ecs.Systems
 {
     internal class UnitAiSystem : IEcsRunSystem
     {
+        private struct UnitInfo
+        {
+            public int Entity;
+            public HexCoords Position;
+        }
+
+        private const float RetargetTime = 1.0f;
+
+        private readonly EcsCustomInject<ITimeService> _timeService;
         private readonly EcsCustomInject<ITilemapService> _tilemapService;
 
         private EcsFilter _aiFilter;
@@ -61,24 +70,35 @@ namespace UnicornOne.Battle.Ecs.Systems
 
                             bool isAlly = allyFlagPool.Has(entity);
 
-                            List<int> targets = isAlly ? enemies : allies;
+                            List<UnitInfo> targets = isAlly ? enemies : allies;
                             if (targets.Count == 0)
                             {
                                 continue;
                             }
 
-                            // Select random target
-                            int target = targets[Random.Range(0, targets.Count)];
+                            // Select closest target
+                            var tilePositionComponent = tilePositionComponentPool.Get(entity);
+                            UnitInfo target = GetClosestTarget(targets, tilePositionComponent.Position);
+
                             ref var targetEntityComponent = ref targetEntityComponentPool.Add(entity);
-                            targetEntityComponent.PackedEntity = world.PackEntity(target);
+                            targetEntityComponent.PackedEntity = world.PackEntity(target.Entity);
 
                             unitAiComponent.State = UnitAiState.MovingToTarget;
+                            unitAiComponent.TargetSetTime = _timeService.Value.TimeSinceStart;
 
                             break;
                         }
 
                     case UnitAiState.MovingToTarget:
                         {
+                            // Try to retarget
+                            if (_timeService.Value.TimeSinceStart >= unitAiComponent.TargetSetTime + RetargetTime)
+                            {
+                                targetEntityComponentPool.Del(entity);
+                                unitAiComponent.State = UnitAiState.SearchingTarget;
+                                continue;
+                            }
+
                             // Check if there is target
                             if (!targetEntityComponentPool.Has(entity))
                             {
@@ -237,36 +257,64 @@ namespace UnicornOne.Battle.Ecs.Systems
             }
         }
 
-        private List<int> GetAllies(EcsWorld world)
+        private List<UnitInfo> GetAllies(EcsWorld world)
         {
             if (_allyFilter == null)
             {
-                _allyFilter = world.Filter<AllyFlag>().End();
+                _allyFilter = world
+                    .Filter<AllyFlag>()
+                    .Inc<TilePositionComponent>()
+                    .End();
             }
 
-            List<int> allies = new();
+            var tilePositionComponentPool = world.GetPool<TilePositionComponent>();
+
+            List<UnitInfo> allies = new();
             foreach (int ally in _allyFilter)
             {
-                allies.Add(ally);
+                allies.Add(new UnitInfo() { Entity = ally, Position = tilePositionComponentPool.Get(ally).Position });
             }
 
             return allies;
         }
 
-        private List<int> GetEnemies(EcsWorld world)
+        private List<UnitInfo> GetEnemies(EcsWorld world)
         {
             if (_enemyFilter == null)
             {
-                _enemyFilter = world.Filter<EnemyFlag>().End();
+                _enemyFilter = world
+                    .Filter<EnemyFlag>()
+                    .Inc<TilePositionComponent>()
+                    .End();
             }
 
-            List<int> enemies = new();
+            var tilePositionComponentPool = world.GetPool<TilePositionComponent>();
+
+            List<UnitInfo> enemies = new();
             foreach (int enemy in _enemyFilter)
             {
-                enemies.Add(enemy);
+                enemies.Add(new UnitInfo() { Entity = enemy, Position = tilePositionComponentPool.Get(enemy).Position });
             }
 
             return enemies;
+        }
+
+        private UnitInfo GetClosestTarget(List<UnitInfo> targets, HexCoords position)
+        {
+            UnitInfo closestTarget = targets.First();
+            int minDistance = int.MaxValue;
+
+            foreach (var target in targets)
+            {
+                int distance = target.Position.DistanceTo(position);
+                if (minDistance > distance)
+                {
+                    closestTarget = target;
+                    minDistance = distance;
+                }
+            }
+
+            return closestTarget;
         }
     }
 }

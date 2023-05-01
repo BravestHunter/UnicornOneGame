@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: DebugStatusUISettings
   m_EditorClassIdentifier: 
   Prefab: {fileID: 3878117087197096768, guid: c261ba9ff34007244a3170e4ea4f5c49, type: 3}
-  FontSize: 0.25
-  AllyColor: {r: 0.09021227, g: 0.9622642, b: 0, a: 1}
+  FontSize: 0.2
+  AllyColor: {r: 0.09122064, g: 0.9716981, b: 0, a: 1}
   EnemyColor: {r: 0.9056604, g: 0, b: 0, a: 1}
   OffsetFromObject: {x: 0, y: 2.5, z: 0}
   DistanceFromCamera: 10

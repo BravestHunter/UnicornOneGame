@@ -116,7 +116,8 @@ namespace UnicornOne.Battle.Ecs.Systems
                             {
                                 targetPosition = tilePositionComponentPool.Get(targetEntity).Position;
                             }
-                            if (entityPosition.DistanceTo(targetPosition) == 1)
+                            var attackParamsComponent = attackParamsComponentPool.Get(entity);
+                            if (entityPosition.DistanceTo(targetPosition) <= attackParamsComponent.Range)
                             {
                                 unitAiComponent.State = UnitAiState.AttacksTarget;
                                 continue;
@@ -124,7 +125,7 @@ namespace UnicornOne.Battle.Ecs.Systems
 
                             // Set destination tile
                             var possibleDestinations =
-                                HexUtils.GetNeighbors(targetPosition)
+                                HexUtils.InRange(targetPosition, attackParamsComponent.Range)
                                 .Where(t => {
                                     if (_tilemapService.Value.Tilemap.Tiles.TryGetValue(t, out Tile tile))
                                     {
@@ -204,9 +205,18 @@ namespace UnicornOne.Battle.Ecs.Systems
                             {
                                 targetPosition = tilePositionComponentPool.Get(targetEntity).Position;
                             }
-                            if (entityPosition.DistanceTo(targetPosition) > 1)
+                            var attackParamsComponent = attackParamsComponentPool.Get(entity);
+                            if (entityPosition.DistanceTo(targetPosition) > attackParamsComponent.Range)
                             {
                                 unitAiComponent.State = UnitAiState.MovingToTarget;
+                                continue;
+                            }
+
+                            // Check if we have to wait for target get into target cell
+                            HexCoords realEntityPosition = tilePositionComponentPool.Get(entity).Position;
+                            HexCoords realTargetEntityPosition = tilePositionComponentPool.Get(targetEntity).Position;
+                            if (realEntityPosition.DistanceTo(realTargetEntityPosition) > attackParamsComponent.Range)
+                            {
                                 continue;
                             }
 
@@ -217,8 +227,6 @@ namespace UnicornOne.Battle.Ecs.Systems
                             }
 
                             // Make attack
-                            var attackParamsComponent = attackParamsComponentPool.Get(entity);
-
                             ref var attackComponent = ref attackComponentPool.Add(entity);
                             attackComponent.Damage = attackParamsComponent.Damage;
                             attackComponent.Cooldown = attackParamsComponent.Cooldown;

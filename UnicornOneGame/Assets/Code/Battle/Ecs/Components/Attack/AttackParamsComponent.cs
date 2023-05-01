@@ -8,5 +8,6 @@ namespace UnicornOne.Battle.Ecs.Components
     {
         public int Damage;
         public float Cooldown;
+        public int Range;
     }
 }

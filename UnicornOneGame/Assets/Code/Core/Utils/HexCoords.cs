@@ -44,6 +44,11 @@ namespace UnicornOne.Core.Utils
             return !(a == b);
         }
 
+        public static HexCoords operator+(HexCoords a, HexCoords b)
+        {
+            return HexCoords.FromAxial(a.Q + b.Q, a.R + b.R);
+        }
+
         public static HexCoords FromAxial(int q, int r)
         {
             return new HexCoords(q, r);

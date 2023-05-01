@@ -14,6 +14,7 @@ namespace UnicornOne.ScriptableObjects
         public int Health;
         public int Damage;
         public float AttackCooldown;
+        public int AttackRange;
         public float Speed;
     }
 }

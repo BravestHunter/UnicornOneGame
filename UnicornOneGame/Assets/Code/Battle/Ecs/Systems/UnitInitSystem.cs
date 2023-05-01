@@ -82,6 +82,7 @@ namespace UnicornOne.Battle.Ecs.Systems
             ref var attackParamsComponent = ref attackParamsComponentPool.Add(entity);
             attackParamsComponent.Damage = unit.Damage;
             attackParamsComponent.Cooldown = unit.AttackCooldown;
+            attackParamsComponent.Range = unit.AttackRange;
         }
     }
 }

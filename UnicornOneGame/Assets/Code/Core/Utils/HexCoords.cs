@@ -11,6 +11,7 @@ namespace UnicornOne.Core.Utils
     /// Represents universal hexagonal grid coordinates.
     /// Internally implemented as axial coordiantes.
     /// </summary>
+    [Serializable]
     public readonly struct HexCoords
     {
         public static HexCoords Center => FromAxial(0, 0);
@@ -32,6 +33,11 @@ namespace UnicornOne.Core.Utils
             }
 
             return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Q, R);
         }
 
         public static bool operator==(HexCoords a, HexCoords b)

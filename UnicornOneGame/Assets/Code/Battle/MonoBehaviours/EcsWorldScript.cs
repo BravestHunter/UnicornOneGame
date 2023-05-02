@@ -35,6 +35,9 @@ namespace UnicornOne.Battle.MonoBehaviours
         {
             _tilemap = TilemapGenerator.Generate(10);
 
+            SetRandomCellsForUnits(_allyTeam, _tilemap);
+            SetRandomCellsForUnits(_enemyTeam, _tilemap);
+
             InitSimulation();
         }
 
@@ -50,9 +53,6 @@ namespace UnicornOne.Battle.MonoBehaviours
 
         private void InitSimulation()
         {
-            SetRandomCellsForUnits(_allyTeam, _tilemap);
-            SetRandomCellsForUnits(_enemyTeam, _tilemap);
-
             EcsWorldSimulationParameters parameters = new()
             {
                 Camera = _camera,
@@ -84,17 +84,16 @@ namespace UnicornOne.Battle.MonoBehaviours
                     throw new System.Exception("There is no available cells for unit");
                 }
 
-                return availableTiles.ElementAt(Random.Range(0, availableTilesCount)).Key;
+                HexCoords position = availableTiles.ElementAt(Random.Range(0, availableTilesCount)).Key;
+
+                reserved.Add(position);
+
+                return position;
             }
 
             for (int i = 0; i < team.Length; i++)
             {
-                if (team[i].Position == HexCoords.Center)
-                {
-                    team[i].Position = GetRandomFreePosition();
-                }
-
-                reserved.Add(team[i].Position);
+                team[i].Position = GetRandomFreePosition();
             }
         }
     }

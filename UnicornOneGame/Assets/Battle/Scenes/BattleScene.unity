@@ -132,7 +132,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 627502251}
-  - component: {fileID: 627502250}
+  - component: {fileID: 627502254}
+  - component: {fileID: 627502253}
+  - component: {fileID: 627502252}
   m_Layer: 0
   m_Name: DebugUI
   m_TagString: Untagged
@@ -140,18 +142,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &627502250
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 627502249}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 34e0965c4d5c8ec4cbff929c578ac273, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &627502251
 Transform:
   m_ObjectHideFlags: 0
@@ -167,6 +157,43 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &627502252
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 627502249}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c435501830578c49ba5e1ee3a4171df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &627502253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 627502249}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34e0965c4d5c8ec4cbff929c578ac273, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &627502254
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 627502249}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f7cc12d46018c4499612db15a09fe28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  NextVerticalOffset: 20
 --- !u!1 &1101821057
 GameObject:
   m_ObjectHideFlags: 0
@@ -204,8 +231,10 @@ MonoBehaviour:
   _allyTeam:
   - Unit: {fileID: 11400000, guid: 53d6139792ace404081c8285ac0c64b6, type: 2}
   - Unit: {fileID: 11400000, guid: a23b4bfab8474a74fa27c71892236eff, type: 2}
+  - Unit: {fileID: 11400000, guid: a23b4bfab8474a74fa27c71892236eff, type: 2}
   _enemyTeam:
   - Unit: {fileID: 11400000, guid: 53d6139792ace404081c8285ac0c64b6, type: 2}
+  - Unit: {fileID: 11400000, guid: 27250eb72bbe7264abbf216c5e3d4e95, type: 2}
   - Unit: {fileID: 11400000, guid: 27250eb72bbe7264abbf216c5e3d4e95, type: 2}
 --- !u!4 &1101821059
 Transform:

@@ -1,19 +1,10 @@
-﻿using CodiceApp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 namespace UnicornOne.Battle.MonoBehaviours
 {
-    internal class DebugUIScript : MonoBehaviour
+    internal class GameSpeedDebugUIScript : BaseDebugUIScript
     {
-        private int _gameSpeedWindowId;
-        private Rect _gameSpeedWindowRect = new Rect(20, 20, 200, 80);
-
         private float GameSpeed
         {
             get => Time.timeScale;
@@ -28,20 +19,12 @@ namespace UnicornOne.Battle.MonoBehaviours
             }
         }
 
-        private void Awake()
-        {
-            _gameSpeedWindowId = GlobalDebug.NextDebugWindowId;
-        }
+        protected override Vector2Int Size => new Vector2Int(200, 80);
 
-        private void OnGUI()
-        {
-            _gameSpeedWindowRect = GUILayout.Window(_gameSpeedWindowId, _gameSpeedWindowRect, DoGameSpeedWindow, "Game Speed");
-        }
+        protected override string Title => "Game speed";
 
-        void DoGameSpeedWindow(int windowID)
+        protected override void BuildWindowLayout()
         {
-            GUI.DragWindow(new Rect(0, 0, 10000, 30));
-
             EditorGUILayout.LabelField($"Current value: {GameSpeed.ToString("0.00")}");
 
             GameSpeed = GUILayout.HorizontalSlider(GameSpeed, 0.0f, 8.0f);

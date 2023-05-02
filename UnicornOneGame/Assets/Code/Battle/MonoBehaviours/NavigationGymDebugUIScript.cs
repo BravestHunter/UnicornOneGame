@@ -5,27 +5,16 @@ using UnityEngine;
 
 namespace UnicornOne.Battle.MonoBehaviours
 {
-    public class NavigationGym_DebugUIScript : MonoBehaviour
+    internal class NavigationGymDebugUIScript : BaseDebugUIScript
     {
         [SerializeField] private NavigationGym_EcsWorldScript _ecsWorldScript;
 
-        private int _navigationWindowId;
-        private Rect _navigationWindowRect = new Rect(20, 120, 200, 60);
+        protected override Vector2Int Size => new Vector2Int(200, 60);
 
-        private void Awake()
+        protected override string Title => "Navigation Gym Parameters";
+
+        protected override void BuildWindowLayout()
         {
-            _navigationWindowId = GlobalDebug.NextDebugWindowId;
-        }
-
-        private void OnGUI()
-        {
-            _navigationWindowRect = GUILayout.Window(_navigationWindowId, _navigationWindowRect, DoNavigationGymWindow, "Navigation Gym Parameters");
-        }
-
-        void DoNavigationGymWindow(int windowID)
-        {
-            GUI.DragWindow(new Rect(0, 0, 10000, 30));
-
             EditorGUILayout.LabelField($"Rivals count: {_ecsWorldScript.RivalCount}");
 
             _ecsWorldScript.RivalCount = Mathf.RoundToInt(

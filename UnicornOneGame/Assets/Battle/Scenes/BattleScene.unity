@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028305, g: 0.22571313, b: 0.3069213, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -197,18 +197,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _camera: {fileID: 1620004392}
-  _allyTeam:
-  - {fileID: 11400000, guid: a23b4bfab8474a74fa27c71892236eff, type: 2}
-  - {fileID: 11400000, guid: 53d6139792ace404081c8285ac0c64b6, type: 2}
-  - {fileID: 11400000, guid: 53d6139792ace404081c8285ac0c64b6, type: 2}
-  _enemyTeam:
-  - {fileID: 11400000, guid: 27250eb72bbe7264abbf216c5e3d4e95, type: 2}
-  - {fileID: 11400000, guid: 27250eb72bbe7264abbf216c5e3d4e95, type: 2}
-  - {fileID: 11400000, guid: 53d6139792ace404081c8285ac0c64b6, type: 2}
   _tilePrefab: {fileID: 7040366892123135674, guid: c79a5c0003283b94d8b7a305b5c72757, type: 3}
-  _tileAvailableMaterial: {fileID: 2100000, guid: df64b2ddea7920a40962d7aac24b2869, type: 2}
-  _tileUnavailableMaterial: {fileID: 2100000, guid: a0eb1ba83e4b048409871a19b9850bb6, type: 2}
+  _tileWalkableMaterial: {fileID: 5435639296808402774, guid: b7822eb5951163b48830b6d9bcbf48b4, type: 3}
+  _tileUnwalkableMaterial: {fileID: 2100000, guid: 3aa8c55f91287f04ba6aff861716f358, type: 2}
   _debugStatusUISettings: {fileID: 11400000, guid: 70bf4a47ec606a24ca3e04b360a32963, type: 2}
+  _allyTeam:
+  - Unit: {fileID: 11400000, guid: 53d6139792ace404081c8285ac0c64b6, type: 2}
+  - Unit: {fileID: 11400000, guid: a23b4bfab8474a74fa27c71892236eff, type: 2}
+  _enemyTeam:
+  - Unit: {fileID: 11400000, guid: 53d6139792ace404081c8285ac0c64b6, type: 2}
+  - Unit: {fileID: 11400000, guid: 27250eb72bbe7264abbf216c5e3d4e95, type: 2}
 --- !u!4 &1101821059
 Transform:
   m_ObjectHideFlags: 0

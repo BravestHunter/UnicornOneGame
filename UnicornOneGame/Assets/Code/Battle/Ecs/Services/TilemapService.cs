@@ -16,12 +16,12 @@ namespace UnicornOne.Battle.Ecs.Services
         public HexParams HexParams { get; }
         public Dictionary<HexCoords, TileScript> TileScripts { get; } = new Dictionary<HexCoords, TileScript>();
 
-        public TilemapService(Tilemap tilemap, GameObject tilePrefab, Material availableMaterial, Material unavailableMaterial) 
+        public TilemapService(Tilemap tilemap, GameObject tilePrefab, Material walkableMaterial, Material unwalkableMaterial) 
         {
             Tilemap = tilemap;
             HexParams = HexParams.FromInnerRadius(1.0f);
 
-            InitializeTilemap(tilePrefab, availableMaterial, unavailableMaterial);
+            InitializeTilemap(tilePrefab, walkableMaterial, unwalkableMaterial);
         }
 
         public HexCoords GetRandomAvailablePosition()
@@ -36,7 +36,7 @@ namespace UnicornOne.Battle.Ecs.Services
             return tileEntry.Key;
         }
 
-        private void InitializeTilemap(GameObject tilePrefab, Material availableMaterial, Material unavailableMaterial)
+        private void InitializeTilemap(GameObject tilePrefab, Material walkableMaterial, Material unwalkableMaterial)
         {
             var tileMesh = MeshGenerator.TileMesh(HexParams, 4.0f);
             var borderMesh = MeshGenerator.TileBorderMesh(HexParams, 0.95f);
@@ -50,7 +50,7 @@ namespace UnicornOne.Battle.Ecs.Services
                 Vector3 worldPosition = new Vector3(flatPosition.x, 0.0f, flatPosition.y);
 
                 var gameObject = GameObject.Instantiate(tilePrefab, worldPosition, Quaternion.identity, tilemapGameObject.transform);
-                var tileMaterial = tileEntrance.Value.IsWalkable ? availableMaterial : unavailableMaterial;
+                var tileMaterial = tileEntrance.Value.IsWalkable ? walkableMaterial : unwalkableMaterial;
 
                 var tileScript = gameObject.GetComponent<TileScript>();
                 tileScript.Setup(tileMesh, tileMaterial, borderMesh);

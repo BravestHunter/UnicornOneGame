@@ -2,6 +2,7 @@ using Leopotam.EcsLite;
 using Leopotam.EcsLite.Di;
 using UnicornOne.Battle.Ecs.Components;
 using UnicornOne.Battle.Ecs.Services;
+using UnicornOne.Battle.Models;
 using UnicornOne.Battle.Utils;
 using UnicornOne.Core.Utils;
 using UnicornOne.ScriptableObjects;
@@ -13,10 +14,10 @@ namespace UnicornOne.Battle.Ecs.Systems
     {
         private readonly EcsCustomInject<ITilemapService> _tilemapService;
 
-        private readonly Unit[] _heroTeam;
-        private readonly Unit[] _enemyTeam;
+        private readonly UnitInstance[] _heroTeam;
+        private readonly UnitInstance[] _enemyTeam;
 
-        public UnitInitSystem(Unit[] heroTeam, Unit[] enemyTeam)
+        public UnitInitSystem(UnitInstance[] heroTeam, UnitInstance[] enemyTeam)
         {
             _heroTeam = heroTeam;
             _enemyTeam = enemyTeam;
@@ -26,13 +27,13 @@ namespace UnicornOne.Battle.Ecs.Systems
         {
             var world = systems.GetWorld();
 
-            foreach (var hero in _heroTeam)
+            foreach (var heroInstance in _heroTeam)
             {
-                SpawnUnit(world, hero, _tilemapService.Value.GetRandomAvailablePosition(), true);
+                SpawnUnit(world, heroInstance.Unit, heroInstance.Position, true);
             }
-            foreach (var enemy in _enemyTeam)
+            foreach (var enemyInstance in _enemyTeam)
             {
-                SpawnUnit(world, enemy, _tilemapService.Value.GetRandomAvailablePosition(), false);
+                SpawnUnit(world, enemyInstance.Unit, enemyInstance.Position, false);
             }
         }
 

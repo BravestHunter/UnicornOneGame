@@ -12,12 +12,12 @@ namespace UnicornOne.Core.Utils
     /// Internally implemented as axial coordiantes.
     /// </summary>
     [Serializable]
-    public readonly struct HexCoords
+    public struct HexCoords
     {
         public static HexCoords Center => FromAxial(0, 0);
 
-        public readonly int Q;
-        public readonly int R;
+        public int Q;
+        public int R;
 
         private HexCoords(int q, int r)
         {

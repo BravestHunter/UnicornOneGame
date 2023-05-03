@@ -2,7 +2,7 @@
 
 namespace UnicornOne.Battle.Ecs.Services
 {
-    internal interface ICameraService
+    internal interface ICameraService : IService
     {
         public Camera Camera { get; }
     }

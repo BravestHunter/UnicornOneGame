@@ -11,14 +11,9 @@ namespace UnicornOne.Battle.Models
 {
     internal struct EcsWorldSimulationParameters
     {
-        public Camera Camera;
-
         public Tilemap Tilemap;
         public TilemapSettings TilemapSettings;
-
         public UnitInstance[] AllyTeam;
         public UnitInstance[] EnemyTeam;
-
-        public DebugStatusUISettings DebugStatusUISettings;
     }
 }

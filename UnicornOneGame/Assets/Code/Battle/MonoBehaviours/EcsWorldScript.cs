@@ -1,42 +1,62 @@
 using Leopotam.EcsLite;
-using Leopotam.EcsLite.Di;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnicornOne.Battle.Ecs.Services;
 using UnicornOne.Battle.Ecs.Systems;
 using UnicornOne.Battle.Ecs.Systems.Movement;
 using UnicornOne.Battle.Models;
 using UnicornOne.Battle.ScriptableObjects;
 using UnicornOne.Battle.Utils;
-using UnicornOne.Core.Utils;
-using UnicornOne.ScriptableObjects;
 using UnityEngine;
 
 namespace UnicornOne.Battle.MonoBehaviours
 {
-    internal class EcsWorldScript : MonoBehaviour
+    internal class EcsWorldScript : BaseEcsWorldScript
     {
         [SerializeField] private Camera _camera;
         [SerializeField] private TilemapScript _tilemapScript;
 
+        private Tilemap _tilemap;
         [SerializeField] private TilemapSettings _tilemapSettings;
         [SerializeField] private DebugStatusUISettings _debugStatusUISettings;
-
         [SerializeField] private UnitInstance[] _allyTeam;
         [SerializeField] private UnitInstance[] _enemyTeam;
 
+        public override EcsWorldSimulationParameters Parameters
+        {
+            get
+            {
+                return new EcsWorldSimulationParameters()
+                {
+                    Tilemap = _tilemap,
+                    TilemapSettings = _tilemapSettings,
+                    AllyTeam = _allyTeam,
+                    EnemyTeam = _enemyTeam
+                };
+            }
+        }
+
         private EcsWorldSimulation _simulation = new EcsWorldSimulation();
-        private Tilemap _tilemap = null;
+
+        private TimeService _timeService = null;
+        private CameraService _cameraService = null;
+        private TilemapService _tilemapService = null;
+
+        private void Awake()
+        {
+            _tilemap = TilemapGenerator.Generate(10);
+        }
 
         private void Start()
         {
-            InitSimulation(true, true);
+            InitSimulation(Parameters);
         }
 
         private void Update()
         {
-            _simulation.Update(Time.deltaTime, Time.timeSinceLevelLoad);
+            _timeService.Delta = Time.deltaTime;
+            _timeService.CurrentTime = Time.timeSinceLevelLoad;
+
+            _simulation.Update();
         }
 
         private void OnDestroy()
@@ -44,73 +64,94 @@ namespace UnicornOne.Battle.MonoBehaviours
             _simulation.Dispose();
         }
 
-        public void InitSimulation(bool generateTilemap, bool generateUnitPositions)
+        public override void InitSimulation(EcsWorldSimulationParameters parameters)
         {
-            if (generateTilemap)
-            {
-                _tilemap = TilemapGenerator.Generate(10);
-            }
-            else
-            {
-                CleanReservedTiles(_tilemap);
-            }
+            UpdateParameters(parameters);
 
-            if (generateTilemap || generateUnitPositions)
-            {
-                SetRandomCellsForUnits(_allyTeam, _tilemap);
-                SetRandomCellsForUnits(_enemyTeam, _tilemap);
-            }
+            CleanReservedTiles();
 
-            EcsWorldSimulationParameters parameters = new()
-            {
-                Camera = _camera,
-                Tilemap = _tilemap,
-                TilemapSettings = _tilemapSettings,
-                AllyTeam = _allyTeam,
-                EnemyTeam = _enemyTeam,
-                DebugStatusUISettings = _debugStatusUISettings
-            };
+            var systems = GetEcsSystems();
+            var debugSystems = GetEcsDebugSystems();
+            var services = GetServices();
+            _simulation.Init(systems, debugSystems, services);
 
-            _simulation.Init(parameters);
-
-            _tilemapScript.SetupTilemap(_tilemap, _tilemapSettings);
+            _tilemapScript.SetupTilemap(parameters.Tilemap, parameters.TilemapSettings);
         }
 
-        private static void CleanReservedTiles(Tilemap tilemap)
+        private void UpdateParameters(EcsWorldSimulationParameters parameters)
         {
-            foreach (var tileEntry in tilemap)
+            _tilemap = parameters.Tilemap;
+            _tilemapSettings = parameters.TilemapSettings;
+            _allyTeam = parameters.AllyTeam;
+            _enemyTeam = parameters.EnemyTeam;
+
+            _tilemapService = new TilemapService(_tilemap, _tilemapSettings);
+            _timeService = new TimeService(Time.timeSinceLevelLoad);
+            _cameraService = new CameraService(_camera);
+        }
+
+        private void CleanReservedTiles()
+        {
+            foreach (var tileEntry in _tilemap)
             {
                 tileEntry.Value.IsReserved = false;
             }
         }
 
-        private static void SetRandomCellsForUnits(UnitInstance[] team, Tilemap tilemap)
+        private List<IEcsSystem> GetEcsSystems()
         {
-            // TODO: REMOVE THIS TRASH
-
-            HashSet<HexCoords> reserved = new();
-
-            HexCoords GetRandomFreePosition()
+            List<IEcsSystem> systems = new()
             {
-                var availableTiles = tilemap.Where(p => p.Value.IsWalkable && !reserved.Contains(p.Key));
-                int availableTilesCount = availableTiles.Count();
+                // Init
+                new UnitInitSystem(_allyTeam, _enemyTeam),
 
-                if (availableTilesCount == 0)
-                {
-                    throw new System.Exception("There is no available cells for unit");
-                }
+                // AI
+                new UnitAiSystem(),
+                new AttackSystem(),
 
-                HexCoords position = availableTiles.ElementAt(Random.Range(0, availableTilesCount)).Key;
+                // Damage and health
+                new DamageSystem(),
+                new HealthCheckSystem(),
 
-                reserved.Add(position);
+                // Navigation and movement
+                new NavigationSystem(),
+                new TileMoveSystem(),
+                new MoveSystem(),
+                new UnitRotationSystem(),
 
-                return position;
-            }
+                // Animation
+                new AnimationSystem(),
 
-            for (int i = 0; i < team.Length; i++)
+                // Final systems
+                new DestroySystem()
+            };
+
+            return systems;
+        }
+
+        private List<IEcsSystem> GetEcsDebugSystems()
+        {
+            List<IEcsSystem> systems = new()
             {
-                team[i].Position = GetRandomFreePosition();
-            }
+                new Leopotam.EcsLite.UnityEditor.EcsWorldDebugSystem(),
+                new DebugMoveSystem(),
+                new DebugTargetSystem(),
+                new DebugStatusUISystem(_debugStatusUISettings)
+            };
+
+            return systems;
+        }
+
+        private List<IService> GetServices()
+        {
+            List<IService> services = new()
+            {
+                _timeService,
+                _cameraService,
+                _tilemapService
+            };
+
+            return services;
         }
     }
 }

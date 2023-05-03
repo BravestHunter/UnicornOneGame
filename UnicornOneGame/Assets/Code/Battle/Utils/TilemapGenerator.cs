@@ -21,7 +21,7 @@ namespace UnicornOne.Battle.Utils
                     int s = -q - r;
                     HexCoords coords = HexCoords.FromCube(q, r, s);
 
-                    bool isWalkable = Random.value >= 0.15f || coords == HexCoords.Center;
+                    bool isWalkable = Random.value >= 0.15f;
                     var tile = new Tile(isWalkable);
                     tilemap.Tiles[coords] = tile;
                 }

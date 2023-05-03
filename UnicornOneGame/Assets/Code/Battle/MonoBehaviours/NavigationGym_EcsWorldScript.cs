@@ -1,8 +1,6 @@
 ﻿using Leopotam.EcsLite;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnicornOne.Battle.Ecs.Services;
 using UnicornOne.Battle.Ecs.Systems.Movement;
 using UnicornOne.Battle.Ecs.Systems;
@@ -16,7 +14,7 @@ using UnicornOne.Battle.ScriptableObjects;
 
 namespace UnicornOne.Battle.MonoBehaviours
 {
-    internal class NavigationGym_EcsWorldScript : MonoBehaviour
+    internal class NavigationGym_EcsWorldScript : BaseEcsWorldScript
     {
         public const int MinRivalCount = 0;
         public const int MaxRivalCount = 40;
@@ -26,10 +24,25 @@ namespace UnicornOne.Battle.MonoBehaviours
         [SerializeField] private Camera _camera;
         [SerializeField] private TilemapScript _tilemapScript;
 
+        private Tilemap _tilemap;
         [SerializeField] private TilemapSettings _tilemapSettings;
-        [SerializeField] private Material _tileReservedMaterial;
+
         [SerializeField] private GameObject _playerPrefab;
         [SerializeField] private GameObject _rivalPrefab;
+
+        public override EcsWorldSimulationParameters Parameters
+        {
+            get
+            {
+                return new EcsWorldSimulationParameters()
+                {
+                    Tilemap = _tilemap,
+                    TilemapSettings = _tilemapSettings,
+                    AllyTeam = new UnitInstance[0],
+                    EnemyTeam = new UnitInstance[0]
+                };
+            }
+        }
 
         private int _rivalCount;
         public int RivalCount
@@ -47,44 +60,22 @@ namespace UnicornOne.Battle.MonoBehaviours
             }
         }
 
-        private TimeService _timeService;
-        private TilemapService _tilemapService;
+        private EcsWorldSimulation _simulation = new EcsWorldSimulation();
 
-        private EcsWorld _world;
-        private IEcsSystems _systems;
-        private IEcsSystems _debugSystems;
+        private TimeService _timeService = null;
+        private TilemapService _tilemapService = null;
 
-        private int _playerEntity;
+        private int _playerEntity = -1;
         private readonly List<int> _rivalEntities = new();
+
+        private void Awake()
+        {
+            _tilemap = TilemapGenerator.Generate(10);
+        }
 
         private void Start()
         {
-            _timeService = new TimeService(Time.timeSinceLevelLoad);
-
-            var tilemap = TilemapGenerator.Generate(10);
-            _tilemapService = new TilemapService(tilemap, _tilemapSettings);
-
-            _world = new EcsWorld();
-
-            _systems = new EcsSystems(_world);
-            _systems.Add(new RandomDestinationTileChooseSystem());
-            _systems.Add(new NavigationSystem());
-            _systems.Add(new TileMoveSystem());
-            _systems.Add(new MoveSystem());
-            _systems.Inject(_timeService, _tilemapService);
-            _systems.Init();
-
-            _debugSystems = new EcsSystems(_world);
-            _debugSystems.Add(new Leopotam.EcsLite.UnityEditor.EcsWorldDebugSystem());
-            _debugSystems.Add(new DebugMoveSystem());
-            _debugSystems.Inject(_timeService, _tilemapService);
-            _debugSystems.Init();
-
-            SetupTileReservationChangeHandlers();
-            InitPlayer();
-            UpdateRivals();
-
-            _tilemapScript.SetupTilemap(tilemap, _tilemapSettings);
+            InitSimulation(Parameters);
         }
 
         private void Update()
@@ -94,36 +85,93 @@ namespace UnicornOne.Battle.MonoBehaviours
             _timeService.Delta = Time.deltaTime;
             _timeService.CurrentTime = Time.timeSinceLevelLoad;
 
-            _systems.Run();
-            _debugSystems.Run();
+            _simulation.Update();
         }
 
         private void OnDestroy()
         {
-            _debugSystems.Destroy();
-            _systems.Destroy();
-            _world.Destroy();
+            _simulation.Dispose();
         }
 
-        private void SetupTileReservationChangeHandlers()
+        public override void InitSimulation(EcsWorldSimulationParameters parameters)
         {
-            foreach (var tileEntry in _tilemapService.Tilemap)
+            UpdateParameters(parameters);
+
+            CleanReservedTiles();
+
+            var systems = GetEcsSystems();
+            var debugSystems = GetEcsDebugSystems();
+            var services = GetServices();
+            _simulation.Init(systems, debugSystems, services);
+
+            InitPlayer();
+
+            _rivalEntities.Clear();
+            UpdateRivals();
+
+            _tilemapScript.SetupTilemap(parameters.Tilemap, parameters.TilemapSettings);
+        }
+
+        private void UpdateParameters(EcsWorldSimulationParameters parameters)
+        {
+            _tilemap = parameters.Tilemap;
+            _tilemapSettings = parameters.TilemapSettings;
+
+            _tilemapService = new TilemapService(_tilemap, _tilemapSettings);
+            _timeService = new TimeService(Time.timeSinceLevelLoad);
+        }
+
+        private void CleanReservedTiles()
+        {
+            foreach (var tileEntry in _tilemap)
             {
-                HexCoords position = tileEntry.Key;
-                Tile tile = tileEntry.Value;
-
-                //TileScript tileScript = _tilemapService.TileScripts[position];
-
-                //tile.ReservationChanged += (bool isReserved) =>
-                //{
-                //    tileScript.SetMaterial(isReserved ? _tileReservedMaterial : _tileAvailableMaterial);
-                //};
+                tileEntry.Value.IsReserved = false;
             }
+        }
+
+        private List<IEcsSystem> GetEcsSystems()
+        {
+            List<IEcsSystem> systems = new()
+            {
+                new RandomDestinationTileChooseSystem(),
+
+                // Navigation and movement
+                new NavigationSystem(),
+                new TileMoveSystem(),
+                new MoveSystem(),
+                new UnitRotationSystem(),
+            };
+
+            return systems;
+        }
+
+        private List<IEcsSystem> GetEcsDebugSystems()
+        {
+            List<IEcsSystem> systems = new()
+            {
+                new Leopotam.EcsLite.UnityEditor.EcsWorldDebugSystem(),
+                new DebugMoveSystem(),
+                new DebugTargetSystem()
+            };
+
+            return systems;
+        }
+
+        private List<IService> GetServices()
+        {
+            List<IService> services = new()
+            {
+                _timeService,
+                _tilemapService
+            };
+
+            return services;
         }
 
         private void InitPlayer()
         {
-            _playerEntity = InstantiateUnit(_world, _playerPrefab, HexCoords.Center, 5.0f, _tilemapService);
+            HexCoords position = _tilemapService.GetRandomAvailablePosition();
+            _playerEntity = InstantiateUnit(_simulation.World, _playerPrefab, position, 5.0f, _tilemapService);
         }
 
         private void UpdateRivals()
@@ -131,17 +179,17 @@ namespace UnicornOne.Battle.MonoBehaviours
             while (_rivalEntities.Count < _rivalCount)
             {
                 float movementSpeed = Random.Range(1.0f, 10.0f);
-                int rivalEntity = InstantiateUnit(_world, _rivalPrefab, _tilemapService.GetRandomAvailablePosition(), movementSpeed, _tilemapService);
+                int rivalEntity = InstantiateUnit(_simulation.World, _rivalPrefab, _tilemapService.GetRandomAvailablePosition(), movementSpeed, _tilemapService);
 
-                var raangomDestinationTileChoseFlagPool = _world.GetPool<RangomDestinationTileChoseFlag>();
-                raangomDestinationTileChoseFlagPool.Add(rivalEntity);
+                var rangomDestinationTileChoseFlagPool = _simulation.World.GetPool<RangomDestinationTileChoseFlag>();
+                rangomDestinationTileChoseFlagPool.Add(rivalEntity);
 
                 _rivalEntities.Add(rivalEntity);
             }
 
             while (_rivalEntities.Count > _rivalCount)
             {
-                DestroyUnit(_rivalEntities.Last(), _world, _tilemapService);
+                DestroyUnit(_rivalEntities.Last(), _simulation.World, _tilemapService);
                 _rivalEntities.RemoveAt(_rivalEntities.Count - 1);
             }
         }
@@ -164,7 +212,7 @@ namespace UnicornOne.Battle.MonoBehaviours
                         return;
                     }
 
-                    var destinationTileComponentPool = _world.GetPool<DestinationTileComponent>();
+                    var destinationTileComponentPool = _simulation.World.GetPool<DestinationTileComponent>();
                     if (destinationTileComponentPool.Has(_playerEntity))
                     {
                         destinationTileComponentPool.Del(_playerEntity);

@@ -15,7 +15,6 @@ namespace UnicornOne.Battle.Ecs.Services
     {
         public Tilemap Tilemap { get; }
         public HexParams HexParams { get; }
-        public Dictionary<HexCoords, TileScript> TileScripts { get; } = new Dictionary<HexCoords, TileScript>();
 
         public TilemapService(Tilemap tilemap, TilemapSettings setting) 
         {

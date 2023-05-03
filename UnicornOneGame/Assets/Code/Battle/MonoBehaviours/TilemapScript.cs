@@ -9,9 +9,9 @@ namespace UnicornOne.Battle.MonoBehaviours
 {
     internal class TilemapScript : MonoBehaviour
     {
-        [SerializeField] private TilemapVisualSettings VisualSettings;
+        [SerializeField] private TilemapVisualSettings _visualSettings;
 
-        private readonly Dictionary<HexCoords, TileScript> TileScripts = new();
+        private readonly Dictionary<HexCoords, (Tile, TileScript)> _tiles = new();
 
         public void SetupTilemap(Tilemap tilemap, TilemapSettings settings)
         {
@@ -21,7 +21,7 @@ namespace UnicornOne.Battle.MonoBehaviours
                 {
                     GameObject.Destroy(child.gameObject);
                 }
-                TileScripts.Clear();
+                _tiles.Clear();
             }
 
             var hexParams = settings.HexParams;
@@ -37,14 +37,14 @@ namespace UnicornOne.Battle.MonoBehaviours
                 Vector3 worldPosition = new Vector3(flatPosition.x, 0.0f, flatPosition.y);
 
                 var gameObject = GameObject.Instantiate(
-                    VisualSettings.TilePrefab, worldPosition, Quaternion.identity, transform);
+                    _visualSettings.TilePrefab, worldPosition, Quaternion.identity, transform);
                 var tileMaterial = tileEntrance.Value.IsWalkable ?
-                    VisualSettings.TileWalkableMaterial : VisualSettings.TileUnwalkableMaterial;
+                    _visualSettings.TileWalkableMaterial : _visualSettings.TileUnwalkableMaterial;
 
                 var tileScript = gameObject.GetComponent<TileScript>();
                 tileScript.Setup(tileMesh, tileMaterial, borderMesh);
 
-                TileScripts.Add(position, tileScript);
+                _tiles.Add(position, (tileEntrance.Value, tileScript));
             }
         }
     }

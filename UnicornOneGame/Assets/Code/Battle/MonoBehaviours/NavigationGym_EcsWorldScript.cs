@@ -23,9 +23,6 @@ namespace UnicornOne.Battle.MonoBehaviours
 
         private static readonly Plane _plane = new Plane(Vector3.up, 0.0f);
 
-        [Range(1, 15)]
-        [SerializeField] private int _tilemapRadius;
-
         [SerializeField] private Camera _camera;
         [SerializeField] private TilemapScript _tilemapScript;
 
@@ -64,7 +61,7 @@ namespace UnicornOne.Battle.MonoBehaviours
         {
             _timeService = new TimeService(Time.timeSinceLevelLoad);
 
-            var tilemap = TilemapGenerator.Generate(_tilemapRadius);
+            var tilemap = TilemapGenerator.Generate(10);
             _tilemapService = new TilemapService(tilemap, _tilemapSettings);
 
             _world = new EcsWorld();

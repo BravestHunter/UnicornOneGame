@@ -41,6 +41,12 @@ namespace UnicornOne.Battle.Ecs.Services
             var tileMesh = MeshGenerator.TileMesh(HexParams, 4.0f);
             var borderMesh = MeshGenerator.TileBorderMesh(HexParams, 0.95f);
 
+            var existingTilemap = GameObject.Find("Tilemap");
+            if (existingTilemap != null)
+            {
+                GameObject.Destroy(existingTilemap);
+            }
+
             GameObject tilemapGameObject = new GameObject("Tilemap");
             foreach (var tileEntrance in Tilemap)
             {

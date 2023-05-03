@@ -41,7 +41,10 @@ namespace UnicornOne.Battle.Ecs.Systems
                     Vector3 targetDirection =
                         (targetPositionMoveComponent.Position - gameObjectUnityRefComponent.GameObject.transform.position).normalized;
 
-                    gameObjectUnityRefComponent.GameObject.transform.forward = targetDirection;
+                    if (targetDirection != Vector3.zero)
+                    {
+                        gameObjectUnityRefComponent.GameObject.transform.forward = targetDirection;
+                    }
                     //Vector3.RotateTowards(gameObjectUnityRefComponent.GameObject.transform.forward, targetDirection, 10.0f, 10.0f);
 
                     continue;
@@ -58,7 +61,11 @@ namespace UnicornOne.Battle.Ecs.Systems
                         Vector3 targetDirection =
                             (targetPosition - gameObjectUnityRefComponent.GameObject.transform.position).normalized;
 
-                        gameObjectUnityRefComponent.GameObject.transform.forward = targetDirection;
+                        if (targetDirection != Vector3.zero)
+                        {
+                            gameObjectUnityRefComponent.GameObject.transform.forward = targetDirection;
+                        }
+
                         //Vector3.RotateTowards(gameObjectUnityRefComponent.GameObject.transform.forward, targetDirection, 10.0f, 10.0f);
 
                         continue;

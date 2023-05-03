@@ -34,8 +34,6 @@ namespace UnicornOne.Battle.Models
 
             _timeService = new TimeService(Time.timeSinceLevelLoad);
             _cameraService = new CameraService(parameters.Camera);
-
-            
             _tilemapService = new TilemapService(parameters.Tilemap, parameters.TilePrefab, parameters.TileWalkableMaterial, parameters.TileUnwalkableMaterial);
 
             _world = new EcsWorld();
@@ -99,6 +97,10 @@ namespace UnicornOne.Battle.Models
             {
                 return;
             }
+
+            _timeService = null;
+            _cameraService = null;
+            _tilemapService = null;
 
             _debugSystems.Destroy();
             _debugSystems = null;

@@ -13,6 +13,8 @@ namespace UnicornOne.Battle.MonoBehaviours
         private bool _regenerateTilemap = false;
         private bool _regenerateUnitPositions = false;
 
+        [SerializeField] private EcsWorldScript _ecsWorldScript;
+
         protected override Vector2Int Size => new Vector2Int(200, 80);
 
         protected override string Title => "Restart simulation";
@@ -28,7 +30,7 @@ namespace UnicornOne.Battle.MonoBehaviours
 
             if (GUILayout.Button("Restart"))
             {
-                // Restart
+                _ecsWorldScript?.InitSimulation(_regenerateTilemap, _regenerateUnitPositions);
             }
         }
     }

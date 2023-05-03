@@ -33,12 +33,7 @@ namespace UnicornOne.Battle.MonoBehaviours
 
         private void Start()
         {
-            _tilemap = TilemapGenerator.Generate(10);
-
-            SetRandomCellsForUnits(_allyTeam, _tilemap);
-            SetRandomCellsForUnits(_enemyTeam, _tilemap);
-
-            InitSimulation();
+            InitSimulation(true, true);
         }
 
         private void Update()
@@ -51,8 +46,23 @@ namespace UnicornOne.Battle.MonoBehaviours
             _simulation.Dispose();
         }
 
-        private void InitSimulation()
+        public void InitSimulation(bool generateTilemap, bool generateUnitPositions)
         {
+            if (generateTilemap)
+            {
+                _tilemap = TilemapGenerator.Generate(10);
+            }
+            else
+            {
+                CleanReservedTiles(_tilemap);
+            }
+
+            if (generateTilemap || generateUnitPositions)
+            {
+                SetRandomCellsForUnits(_allyTeam, _tilemap);
+                SetRandomCellsForUnits(_enemyTeam, _tilemap);
+            }
+
             EcsWorldSimulationParameters parameters = new()
             {
                 Camera = _camera,
@@ -66,6 +76,14 @@ namespace UnicornOne.Battle.MonoBehaviours
             };
 
             _simulation.Init(parameters);
+        }
+
+        private static void CleanReservedTiles(Tilemap tilemap)
+        {
+            foreach (var tileEntry in tilemap)
+            {
+                tileEntry.Value.IsReserved = false;
+            }
         }
 
         private static void SetRandomCellsForUnits(UnitInstance[] team, Tilemap tilemap)

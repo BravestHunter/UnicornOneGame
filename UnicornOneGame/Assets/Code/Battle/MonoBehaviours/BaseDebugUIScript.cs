@@ -11,7 +11,7 @@ namespace UnicornOne.Battle.MonoBehaviours
         private int _windowId;
         private Rect _windowRect;
 
-        private void Awake()
+        private void Start()
         {
             _windowId = DebugUIDataScript.Instance.NextAvailableWindowId;
 

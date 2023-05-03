@@ -12,6 +12,7 @@ using UnicornOne.Battle.Ecs.Components;
 using UnicornOne.Core.Utils;
 using UnicornOne.Battle.Models;
 using UnicornOne.Battle.Utils;
+using UnicornOne.Battle.ScriptableObjects;
 
 namespace UnicornOne.Battle.MonoBehaviours
 {
@@ -26,9 +27,9 @@ namespace UnicornOne.Battle.MonoBehaviours
         [SerializeField] private int _tilemapRadius;
 
         [SerializeField] private Camera _camera;
-        [SerializeField] private GameObject _tilePrefab;
-        [SerializeField] private Material _tileAvailableMaterial;
-        [SerializeField] private Material _tileUnavailableMaterial;
+        [SerializeField] private TilemapScript _tilemapScript;
+
+        [SerializeField] private TilemapSettings _tilemapSettings;
         [SerializeField] private Material _tileReservedMaterial;
         [SerializeField] private GameObject _playerPrefab;
         [SerializeField] private GameObject _rivalPrefab;
@@ -64,7 +65,7 @@ namespace UnicornOne.Battle.MonoBehaviours
             _timeService = new TimeService(Time.timeSinceLevelLoad);
 
             var tilemap = TilemapGenerator.Generate(_tilemapRadius);
-            _tilemapService = new TilemapService(tilemap, _tilePrefab, _tileAvailableMaterial, _tileUnavailableMaterial);
+            _tilemapService = new TilemapService(tilemap, _tilemapSettings);
 
             _world = new EcsWorld();
 
@@ -85,6 +86,8 @@ namespace UnicornOne.Battle.MonoBehaviours
             SetupTileReservationChangeHandlers();
             InitPlayer();
             UpdateRivals();
+
+            _tilemapScript.SetupTilemap(tilemap, _tilemapSettings);
         }
 
         private void Update()
@@ -112,12 +115,12 @@ namespace UnicornOne.Battle.MonoBehaviours
                 HexCoords position = tileEntry.Key;
                 Tile tile = tileEntry.Value;
 
-                TileScript tileScript = _tilemapService.TileScripts[position];
+                //TileScript tileScript = _tilemapService.TileScripts[position];
 
-                tile.ReservationChanged += (bool isReserved) => 
-                {
-                    tileScript.SetMaterial(isReserved ? _tileReservedMaterial : _tileAvailableMaterial);
-                };
+                //tile.ReservationChanged += (bool isReserved) =>
+                //{
+                //    tileScript.SetMaterial(isReserved ? _tileReservedMaterial : _tileAvailableMaterial);
+                //};
             }
         }
 

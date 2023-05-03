@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnicornOne.Battle.ScriptableObjects;
+using UnicornOne.Core.Utils;
 using UnityEngine;
 
 namespace UnicornOne.Battle.Models
@@ -11,13 +12,13 @@ namespace UnicornOne.Battle.Models
     internal struct EcsWorldSimulationParameters
     {
         public Camera Camera;
-        public GameObject TilePrefab;
-        public Material TileWalkableMaterial;
-        public Material TileUnwalkableMaterial;
-        public DebugStatusUISettings DebugStatusUISettings;
 
         public Tilemap Tilemap;
+        public TilemapSettings TilemapSettings;
+
         public UnitInstance[] AllyTeam;
         public UnitInstance[] EnemyTeam;
+
+        public DebugStatusUISettings DebugStatusUISettings;
     }
 }

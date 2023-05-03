@@ -18,11 +18,9 @@ namespace UnicornOne.Battle.MonoBehaviours
     internal class EcsWorldScript : MonoBehaviour
     {
         [SerializeField] private Camera _camera;
+        [SerializeField] private TilemapScript _tilemapScript;
 
-        [SerializeField] private GameObject _tilePrefab;
-        [SerializeField] private Material _tileWalkableMaterial;
-        [SerializeField] private Material _tileUnwalkableMaterial;
-
+        [SerializeField] private TilemapSettings _tilemapSettings;
         [SerializeField] private DebugStatusUISettings _debugStatusUISettings;
 
         [SerializeField] private UnitInstance[] _allyTeam;
@@ -66,16 +64,16 @@ namespace UnicornOne.Battle.MonoBehaviours
             EcsWorldSimulationParameters parameters = new()
             {
                 Camera = _camera,
-                TilePrefab = _tilePrefab,
-                TileWalkableMaterial = _tileWalkableMaterial,
-                TileUnwalkableMaterial = _tileUnwalkableMaterial,
-                DebugStatusUISettings = _debugStatusUISettings,
                 Tilemap = _tilemap,
+                TilemapSettings = _tilemapSettings,
                 AllyTeam = _allyTeam,
-                EnemyTeam = _enemyTeam
+                EnemyTeam = _enemyTeam,
+                DebugStatusUISettings = _debugStatusUISettings
             };
 
             _simulation.Init(parameters);
+
+            _tilemapScript.SetupTilemap(_tilemap, _tilemapSettings);
         }
 
         private static void CleanReservedTiles(Tilemap tilemap)

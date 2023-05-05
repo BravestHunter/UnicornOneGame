@@ -1,5 +1,7 @@
 using Leopotam.EcsLite;
 using Leopotam.EcsLite.Di;
+using System.Collections.Generic;
+using System.Linq;
 using UnicornOne.Battle.Ecs.Components;
 using UnicornOne.Battle.Ecs.Services;
 using UnicornOne.Battle.Models;
@@ -14,12 +16,12 @@ namespace UnicornOne.Battle.Ecs.Systems
     {
         private readonly EcsCustomInject<ITilemapService> _tilemapService;
 
-        private readonly UnitInstance[] _heroTeam;
+        private readonly UnitInstance[] _allyTeam;
         private readonly UnitInstance[] _enemyTeam;
 
-        public UnitInitSystem(UnitInstance[] heroTeam, UnitInstance[] enemyTeam)
+        public UnitInitSystem(UnitInstance[] allyTeam, UnitInstance[] enemyTeam)
         {
-            _heroTeam = heroTeam;
+            _allyTeam = allyTeam;
             _enemyTeam = enemyTeam;
         }
 
@@ -27,17 +29,24 @@ namespace UnicornOne.Battle.Ecs.Systems
         {
             var world = systems.GetWorld();
 
-            foreach (var heroInstance in _heroTeam)
+            var units = _allyTeam.Concat(_enemyTeam).Select(ui => ui.Unit).Distinct();
+            List<Ability> abilities = new();
+            foreach (var unit in units)
             {
-                SpawnUnit(world, heroInstance.Unit, heroInstance.Position, true);
+                abilities.AddRange(unit.Abilities);
+            }
+
+            foreach (var heroInstance in _allyTeam)
+            {
+                SpawnUnit(world, heroInstance.Unit, heroInstance.Position, true, abilities);
             }
             foreach (var enemyInstance in _enemyTeam)
             {
-                SpawnUnit(world, enemyInstance.Unit, enemyInstance.Position, false);
+                SpawnUnit(world, enemyInstance.Unit, enemyInstance.Position, false, abilities);
             }
         }
 
-        private void SpawnUnit(EcsWorld world, Unit unit, HexCoords position, bool isAlly)
+        private void SpawnUnit(EcsWorld world, Unit unit, HexCoords position, bool isAlly, List<Ability> abilities)
         {
             var entity = world.NewEntity();
 
@@ -85,9 +94,16 @@ namespace UnicornOne.Battle.Ecs.Systems
 
             var attackParamsComponentPool = world.GetPool<AttackParamsComponent>();
             ref var attackParamsComponent = ref attackParamsComponentPool.Add(entity);
-            attackParamsComponent.Damage = unit.Damage;
-            attackParamsComponent.Cooldown = unit.AttackCooldown;
             attackParamsComponent.Range = unit.AttackRange;
+
+            var abilitySetComponentPool = world.GetPool<AbilitySetComponent>();
+            ref var abilitySetComponent = ref abilitySetComponentPool.Add(entity);
+            abilitySetComponent.AbilitySet = new AbilitySetComponent.AbilityState[unit.Abilities.Length];
+            for (int i = 0; i < unit.Abilities.Length; i++)
+            {
+                abilitySetComponent.AbilitySet[i].AbilityIndex = abilities.IndexOf(unit.Abilities[i]);
+                abilitySetComponent.AbilitySet[i].TimeLastUsed = -10.0f;
+            }
         }
     }
 }

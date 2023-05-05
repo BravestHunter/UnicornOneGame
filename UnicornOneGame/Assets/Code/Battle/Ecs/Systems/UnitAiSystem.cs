@@ -9,6 +9,7 @@ using UnicornOne.Core.Utils;
 using Leopotam.EcsLite.Di;
 using UnicornOne.Battle.Ecs.Services;
 using UnicornOne.Battle.Models;
+using UnicornOne.Battle.Ecs.Components.Ability;
 
 namespace UnicornOne.Battle.Ecs.Systems
 {
@@ -24,6 +25,7 @@ namespace UnicornOne.Battle.Ecs.Systems
 
         private readonly EcsCustomInject<ITimeService> _timeService;
         private readonly EcsCustomInject<ITilemapService> _tilemapService;
+        private readonly EcsCustomInject<IAbilityService> _abilityService;
 
         private EcsFilter _aiFilter;
         private EcsFilter _allyFilter;
@@ -37,6 +39,7 @@ namespace UnicornOne.Battle.Ecs.Systems
             {
                 _aiFilter = world
                     .Filter<UnitAiComponent>()
+                    .Inc<AbilitySetComponent>()
                     .End();
             }
 
@@ -46,9 +49,10 @@ namespace UnicornOne.Battle.Ecs.Systems
             var tilePositionComponentPool = world.GetPool<TilePositionComponent>();
             var targetTileMoveComponentPool = world.GetPool<TargetTileMoveComponent>();
             var destinationTileComponentPool = world.GetPool<DestinationTileComponent>();
-            var attackInCooldownComponentPool = world.GetPool<AttackInCooldownComponent>();
             var attackParamsComponentPool = world.GetPool<AttackParamsComponent>();
-            var attackComponentPool = world.GetPool<AttackComponent>();
+            var abilitySetComponentPool = world.GetPool<AbilitySetComponent>();
+            var abilityUseRequestComponentPool = world.GetPool<AbilityUseRequestComponent>();
+            var abilityInUsageComponentPool = world.GetPool<AbilityInUsageComponent>();
 
             var allies = GetAllies(world);
             var enemies = GetEnemies(world);
@@ -56,6 +60,12 @@ namespace UnicornOne.Battle.Ecs.Systems
             foreach (var entity in _aiFilter)
             {
                 ref var unitAiComponent = ref unitAiComponentPool.Get(entity);
+
+                // Skip if there is an ability in use
+                if (abilityInUsageComponentPool.Has(entity))
+                {
+                    continue;
+                }
 
                 switch (unitAiComponent.State)
                 {
@@ -241,15 +251,16 @@ namespace UnicornOne.Battle.Ecs.Systems
                             }
 
                             // Check if there is cooldown
-                            if (attackInCooldownComponentPool.Has(entity))
+                            var abilitySetComponent = abilitySetComponentPool.Get(entity);
+                            var ability = _abilityService.Value.GetAbility(abilitySetComponent.AbilitySet[0].AbilityIndex);
+                            if (_timeService.Value.TimeSinceStart < abilitySetComponent.AbilitySet[0].TimeLastUsed + ability.Cooldown)
                             {
                                 continue;
                             }
 
-                            // Make attack
-                            ref var attackComponent = ref attackComponentPool.Add(entity);
-                            attackComponent.Damage = attackParamsComponent.Damage;
-                            attackComponent.Cooldown = attackParamsComponent.Cooldown;
+                            // Use ability
+                            ref var abilityUseRequestComponent = ref abilityUseRequestComponentPool.Add(entity);
+                            abilityUseRequestComponent.AbilityId = abilitySetComponent.AbilitySet[0].AbilityIndex;
 
                             break;
                         }

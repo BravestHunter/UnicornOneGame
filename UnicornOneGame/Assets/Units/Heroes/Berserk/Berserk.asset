@@ -18,3 +18,5 @@ MonoBehaviour:
   AttackCooldown: 3
   AttackRange: 1
   Speed: 4
+  Abilities:
+  - {fileID: 11400000, guid: 8e9f4cb5504971f4caf66469083f690b, type: 2}

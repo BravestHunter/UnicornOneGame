@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace UnicornOne.ScriptableObjects
 {
@@ -12,9 +7,9 @@ namespace UnicornOne.ScriptableObjects
     {
         public GameObject Prefab;
         public int Health;
-        public int Damage;
-        public float AttackCooldown;
         public int AttackRange;
         public float Speed;
+
+        public Ability[] Abilities;
     }
 }

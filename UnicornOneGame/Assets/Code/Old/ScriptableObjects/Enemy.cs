@@ -15,7 +15,7 @@ namespace UnicornOne.ScriptableObjects
         public PrefabInfo Prefab;
         public MoveInfo Move;
         public HealthInfo Health;
-        public Ability[] Abilities;
+        public AbilityOld[] Abilities;
 
         public PrefabInfo PrefabInfo => Prefab;
         public MoveInfo MoveInfo => Move;

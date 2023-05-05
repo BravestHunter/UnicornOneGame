@@ -1,11 +1,13 @@
 using Leopotam.EcsLite;
 using System.Collections.Generic;
+using System.Linq;
 using UnicornOne.Battle.Ecs.Services;
 using UnicornOne.Battle.Ecs.Systems;
 using UnicornOne.Battle.Ecs.Systems.Movement;
 using UnicornOne.Battle.Models;
 using UnicornOne.Battle.ScriptableObjects;
 using UnicornOne.Battle.Utils;
+using UnicornOne.ScriptableObjects;
 using UnityEngine;
 
 namespace UnicornOne.Battle.MonoBehaviours
@@ -40,6 +42,7 @@ namespace UnicornOne.Battle.MonoBehaviours
         private TimeService _timeService = null;
         private CameraService _cameraService = null;
         private TilemapService _tilemapService = null;
+        private AbilityService _abilityService = null;
 
         private void Awake()
         {
@@ -88,6 +91,14 @@ namespace UnicornOne.Battle.MonoBehaviours
             _tilemapService = new TilemapService(_tilemap, _tilemapSettings);
             _timeService = new TimeService(Time.timeSinceLevelLoad);
             _cameraService = new CameraService(_camera);
+
+            var units = _allyTeam.Concat(_enemyTeam).Select(ui => ui.Unit).Distinct();
+            List<Ability> abilities = new();
+            foreach (var unit in units)
+            {
+                abilities.AddRange(unit.Abilities);
+            }
+            _abilityService = new AbilityService(abilities.ToArray());
         }
 
         private void CleanReservedTiles()
@@ -107,7 +118,9 @@ namespace UnicornOne.Battle.MonoBehaviours
 
                 // AI
                 new UnitAiSystem(),
-                new AttackSystem(),
+
+                // Ability
+                new AbilitySystem(),
 
                 // Damage and health
                 new DamageSystem(),
@@ -148,7 +161,8 @@ namespace UnicornOne.Battle.MonoBehaviours
             {
                 _timeService,
                 _cameraService,
-                _tilemapService
+                _tilemapService,
+                _abilityService
             };
 
             return services;

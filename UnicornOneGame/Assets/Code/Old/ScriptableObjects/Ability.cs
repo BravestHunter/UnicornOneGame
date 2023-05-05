@@ -5,7 +5,7 @@ using UnicornOne.ScriptableObjects.Interfaces;
 namespace UnicornOne.ScriptableObjects
 {
     [CreateAssetMenu(fileName = "Ability", menuName = "Custom/Old/Ability")]
-    public class Ability : ScriptableObject, IAbility
+    public class AbilityOld : ScriptableObject, IAbility
     {
 		public string Name;
 		public float Range;

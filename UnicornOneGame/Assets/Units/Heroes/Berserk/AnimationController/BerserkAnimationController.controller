@@ -1993,85 +1993,85 @@ AnimatorController:
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: Targeting
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: Stunned
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: Blocking
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: Weapons
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 1
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: AnimationSpeed
     m_Type: 1
     m_DefaultFloat: 1
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: Jumping
     m_Type: 3
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: VelocityX
     m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: VelocityZ
     m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: Action
     m_Type: 3
     m_DefaultFloat: 0
     m_DefaultInt: -1
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: TriggerNumber
     m_Type: 3
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: Trigger
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: AttackTrigger
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   - m_Name: CutAttackTrigger
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Layer
@@ -3072,30 +3072,26 @@ AnimatorStateMachine:
   - {fileID: 5495899490361222605}
   m_EntryTransitions: []
   m_StateMachineTransitions:
-  - first: {fileID: 7936923684145864110}
-    second:
-    - {fileID: -5122330161707290742}
-    - {fileID: 1074847820079406359}
-  - first: {fileID: 1676319757753596977}
-    second:
-    - {fileID: 4008744934217866720}
-    - {fileID: -4981373978852544006}
-  - first: {fileID: -1531114693833249496}
-    second:
-    - {fileID: 8986947471578679552}
-    - {fileID: -1371841549641652288}
-  - first: {fileID: 7647134506833167060}
-    second:
-    - {fileID: -1957449190882282236}
-    - {fileID: -2794740425064176458}
   - first: {fileID: 4855288292544608120}
     second:
     - {fileID: -6380871157197419954}
     - {fileID: -5210148646205192929}
+  - first: {fileID: 7647134506833167060}
+    second:
+    - {fileID: -1957449190882282236}
+    - {fileID: -2794740425064176458}
+  - first: {fileID: 7936923684145864110}
+    second:
+    - {fileID: -5122330161707290742}
+    - {fileID: 1074847820079406359}
   - first: {fileID: -867237243359443122}
     second:
     - {fileID: 5639530301350041877}
     - {fileID: -1443098007541323685}
+  - first: {fileID: 1676319757753596977}
+    second:
+    - {fileID: 4008744934217866720}
+    - {fileID: -4981373978852544006}
   - first: {fileID: -7340722866334702806}
     second:
     - {fileID: 3029615536689212318}
@@ -3104,6 +3100,10 @@ AnimatorStateMachine:
     second:
     - {fileID: -3329749988540349447}
     - {fileID: 2792512239755669643}
+  - first: {fileID: -1531114693833249496}
+    second:
+    - {fileID: 8986947471578679552}
+    - {fileID: -1371841549641652288}
   m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: 240, y: -190, z: 0}
   m_EntryPosition: {x: 240, y: -110, z: 0}

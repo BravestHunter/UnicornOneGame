@@ -13,5 +13,11 @@ MonoBehaviour:
   m_Name: BerserkBasicAttack
   m_EditorClassIdentifier: 
   Cooldown: 3
+  Duration: 1.333
   Steps:
-  - {fileID: 0}
+  - Time: 0
+    Actions:
+    - {fileID: 11400000, guid: ea141df13be058f4f9e37d132fb679b3, type: 2}
+  - Time: 0.624
+    Actions:
+    - {fileID: 11400000, guid: a9e19a1b0b1968142a4c18a2499b6590, type: 2}

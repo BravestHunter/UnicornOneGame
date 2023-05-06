@@ -12,7 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee1307e1dcb54442889365e26f82bc9a, type: 3}
   m_Name: TilemapSettings
   m_EditorClassIdentifier: 
-  HexOuterRadius: 1
-  TilePrefab: {fileID: 7040366892123135674, guid: c79a5c0003283b94d8b7a305b5c72757, type: 3}
-  TileWalkableMaterial: {fileID: 5435639296808402774, guid: 16602c5dade6f42e3bc245d13c3b5978, type: 3}
-  TileUnwalkableMaterial: {fileID: 2100000, guid: 0aae032dca142c1458bfb151bb2e2f6a, type: 2}
+  HexOuterRadius: 1.5

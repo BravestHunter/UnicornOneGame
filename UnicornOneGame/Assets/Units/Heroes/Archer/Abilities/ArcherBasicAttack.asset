@@ -12,6 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee801b0b3b6e69e488cf1999b2f590ad, type: 3}
   m_Name: ArcherBasicAttack
   m_EditorClassIdentifier: 
-  Cooldown: 0
-  Duration: 0
-  Steps: []
+  Cooldown: 5
+  Duration: 0.667
+  Steps:
+  - Time: 0
+    Actions:
+    - {fileID: 11400000, guid: 9a4762a3d3f08354ca9d01ef38e48edf, type: 2}
+  - Time: 0.167
+    Actions:
+    - {fileID: 11400000, guid: a836e687d52e7ce49b674b39950725e3, type: 2}

@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfe794fec19674a4dbf50bb146102bb4, type: 3}
   m_Name: BerserkBasicAttackDamage
   m_EditorClassIdentifier: 
-  Amount: 0
+  Amount: 25

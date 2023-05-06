@@ -12,6 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee801b0b3b6e69e488cf1999b2f590ad, type: 3}
   m_Name: KnightBasicAttack
   m_EditorClassIdentifier: 
-  Cooldown: 0
-  Duration: 0
-  Steps: []
+  Cooldown: 2
+  Duration: 0.833
+  Steps:
+  - Time: 0
+    Actions:
+    - {fileID: 11400000, guid: 8246dce51db3f5f4b962cf14431cf690, type: 2}
+  - Time: 0.31
+    Actions:
+    - {fileID: 11400000, guid: cf8fb7f6a80ce804ebfa272174a76a06, type: 2}

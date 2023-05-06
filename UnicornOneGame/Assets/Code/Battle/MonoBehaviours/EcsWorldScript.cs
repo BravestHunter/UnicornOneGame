@@ -122,6 +122,9 @@ namespace UnicornOne.Battle.MonoBehaviours
                 // Ability
                 new AbilitySystem(),
 
+                // Projectile
+                new ProjectileSystem(),
+
                 // Damage and health
                 new DamageSystem(),
                 new HealthCheckSystem(),

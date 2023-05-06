@@ -1,11 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using Leopotam.EcsLite;
 using Leopotam.EcsLite.Di;
 using UnicornOne.Battle.Ecs.Components;
 using UnicornOne.Battle.Ecs.Services;
 using UnityEngine;
-using static UnityEngine.EventSystems.EventTrigger;
 
 namespace UnicornOne.Battle.Ecs.Systems
 {

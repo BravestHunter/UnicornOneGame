@@ -15,6 +15,7 @@ namespace UnicornOne.Battle.Ecs.Systems
             {
                 _filter = world
                     .Filter<DamageComponent>()
+                    .Inc<ActionFlag>()
                     .Inc<TargetEntityComponent>()
                     .End();
             }

@@ -3,6 +3,7 @@ using Leopotam.EcsLite.Di;
 using UnicornOne.Battle.Ecs.Components;
 using UnicornOne.Battle.Ecs.Services;
 using UnicornOne.ScriptableObjects;
+using UnityEngine;
 
 namespace UnicornOne.Battle.Ecs.Systems
 {
@@ -69,7 +70,11 @@ namespace UnicornOne.Battle.Ecs.Systems
             var abilitySetComponentPool = world.GetPool<AbilitySetComponent>();
             var animationTriggerComponentPool = world.GetPool<AnimationTriggerComponent>();
             var targetEntityComponentPool = world.GetPool<TargetEntityComponent>();
+            var actionFlagPool = world.GetPool<ActionFlag>();
             var damageComponentPool = world.GetPool<DamageComponent>();
+            var projectileFlagPool = world.GetPool<ProjectileFlag>();
+            var gameObjectUnityRefComponentPool = world.GetPool<GameObjectUnityRefComponent>();
+            var movementComponentPool = world.GetPool<MovementComponent>();
 
             foreach (var entity in _abilityFilter)
             {
@@ -101,10 +106,32 @@ namespace UnicornOne.Battle.Ecs.Systems
                             case DamageAbilityAction damageAbilityAction:
                                 int damageEntity = world.NewEntity();
 
+                                actionFlagPool.Add(damageEntity);
+
                                 ref var damageComponent = ref damageComponentPool.Add(damageEntity);
                                 damageComponent.Amount = damageAbilityAction.Amount;
 
                                 targetEntityComponentPool.Copy(entity, damageEntity);
+
+                                break;
+
+                            case ProjectileLaunchAbilityAction projectileLaunchAbilityAction:
+                                var gameObjectUnityRefComponent = gameObjectUnityRefComponentPool.Get(entity);
+                                var transform = gameObjectUnityRefComponent.GameObject.transform;
+
+                                int projectileEntity = world.NewEntity();
+                                projectileFlagPool.Add(projectileEntity);
+
+                                ref var projectileGameObjectUnityRefComponent = ref gameObjectUnityRefComponentPool.Add(projectileEntity);
+                                projectileGameObjectUnityRefComponent.GameObject = GameObject.Instantiate(projectileLaunchAbilityAction.Projectile.Prefab, transform.position + Vector3.up * 1.65f, transform.rotation);
+
+                                ref var projectileDamageComponent = ref damageComponentPool.Add(projectileEntity);
+                                projectileDamageComponent.Amount = projectileLaunchAbilityAction.Damage;
+
+                                ref var projectilMovementComponent = ref movementComponentPool.Add(projectileEntity);
+                                projectilMovementComponent.Speed = projectileLaunchAbilityAction.Speed;
+
+                                targetEntityComponentPool.Copy(entity, projectileEntity);
 
                                 break;
                         }

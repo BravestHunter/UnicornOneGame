@@ -9,7 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cfe794fec19674a4dbf50bb146102bb4, type: 3}
-  m_Name: ArcherChargeAttackDamage
+  m_Script: {fileID: 11500000, guid: b39392e5bcd1d134f88decd39cf06495, type: 3}
+  m_Name: ArcherBasicAttackProjectile
   m_EditorClassIdentifier: 
-  Amount: 35
+  Projectile: {fileID: 11400000, guid: cd7246ee47567cb4ea82dff318cda9f4, type: 2}
+  Damage: 10
+  Speed: 20

@@ -18,5 +18,6 @@ MonoBehaviour:
   EnemyColor: {r: 0.9056604, g: 0, b: 0, a: 1}
   OffsetFromObject: {x: 0, y: 2.5, z: 0}
   DistanceFromCamera: 10
-  ShowHpInfo: 1
-  ShowAiInfo: 1
+  ShowHpInfo: 0
+  ShowAiInfo: 0
+  ShowAbilityInfo: 0

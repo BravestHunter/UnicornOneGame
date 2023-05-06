@@ -18,6 +18,7 @@ namespace UnicornOne.Battle.Ecs.Systems
         private EcsFilter _updateFilter;
         private EcsFilter _healthFilter;
         private EcsFilter _aiFilter;
+        private EcsFilter _abilityFilter;
 
         public DebugStatusUISystem(DebugStatusUISettings settings)
         {
@@ -30,8 +31,9 @@ namespace UnicornOne.Battle.Ecs.Systems
 
             ProcessAdd(world);
             ProcessUpdate(world);
-            ProcessAiUpdate(world);
             ProcessHealthUpdate(world);
+            ProcessAiUpdate(world);
+            ProcessAbilityUpdate(world);
         }
 
         private void ProcessAdd(EcsWorld world)
@@ -88,28 +90,6 @@ namespace UnicornOne.Battle.Ecs.Systems
             }
         }
 
-        private void ProcessAiUpdate(EcsWorld world)
-        {
-            if (_aiFilter == null)
-            {
-                _aiFilter = world
-                    .Filter<DebugStatusUIComponent>()
-                    .Inc<UnitAiComponent>()
-                    .End();
-            }
-
-            var debugStatusUIComponentPool = world.GetPool<DebugStatusUIComponent>();
-            var unitAiComponentPool = world.GetPool<UnitAiComponent>();
-
-            foreach (var entity in _aiFilter)
-            {
-                ref var debugStatusUIComponent = ref debugStatusUIComponentPool.Get(entity);
-                var unitAiComponent = unitAiComponentPool.Get(entity);
-
-                debugStatusUIComponent.Script.AiInfo = unitAiComponent.ToString();
-            }
-        }
-
         private void ProcessHealthUpdate(EcsWorld world)
         {
             if (_healthFilter == null)
@@ -128,7 +108,58 @@ namespace UnicornOne.Battle.Ecs.Systems
                 ref var debugStatusUIComponent = ref debugStatusUIComponentPool.Get(entity);
                 var healthComponent = healthComponentPool.Get(entity);
 
-                debugStatusUIComponent.Script.HpInfo = healthComponent.ToString();
+                debugStatusUIComponent.Script.HpInfo = $"HP: {healthComponent}";
+            }
+        }
+
+        private void ProcessAiUpdate(EcsWorld world)
+        {
+            if (_aiFilter == null)
+            {
+                _aiFilter = world
+                    .Filter<DebugStatusUIComponent>()
+                    .Inc<UnitAiComponent>()
+                    .End();
+            }
+
+            var debugStatusUIComponentPool = world.GetPool<DebugStatusUIComponent>();
+            var unitAiComponentPool = world.GetPool<UnitAiComponent>();
+
+            foreach (var entity in _aiFilter)
+            {
+                ref var debugStatusUIComponent = ref debugStatusUIComponentPool.Get(entity);
+                var unitAiComponent = unitAiComponentPool.Get(entity);
+
+                debugStatusUIComponent.Script.AiInfo = $"AI: {unitAiComponent}";
+            }
+        }
+
+        private void ProcessAbilityUpdate(EcsWorld world)
+        {
+            if (_abilityFilter == null)
+            {
+                _abilityFilter = world
+                    .Filter<DebugStatusUIComponent>()
+                    .Inc<AbilitySetComponent>()
+                    .End();
+            }
+
+            var debugStatusUIComponentPool = world.GetPool<DebugStatusUIComponent>();
+            var abilityInUsageComponentPool = world.GetPool<AbilityInUsageComponent>();
+
+            foreach (var entity in _abilityFilter)
+            {
+                ref var debugStatusUIComponent = ref debugStatusUIComponentPool.Get(entity);
+                
+                if (abilityInUsageComponentPool.Has(entity))
+                {
+                    var abilityInUsageComponent = abilityInUsageComponentPool.Get(entity);
+                    debugStatusUIComponent.Script.AbilityInfo = $"Ability: {abilityInUsageComponent}";
+                }
+                else
+                {
+                    debugStatusUIComponent.Script.AbilityInfo = $"Ability: None";
+                }
             }
         }
     }

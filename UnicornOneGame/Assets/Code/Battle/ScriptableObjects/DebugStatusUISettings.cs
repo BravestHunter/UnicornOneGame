@@ -13,5 +13,6 @@ namespace UnicornOne.Battle.ScriptableObjects
         public float DistanceFromCamera;
         public bool ShowHpInfo;
         public bool ShowAiInfo;
+        public bool ShowAbilityInfo;
     }
 }

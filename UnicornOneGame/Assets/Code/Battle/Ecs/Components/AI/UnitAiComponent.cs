@@ -12,7 +12,7 @@ namespace UnicornOne.Battle.Ecs.Components
 
         public override string ToString()
         {
-            return $"AI:{State}";
+            return State.ToString();
         }
     }
 }

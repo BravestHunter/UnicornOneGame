@@ -7,7 +7,7 @@ namespace UnicornOne.Battle.Ecs.Components
 
         public override string ToString()
         {
-            return $"HP:{Current}/{Max}";
+            return $"{Current}/{Max}";
         }
     }
 }

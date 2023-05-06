@@ -1,7 +1,6 @@
 ﻿using Leopotam.EcsLite;
 using Leopotam.EcsLite.Di;
 using UnicornOne.Battle.Ecs.Components;
-using UnicornOne.Battle.Ecs.Components.Ability;
 using UnicornOne.Battle.Ecs.Services;
 using UnicornOne.ScriptableObjects;
 

@@ -9,7 +9,6 @@ using UnicornOne.Core.Utils;
 using Leopotam.EcsLite.Di;
 using UnicornOne.Battle.Ecs.Services;
 using UnicornOne.Battle.Models;
-using UnicornOne.Battle.Ecs.Components.Ability;
 using UnicornOne.ScriptableObjects;
 
 namespace UnicornOne.Battle.Ecs.Systems

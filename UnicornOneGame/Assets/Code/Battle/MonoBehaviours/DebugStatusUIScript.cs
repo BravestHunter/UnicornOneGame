@@ -76,6 +76,38 @@ namespace UnicornOne.Battle.MonoBehaviours
             }
         }
 
+        private string _abilityInfo = string.Empty;
+        public string AbilityInfo
+        {
+            get { return _abilityInfo; }
+            set
+            {
+                if (_abilityInfo == value)
+                {
+                    return;
+                }
+
+                _abilityInfo = value;
+                _isDirty = true;
+            }
+        }
+
+        private bool _showAbilityInfo = false;
+        public bool ShowAbilityInfo
+        {
+            get { return _showAbilityInfo; }
+            set
+            {
+                if (_showAbilityInfo == value)
+                {
+                    return;
+                }
+
+                _showAbilityInfo = value;
+                _isDirty = true;
+            }
+        }
+
         private void Update()
         {
             if (_isDirty)
@@ -92,19 +124,24 @@ namespace UnicornOne.Battle.MonoBehaviours
             _text.color = isAlly ? settings.AllyColor : settings.EnemyColor;
             ShowHpInfo = settings.ShowHpInfo;
             ShowAiInfo = settings.ShowAiInfo;
+            ShowAbilityInfo = settings.ShowAbilityInfo;
         }
 
         private string AssembleInfoString()
         {
             List<string> infos = new();
 
+            if (ShowHpInfo)
+            {
+                infos.Add(HpInfo);
+            }
             if (ShowAiInfo)
             {
                 infos.Add(AiInfo);
             }
-            if (ShowHpInfo)
+            if (ShowAbilityInfo)
             {
-                infos.Add(HpInfo);
+                infos.Add(AbilityInfo);
             }
 
             return string.Join('\n', infos.Where(str => !string.IsNullOrEmpty(str)));

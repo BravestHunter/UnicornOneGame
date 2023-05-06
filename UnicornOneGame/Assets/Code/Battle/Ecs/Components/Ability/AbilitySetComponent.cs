@@ -4,7 +4,7 @@
     {
         public struct AbilityState
         {
-            public int AbilityIndex;
+            public int AbilityId;
             public float TimeLastUsed;
         }
 

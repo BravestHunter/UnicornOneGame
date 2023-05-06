@@ -10,6 +10,7 @@ using Leopotam.EcsLite.Di;
 using UnicornOne.Battle.Ecs.Services;
 using UnicornOne.Battle.Models;
 using UnicornOne.Battle.Ecs.Components.Ability;
+using UnicornOne.ScriptableObjects;
 
 namespace UnicornOne.Battle.Ecs.Systems
 {
@@ -252,15 +253,27 @@ namespace UnicornOne.Battle.Ecs.Systems
 
                             // Check if there is cooldown
                             var abilitySetComponent = abilitySetComponentPool.Get(entity);
-                            var ability = _abilityService.Value.GetAbility(abilitySetComponent.AbilitySet[0].AbilityIndex);
-                            if (_timeService.Value.TimeSinceStart < abilitySetComponent.AbilitySet[0].TimeLastUsed + ability.Cooldown)
+                            int selectedAbilityIndex = -1;
+                            for (int i = abilitySetComponent.AbilitySet.Length - 1; i >= 0; i--)
+                            {
+                                var abilityState = abilitySetComponent.AbilitySet[i];
+                                var ability = _abilityService.Value.GetAbility(abilityState.AbilityId);
+                                if (abilityState.TimeLastUsed + ability.Cooldown < _timeService.Value.TimeSinceStart)
+                                {
+                                    selectedAbilityIndex = i;
+                                    break;
+                                }
+                            }
+
+                            // All abilities in cooldown
+                            if (selectedAbilityIndex < 0)
                             {
                                 continue;
                             }
 
                             // Use ability
                             ref var abilityUseRequestComponent = ref abilityUseRequestComponentPool.Add(entity);
-                            abilityUseRequestComponent.AbilityId = abilitySetComponent.AbilitySet[0].AbilityIndex;
+                            abilityUseRequestComponent.AbilityIndex = selectedAbilityIndex;
 
                             break;
                         }

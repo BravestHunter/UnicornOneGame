@@ -18,3 +18,4 @@ MonoBehaviour:
   Speed: 4
   Abilities:
   - {fileID: 11400000, guid: c31fda99da2dac54eae71064c66ac762, type: 2}
+  - {fileID: 11400000, guid: 8d133cf3d32cc4d46b89403997b17ea9, type: 2}

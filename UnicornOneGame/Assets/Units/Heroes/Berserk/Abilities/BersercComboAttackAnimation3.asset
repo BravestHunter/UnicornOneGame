@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cfe794fec19674a4dbf50bb146102bb4, type: 3}
-  m_Name: KnightBasicAttackDamage
+  m_Script: {fileID: 11500000, guid: 1d45162cac0c0c7428944cd0af47c8bf, type: 3}
+  m_Name: BersercComboAttackAnimation3
   m_EditorClassIdentifier: 
-  Amount: 5
+  TriggerName: CutAttack

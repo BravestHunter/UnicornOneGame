@@ -31,6 +31,7 @@ namespace UnicornOne.Battle.Ecs.Systems
             {
                 _abilityRequestFilter = world
                     .Filter<AbilityUseRequestComponent>()
+                    .Inc<AbilitySetComponent>()
                     .End();
             }
 
@@ -47,7 +48,7 @@ namespace UnicornOne.Battle.Ecs.Systems
 
                 // Start ability
                 ref var abilityInUsageComponent = ref abilityInUsageComponentPool.Add(entity);
-                abilityInUsageComponent.AbilityId = abilityUseRequestComponent.AbilityId;
+                abilityInUsageComponent.AbilityIndex = abilityUseRequestComponent.AbilityIndex;
                 abilityInUsageComponent.StartTime = _timeService.Value.TimeSinceStart;
                 abilityInUsageComponent.NextStepIndex = 0;
 
@@ -61,10 +62,12 @@ namespace UnicornOne.Battle.Ecs.Systems
             {
                 _abilityFilter = world
                     .Filter<AbilityInUsageComponent>()
+                    .Inc<AbilitySetComponent>()
                     .End();
             }
 
             var abilityInUsageComponentPool = world.GetPool<AbilityInUsageComponent>();
+            var abilitySetComponentPool = world.GetPool<AbilitySetComponent>();
             var animationTriggerComponentPool = world.GetPool<AnimationTriggerComponent>();
             var targetEntityComponentPool = world.GetPool<TargetEntityComponent>();
             var damageComponentPool = world.GetPool<DamageComponent>();
@@ -72,8 +75,9 @@ namespace UnicornOne.Battle.Ecs.Systems
             foreach (var entity in _abilityFilter)
             {
                 ref var abilityInUsageComponent = ref abilityInUsageComponentPool.Get(entity);
+                var abilitySetComponent = abilitySetComponentPool.Get(entity);
 
-                var ability = _abilityService.Value.GetAbility(abilityInUsageComponent.AbilityId);
+                var ability = _abilityService.Value.GetAbility(abilitySetComponent.AbilitySet[abilityInUsageComponent.AbilityIndex].AbilityId);
                 if (abilityInUsageComponent.NextStepIndex >= ability.Steps.Length)
                 {
                     continue;
@@ -126,13 +130,13 @@ namespace UnicornOne.Battle.Ecs.Systems
             foreach (var entity in _abilityFinishFilter)
             {
                 var abilityInUsageComponent = abilityInUsageComponentPool.Get(entity);
+                var abilitySetComponent = abilitySetComponentPool.Get(entity);
 
-                var ability = _abilityService.Value.GetAbility(abilityInUsageComponent.AbilityId);
+                var ability = _abilityService.Value.GetAbility(abilitySetComponent.AbilitySet[abilityInUsageComponent.AbilityIndex].AbilityId);
 
                 if (_timeService.Value.TimeSinceStart >= abilityInUsageComponent.StartTime + ability.Duration)
                 {
-                    ref var abilitySetComponent = ref abilitySetComponentPool.Get(entity);
-                    abilitySetComponent.AbilitySet[0].TimeLastUsed = _timeService.Value.TimeSinceStart;
+                    abilitySetComponent.AbilitySet[abilityInUsageComponent.AbilityIndex].TimeLastUsed = _timeService.Value.TimeSinceStart;
 
                     abilityInUsageComponentPool.Del(entity);
                 }

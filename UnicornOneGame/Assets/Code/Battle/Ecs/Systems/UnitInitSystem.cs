@@ -14,6 +14,7 @@ namespace UnicornOne.Battle.Ecs.Systems
 {
     internal class UnitInitSystem : IEcsInitSystem
     {
+        private readonly EcsCustomInject<ITimeService> _timeService;
         private readonly EcsCustomInject<ITilemapService> _tilemapService;
 
         private readonly UnitInstance[] _allyTeam;
@@ -101,8 +102,8 @@ namespace UnicornOne.Battle.Ecs.Systems
             abilitySetComponent.AbilitySet = new AbilitySetComponent.AbilityState[unit.Abilities.Length];
             for (int i = 0; i < unit.Abilities.Length; i++)
             {
-                abilitySetComponent.AbilitySet[i].AbilityIndex = abilities.IndexOf(unit.Abilities[i]);
-                abilitySetComponent.AbilitySet[i].TimeLastUsed = -10.0f;
+                abilitySetComponent.AbilitySet[i].AbilityId = abilities.IndexOf(unit.Abilities[i]);
+                abilitySetComponent.AbilitySet[i].TimeLastUsed = _timeService.Value.TimeSinceStart;
             }
         }
     }

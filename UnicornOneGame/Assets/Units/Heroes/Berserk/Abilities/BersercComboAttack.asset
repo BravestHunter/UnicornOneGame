@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee801b0b3b6e69e488cf1999b2f590ad, type: 3}
+  m_Name: BersercComboAttack
+  m_EditorClassIdentifier: 
+  Cooldown: 12
+  Duration: 4.1
+  Steps:
+  - Time: 0
+    Actions:
+    - {fileID: 11400000, guid: bc69476d023abaf4c998360ea7e5a303, type: 2}
+  - Time: 0.624
+    Actions:
+    - {fileID: 11400000, guid: 576e83f44f6c10f4aba743ba8044e1fb, type: 2}
+  - Time: 1.4
+    Actions:
+    - {fileID: 11400000, guid: b740d85921c8b19439e6c76d59b3b976, type: 2}
+  - Time: 1.967
+    Actions:
+    - {fileID: 11400000, guid: 76ce9259909d75849bf6cf03eb40adc6, type: 2}
+  - Time: 2.6
+    Actions:
+    - {fileID: 11400000, guid: ac9226a4f27dac84db0512ab30385dc2, type: 2}
+  - Time: 3.23
+    Actions:
+    - {fileID: 11400000, guid: 982c947efae0d104981dd2b5ed946d58, type: 2}
+  - Time: 0
+    Actions:
+    - {fileID: 11400000, guid: 982c947efae0d104981dd2b5ed946d58, type: 2}

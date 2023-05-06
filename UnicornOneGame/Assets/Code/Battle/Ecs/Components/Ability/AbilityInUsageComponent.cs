@@ -2,7 +2,7 @@
 {
     internal struct AbilityInUsageComponent
     {
-        public int AbilityId;
+        public int AbilityIndex;
         public float StartTime;
         public int NextStepIndex;
     }

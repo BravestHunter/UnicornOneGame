@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee801b0b3b6e69e488cf1999b2f590ad, type: 3}
-  m_Name: BerserkBasicAttack
+  m_Name: KnightPiercingAttack
   m_EditorClassIdentifier: 
-  Cooldown: 3
-  Duration: 1.4
+  Cooldown: 6
+  Duration: 1.1
   Steps:
   - Time: 0
     Actions:
-    - {fileID: 11400000, guid: ea141df13be058f4f9e37d132fb679b3, type: 2}
-  - Time: 0.624
+    - {fileID: 11400000, guid: 670b97069bb61334a938ead9aaf3f1a3, type: 2}
+  - Time: 0.4
     Actions:
-    - {fileID: 11400000, guid: a9e19a1b0b1968142a4c18a2499b6590, type: 2}
+    - {fileID: 11400000, guid: 668b144941f601f47a35b9015e94fd19, type: 2}

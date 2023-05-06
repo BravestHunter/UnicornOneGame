@@ -2,6 +2,6 @@
 {
     internal struct AbilityUseRequestComponent
     {
-        public int AbilityId;
+        public int AbilityIndex;
     }
 }

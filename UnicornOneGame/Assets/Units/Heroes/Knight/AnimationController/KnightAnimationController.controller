@@ -482,11 +482,8 @@ AnimatorStateTransition:
   - m_ConditionMode: 2
     m_ConditionEvent: Moving
     m_EventTreshold: 0
-  - m_ConditionMode: 6
-    m_ConditionEvent: Jumping
-    m_EventTreshold: 0
   - m_ConditionMode: 1
-    m_ConditionEvent: AttackTrigger
+    m_ConditionEvent: BasicAttack
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 2347842778625809089}
@@ -2454,13 +2451,13 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 0}
-  - m_Name: AttackTrigger
+  - m_Name: BasicAttack
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 0}
-  - m_Name: PiercingAttackTrigger
+  - m_Name: PiercingAttack
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
@@ -2805,7 +2802,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Attack
+  m_Name: BasicAttack
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -3324,11 +3321,8 @@ AnimatorStateTransition:
   - m_ConditionMode: 2
     m_ConditionEvent: Moving
     m_EventTreshold: 0
-  - m_ConditionMode: 6
-    m_ConditionEvent: Jumping
-    m_EventTreshold: 0
   - m_ConditionMode: 1
-    m_ConditionEvent: PiercingAttackTrigger
+    m_ConditionEvent: PiercingAttack
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -1037878306534639568}
@@ -3493,10 +3487,6 @@ AnimatorStateMachine:
   - {fileID: 4727882872323219200}
   m_EntryTransitions: []
   m_StateMachineTransitions:
-  - first: {fileID: 7936923684145864110}
-    second:
-    - {fileID: -5122330161707290742}
-    - {fileID: 1074847820079406359}
   - first: {fileID: 4855288292544608120}
     second:
     - {fileID: -6380871157197419954}
@@ -3505,6 +3495,10 @@ AnimatorStateMachine:
     second:
     - {fileID: -1957449190882282236}
     - {fileID: -2794740425064176458}
+  - first: {fileID: 7936923684145864110}
+    second:
+    - {fileID: -5122330161707290742}
+    - {fileID: 1074847820079406359}
   - first: {fileID: -867237243359443122}
     second:
     - {fileID: 5639530301350041877}

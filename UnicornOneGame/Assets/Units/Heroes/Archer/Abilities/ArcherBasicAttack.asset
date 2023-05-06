@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ArcherBasicAttack
   m_EditorClassIdentifier: 
   Cooldown: 5
-  Duration: 0.667
+  Duration: 0.7
   Steps:
   - Time: 0
     Actions:

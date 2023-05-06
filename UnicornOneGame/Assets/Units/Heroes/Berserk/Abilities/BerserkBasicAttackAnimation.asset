@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d45162cac0c0c7428944cd0af47c8bf, type: 3}
   m_Name: BerserkBasicAttackAnimation
   m_EditorClassIdentifier: 
-  TriggerName: AttackTrigger
+  TriggerName: BasicAttack

@@ -252,12 +252,12 @@ namespace UnicornOne.Battle.Ecs.Systems
 
                             // Check if there is cooldown
                             var abilitySetComponent = abilitySetComponentPool.Get(entity);
+                            var abilitySet = _abilityService.Value.GetAbilitySet(abilitySetComponent.Id);
                             int selectedAbilityIndex = -1;
-                            for (int i = abilitySetComponent.AbilitySet.Length - 1; i >= 0; i--)
+                            for (int i = abilitySetComponent.TimeLastUsed.Length - 1; i >= 0; i--)
                             {
-                                var abilityState = abilitySetComponent.AbilitySet[i];
-                                var ability = _abilityService.Value.GetAbility(abilityState.AbilityId);
-                                if (abilityState.TimeLastUsed + ability.Cooldown < _timeService.Value.TimeSinceStart)
+                                var ability = abilitySet.Abilities[i];
+                                if (abilitySetComponent.TimeLastUsed[i] + ability.Cooldown < _timeService.Value.TimeSinceStart)
                                 {
                                     selectedAbilityIndex = i;
                                     break;

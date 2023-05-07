@@ -92,13 +92,10 @@ namespace UnicornOne.Battle.MonoBehaviours
             _timeService = new TimeService(Time.timeSinceLevelLoad);
             _cameraService = new CameraService(_camera);
 
-            var units = _allyTeam.Concat(_enemyTeam).Select(ui => ui.Unit).Distinct();
-            List<Ability> abilities = new();
-            foreach (var unit in units)
-            {
-                abilities.AddRange(unit.Abilities);
-            }
-            _abilityService = new AbilityService(abilities.ToArray());
+            var abilities = _allyTeam.Concat(_enemyTeam).Select(ui => ui.Unit).Distinct().ToDictionary(
+                u => u, u => new AbilitySet(u.Abilities)
+                );
+            _abilityService = new AbilityService(abilities);
         }
 
         private void CleanReservedTiles()

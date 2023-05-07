@@ -16,6 +16,7 @@ namespace UnicornOne.Battle.Ecs.Systems
     {
         private readonly EcsCustomInject<ITimeService> _timeService;
         private readonly EcsCustomInject<ITilemapService> _tilemapService;
+        private readonly EcsCustomInject<IAbilityService> _abilityService;
 
         private readonly UnitInstance[] _allyTeam;
         private readonly UnitInstance[] _enemyTeam;
@@ -99,12 +100,9 @@ namespace UnicornOne.Battle.Ecs.Systems
 
             var abilitySetComponentPool = world.GetPool<AbilitySetComponent>();
             ref var abilitySetComponent = ref abilitySetComponentPool.Add(entity);
-            abilitySetComponent.AbilitySet = new AbilitySetComponent.AbilityState[unit.Abilities.Length];
-            for (int i = 0; i < unit.Abilities.Length; i++)
-            {
-                abilitySetComponent.AbilitySet[i].AbilityId = abilities.IndexOf(unit.Abilities[i]);
-                abilitySetComponent.AbilitySet[i].TimeLastUsed = _timeService.Value.TimeSinceStart;
-            }
+            abilitySetComponent.Id = _abilityService.Value.GetAbilitySetIndex(unit);
+            abilitySetComponent.TimeLastUsed =
+                Enumerable.Repeat(_timeService.Value.TimeSinceStart, unit.Abilities.Length).ToArray();
         }
     }
 }

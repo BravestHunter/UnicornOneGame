@@ -46,7 +46,7 @@ namespace UnicornOne.Battle.MonoBehaviours
 
         private void Awake()
         {
-            _tilemap = TilemapGenerator.Generate(10);
+            _tilemap = TilemapGenerator.Generate(8);
         }
 
         private void Start()

@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee801b0b3b6e69e488cf1999b2f590ad, type: 3}
+  m_Name: SpearmanPiercingAttack
+  m_EditorClassIdentifier: 
+  Cooldown: 2
+  Duration: 1.25
+  Steps:
+  - Time: 0
+    Actions:
+    - {fileID: 11400000, guid: 55a9a85bc5fe64efd92416ddf0ef6cac, type: 2}
+  - Time: 0.468
+    Actions:
+    - {fileID: 11400000, guid: 046741b538df540f9ab6f68c616975d9, type: 2}

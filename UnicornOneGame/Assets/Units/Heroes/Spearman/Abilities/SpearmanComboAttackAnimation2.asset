@@ -9,12 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e9de9266addd4621a65fe7e98d8adc2, type: 3}
-  m_Name: Attack
+  m_Script: {fileID: 11500000, guid: 1d45162cac0c0c7428944cd0af47c8bf, type: 3}
+  m_Name: SpearmanComboAttackAnimation2
   m_EditorClassIdentifier: 
-  Name: Attack
-  Range: 3.5
-  Damage: 10
-  Cooldown: 1.5
-  Projectile: {fileID: 0}
-  Effect: {fileID: 0}
+  TriggerName: SlideAttack

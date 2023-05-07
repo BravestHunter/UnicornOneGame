@@ -45,5 +45,10 @@ namespace UnicornOne.MonoBehaviours
         {
             ShootFlag = true;
         }
+
+        public void Land()
+        {
+            // Nothing to do here
+        }
     }
 }

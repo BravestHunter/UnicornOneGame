@@ -11,6 +11,7 @@ using UnicornOne.Core.Utils;
 using UnicornOne.Battle.Models;
 using UnicornOne.Battle.Utils;
 using UnicornOne.Battle.ScriptableObjects;
+using UnicornOne.Utils;
 
 namespace UnicornOne.Battle.MonoBehaviours
 {
@@ -70,7 +71,7 @@ namespace UnicornOne.Battle.MonoBehaviours
 
         private void Awake()
         {
-            _tilemap = TilemapGenerator.Generate(10);
+            _tilemap = new Tilemap(TilemapGenerator.Generate(8));
         }
 
         private void Start()

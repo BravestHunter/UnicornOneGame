@@ -3,6 +3,7 @@ using System.Linq;
 using UnicornOne.Battle.Models;
 using UnicornOne.Battle.Utils;
 using UnicornOne.Core.Utils;
+using UnicornOne.Utils;
 using UnityEditor;
 using UnityEngine;
 
@@ -50,7 +51,7 @@ namespace UnicornOne.Battle.MonoBehaviours
 
         private static Tilemap GenerateTilemap()
         {
-            return TilemapGenerator.Generate(8);
+            return new Tilemap(TilemapGenerator.Generate(8));
         }
 
         private static void ShuffleUnitPositions(Tilemap tilemap, UnitInstance[] units, HashSet<HexCoords> reserved)

@@ -1,15 +1,12 @@
-using System.Collections;
 using System.Linq;
 using System.Collections.Generic;
 using Leopotam.EcsLite;
 using UnicornOne.Battle.Ecs.Components;
 using UnicornOne.Battle.Utils;
-using UnityEngine;
 using UnicornOne.Core.Utils;
 using Leopotam.EcsLite.Di;
 using UnicornOne.Battle.Ecs.Services;
 using UnicornOne.Battle.Models;
-using UnicornOne.ScriptableObjects;
 
 namespace UnicornOne.Battle.Ecs.Systems
 {

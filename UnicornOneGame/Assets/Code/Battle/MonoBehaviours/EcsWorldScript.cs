@@ -6,8 +6,7 @@ using UnicornOne.Battle.Ecs.Systems;
 using UnicornOne.Battle.Ecs.Systems.Movement;
 using UnicornOne.Battle.Models;
 using UnicornOne.Battle.ScriptableObjects;
-using UnicornOne.Battle.Utils;
-using UnicornOne.ScriptableObjects;
+using UnicornOne.Utils;
 using UnityEngine;
 
 namespace UnicornOne.Battle.MonoBehaviours
@@ -46,7 +45,7 @@ namespace UnicornOne.Battle.MonoBehaviours
 
         private void Awake()
         {
-            _tilemap = TilemapGenerator.Generate(8);
+            _tilemap = new Tilemap(TilemapGenerator.Generate(8));
         }
 
         private void Start()

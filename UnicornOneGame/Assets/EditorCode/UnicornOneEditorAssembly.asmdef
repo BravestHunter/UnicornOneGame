@@ -1,6 +1,6 @@
 {
     "name": "UnicornOneEditorAssembly",
-    "rootNamespace": "UnicornOneEitor",
+    "rootNamespace": "UnicornOneEditor",
     "references": [
         "GUID:ad5dd79122d194a4c934c8a9fe4b23b3",
         "GUID:554dd9a24f8817a45a4f3e7026a987df",

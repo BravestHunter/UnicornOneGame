@@ -16,12 +16,14 @@ namespace UnicornOne.Battle.MonoBehaviours
         [SerializeField] private Camera _camera;
         [SerializeField] private TilemapScript _tilemapScript;
 
-        private Tilemap _tilemap;
+        [SerializeField] private UnicornOne.ScriptableObjects.Tilemap _initialTilemap;
         [SerializeField] private TilemapSettings _tilemapSettings;
         [SerializeField] private DebugStatusUISettings _debugStatusUISettings;
         [SerializeField] private UnitInstance[] _allyTeam;
         [SerializeField] private UnitInstance[] _enemyTeam;
 
+        private Tilemap _tilemap;
+        
         public override EcsWorldSimulationParameters Parameters
         {
             get
@@ -45,7 +47,7 @@ namespace UnicornOne.Battle.MonoBehaviours
 
         private void Awake()
         {
-            _tilemap = new Tilemap(TilemapGenerator.Generate(8));
+            _tilemap = new Tilemap(_initialTilemap ?? TilemapGenerator.Generate(8, 0.15f));
         }
 
         private void Start()

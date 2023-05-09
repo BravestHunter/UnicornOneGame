@@ -7,9 +7,10 @@ namespace UnicornOne.Utils
 {
     public static class TilemapGenerator
     {
-        public static Tilemap Generate(int radius)
+        public static Tilemap Generate(int radius, float unwalkableDencity)
         {
             Debug.Assert(radius >= 0);
+            Debug.Assert(unwalkableDencity >= 0 && unwalkableDencity < 1);
 
             List<TileEntry> tileEntries = new List<TileEntry>();
             for (int q = -radius; q <= radius; q++)
@@ -23,7 +24,7 @@ namespace UnicornOne.Utils
                     int s = -q - r;
                     tileEntry.Position = HexCoords.FromCube(q, r, s);
 
-                    tileEntry.IsWalkable = Random.value >= 0.15f;
+                    tileEntry.IsWalkable = Random.value >= unwalkableDencity;
 
                     tileEntries.Add(tileEntry);
                 }

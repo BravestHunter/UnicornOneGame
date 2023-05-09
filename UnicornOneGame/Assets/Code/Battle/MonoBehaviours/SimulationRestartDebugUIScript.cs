@@ -51,7 +51,7 @@ namespace UnicornOne.Battle.MonoBehaviours
 
         private static Tilemap GenerateTilemap()
         {
-            return new Tilemap(TilemapGenerator.Generate(8));
+            return new Tilemap(TilemapGenerator.Generate(8, 0.15f));
         }
 
         private static void ShuffleUnitPositions(Tilemap tilemap, UnitInstance[] units, HashSet<HexCoords> reserved)

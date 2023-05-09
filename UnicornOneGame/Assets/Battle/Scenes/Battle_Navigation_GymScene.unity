@@ -338,6 +338,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _camera: {fileID: 566767213}
   _tilemapScript: {fileID: 1955904576}
+  _initialTilemap: {fileID: 11400000, guid: 783b137fac002144db4711059b5f5020, type: 2}
   _tilemapSettings: {fileID: 11400000, guid: feaf17f7c40a6411cbe90fa92d324c55, type: 2}
   _playerPrefab: {fileID: 8927972613739172143, guid: 0d2501336b7e5ee489fbdcb52429dc1b, type: 3}
   _rivalPrefab: {fileID: 8927972613739172143, guid: d15f65f80c0d64fc48e1318e3d35f275, type: 3}

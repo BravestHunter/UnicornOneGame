@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEditor;
+using UnityEditor.MemoryProfiler;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -11,108 +13,123 @@ namespace UnicornOneEditorEditors
 {
     internal class TilemapEditorWindow : EditorWindow
     {
+        private Vector2 offset;
+        private Vector2 drag;
+
         [MenuItem("Tools/Tilemap Editor")]
-        private static void ShowMyEditor()
+        private static void OpenWindow()
         {
-            EditorWindow wnd = GetWindow<TilemapEditorWindow>();
-            wnd.titleContent = new GUIContent("Tilemap Editor");
+            EditorWindow window = GetWindow<TilemapEditorWindow>();
+            window.titleContent = new GUIContent("Tilemap Editor");
+
+            // Limit size of the window
+            //window.minSize = new Vector2(450, 200);
+            //window.maxSize = new Vector2(1920, 720);
         }
 
-        //private void CreateGUI()
-        //{
-        //    rootVisualElement.Add(new Label("Hello"));
-        //}
+        private void OnEnable()
+        {
 
-        private Material material;
+        }
 
         private void CreateGUI()
         {
-            if (material == null)
-            {
-                material = new Material(Shader.Find("Hidden/Internal-Colored"));
-            }
+            // Create a two-pane view with the left pane being fixed with
+            var splitView = new TwoPaneSplitView(0, 250, TwoPaneSplitViewOrientation.Horizontal);
 
-            // Begin to draw a horizontal layout, using the helpBox EditorStyle
-            GUILayout.BeginHorizontal(EditorStyles.helpBox);
+            // Add the panel to the visual tree by adding it as a child to the root element
+            rootVisualElement.Add(splitView);
 
-            // Reserve GUI space with a width from 10 to 10000, and a fixed height of 200, and 
-            // cache it as a rectangle.
-            Rect layoutRectangle = GUILayoutUtility.GetRect(10, 10000, 200, 200);
-
-            if (Event.current.type == EventType.Repaint)
-            {
-                // If we are currently in the Repaint event, begin to draw a clip of the size of 
-                // previously reserved rectangle, and push the current matrix for drawing.
-                GUI.BeginClip(layoutRectangle);
-                GL.PushMatrix();
-
-                // Clear the current render buffer, setting a new background colour, and set our
-                // material for rendering.
-                GL.Clear(true, false, Color.black);
-                material.SetPass(0);
-
-                // Start drawing in OpenGL Quads, to draw the background canvas. Set the
-                // colour black as the current OpenGL drawing colour, and draw a quad covering
-                // the dimensions of the layoutRectangle.
-                GL.Begin(GL.QUADS);
-                GL.Color(Color.black);
-                GL.Vertex3(0, 0, 0);
-                GL.Vertex3(layoutRectangle.width, 0, 0);
-                GL.Vertex3(layoutRectangle.width, layoutRectangle.height, 0);
-                GL.Vertex3(0, layoutRectangle.height, 0);
-                GL.End();
-
-                // Start drawing in OpenGL Lines, to draw the lines of the grid.
-                GL.Begin(GL.LINES);
-
-                // Store measurement values to determine the offset, for scrolling animation,
-                // and the line count, for drawing the grid.
-                int offset = (Time.frameCount * 2) % 50;
-                int count = (int)(layoutRectangle.width / 10) + 20;
-
-                for (int i = 0; i < count; i++)
-                {
-                    // For every line being drawn in the grid, create a colour placeholder; if the
-                    // current index is divisible by 5, we are at a major segment line; set this
-                    // colour to a dark grey. If the current index is not divisible by 5, we are
-                    // at a minor segment line; set this colour to a lighter grey. Set the derived
-                    // colour as the current OpenGL drawing colour.
-                    Color lineColour = i % 5 == 0
-                        ? new Color(0.5f, 0.5f, 0.5f) : new Color(0.2f, 0.2f, 0.2f);
-                    GL.Color(lineColour);
-
-                    // Derive a new x co-ordinate from the initial index, converting it straight
-                    // into line positions, and move it back to adjust for the animation offset.
-                    float x = i * 10 - offset;
-
-                    if (x >= 0 && x < layoutRectangle.width)
-                    {
-                        // If the current derived x position is within the bounds of the
-                        // rectangle, draw another vertical line.
-                        GL.Vertex3(x, 0, 0);
-                        GL.Vertex3(x, layoutRectangle.height, 0);
-                    }
-
-                    if (i < layoutRectangle.height / 10)
-                    {
-                        // Convert the current index value into a y position, and if it is within
-                        // the bounds of the rectangle, draw another horizontal line.
-                        GL.Vertex3(0, i * 10, 0);
-                        GL.Vertex3(layoutRectangle.width, i * 10, 0);
-                    }
-                }
-
-                // End lines drawing.
-                GL.End();
-
-                // Pop the current matrix for rendering, and end the drawing clip.
-                GL.PopMatrix();
-                GUI.EndClip();
-            }
-
-            // End our horizontal 
-            GUILayout.EndHorizontal();
+            // A TwoPaneSplitView always needs exactly two child elements
+            var leftPane = new VisualElement();
+            leftPane.style.backgroundColor = Color.white;
+            splitView.Add(leftPane);
+            var rightPane = new VisualElement();
+            splitView.Add(rightPane);
         }
 
+
+        private void OnGUI()
+        {
+
+            //DrawGrid(20, 0.2f, Color.gray);
+            DrawGrid(100, 0.4f, Color.gray);
+
+            //ProcessEvents(Event.current);
+
+            //if (GUI.changed) Repaint();
+        }
+
+        private void DrawGrid(float gridSpacing, float gridOpacity, Color gridColor)
+        {
+            int widthDivs = Mathf.CeilToInt(position.width / gridSpacing);
+            int heightDivs = Mathf.CeilToInt(position.height / gridSpacing);
+
+            Handles.BeginGUI();
+            Handles.color = new Color(gridColor.r, gridColor.g, gridColor.b, gridOpacity);
+
+            offset += drag * 0.5f;
+            Vector3 newOffset = new Vector3(offset.x % gridSpacing, offset.y % gridSpacing, 0);
+
+            for (int i = 0; i < widthDivs; i++)
+            {
+                Handles.DrawLine(new Vector3(gridSpacing * i, -gridSpacing, 0) + newOffset, new Vector3(gridSpacing * i, position.height, 0f) + newOffset);
+            }
+
+            for (int j = 0; j < heightDivs; j++)
+            {
+                Handles.DrawLine(new Vector3(-gridSpacing, gridSpacing * j, 0) + newOffset, new Vector3(position.width, gridSpacing * j, 0f) + newOffset);
+            }
+
+            Handles.color = Color.white;
+            Handles.EndGUI();
+        }
+
+        private void DrawHexGrid()
+        {
+
+        }
+
+        private void ProcessEvents(Event e)
+        {
+            drag = Vector2.zero;
+
+            switch (e.type)
+            {
+                case EventType.MouseDown:
+                    if (e.button == 0)
+                    {
+                        //ClearConnectionSelection();
+                    }
+
+                    if (e.button == 1)
+                    {
+                        //ProcessContextMenu(e.mousePosition);
+                    }
+                    break;
+
+                case EventType.MouseDrag:
+                    if (e.button == 0)
+                    {
+                        //OnDrag(e.delta);
+                    }
+                    break;
+            }
+        }
+
+/*        private void OnDrag(Vector2 delta)
+        {
+            drag = delta;
+
+            if (nodes != null)
+            {
+                for (int i = 0; i < nodes.Count; i++)
+                {
+                    nodes[i].Drag(delta);
+                }
+            }
+
+            GUI.changed = true;
+        }*/
     }
 }

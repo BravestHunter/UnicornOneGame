@@ -13,123 +13,77 @@ namespace UnicornOneEditorEditors
 {
     internal class TilemapEditorWindow : EditorWindow
     {
-        private Vector2 offset;
-        private Vector2 drag;
-
         [MenuItem("Tools/Tilemap Editor")]
         private static void OpenWindow()
         {
             EditorWindow window = GetWindow<TilemapEditorWindow>();
             window.titleContent = new GUIContent("Tilemap Editor");
-
-            // Limit size of the window
-            //window.minSize = new Vector2(450, 200);
-            //window.maxSize = new Vector2(1920, 720);
         }
 
-        private void OnEnable()
+        private const float MinScale = 10.0f;
+        private const float MaxScale = 120.0f;
+
+        private Vector2 _offset = Vector2.zero;
+
+        private float _scale = 100.0f;
+        private float Scale
         {
-
+            get => _scale;
+            set 
+            {
+                _scale = Mathf.Clamp(value, MinScale, MaxScale);
+            }
         }
 
-        private void CreateGUI()
-        {
-            // Create a two-pane view with the left pane being fixed with
-            var splitView = new TwoPaneSplitView(0, 250, TwoPaneSplitViewOrientation.Horizontal);
-
-            // Add the panel to the visual tree by adding it as a child to the root element
-            rootVisualElement.Add(splitView);
-
-            // A TwoPaneSplitView always needs exactly two child elements
-            var leftPane = new VisualElement();
-            leftPane.style.backgroundColor = Color.white;
-            splitView.Add(leftPane);
-            var rightPane = new VisualElement();
-            splitView.Add(rightPane);
-        }
-
+        private Vector2 HalfScreenSize => position.size / 2;
 
         private void OnGUI()
         {
+            DrawCenterCross();
 
-            //DrawGrid(20, 0.2f, Color.gray);
-            DrawGrid(100, 0.4f, Color.gray);
+            ProcessEvents(Event.current);
 
-            //ProcessEvents(Event.current);
-
-            //if (GUI.changed) Repaint();
+            if (GUI.changed) Repaint();
         }
 
-        private void DrawGrid(float gridSpacing, float gridOpacity, Color gridColor)
+        private void DrawCenterCross()
         {
-            int widthDivs = Mathf.CeilToInt(position.width / gridSpacing);
-            int heightDivs = Mathf.CeilToInt(position.height / gridSpacing);
-
-            Handles.BeginGUI();
-            Handles.color = new Color(gridColor.r, gridColor.g, gridColor.b, gridOpacity);
-
-            offset += drag * 0.5f;
-            Vector3 newOffset = new Vector3(offset.x % gridSpacing, offset.y % gridSpacing, 0);
-
-            for (int i = 0; i < widthDivs; i++)
-            {
-                Handles.DrawLine(new Vector3(gridSpacing * i, -gridSpacing, 0) + newOffset, new Vector3(gridSpacing * i, position.height, 0f) + newOffset);
-            }
-
-            for (int j = 0; j < heightDivs; j++)
-            {
-                Handles.DrawLine(new Vector3(-gridSpacing, gridSpacing * j, 0) + newOffset, new Vector3(position.width, gridSpacing * j, 0f) + newOffset);
-            }
-
-            Handles.color = Color.white;
-            Handles.EndGUI();
-        }
-
-        private void DrawHexGrid()
-        {
-
+            Handles.color = Color.red;
+            Handles.DrawLine(WorldToScreen(new Vector3(-1.0f, 0.0f)), WorldToScreen(new Vector3(1.0f, 0.0f)));
+            Handles.DrawLine(WorldToScreen(new Vector3(0.0f, -1.0f)), WorldToScreen(new Vector3(0.0f, 1.0f)));
         }
 
         private void ProcessEvents(Event e)
         {
-            drag = Vector2.zero;
-
             switch (e.type)
             {
-                case EventType.MouseDown:
-                    if (e.button == 0)
-                    {
-                        //ClearConnectionSelection();
-                    }
-
-                    if (e.button == 1)
-                    {
-                        //ProcessContextMenu(e.mousePosition);
-                    }
-                    break;
-
                 case EventType.MouseDrag:
                     if (e.button == 0)
                     {
-                        //OnDrag(e.delta);
+                        _offset += e.delta / Scale;
                     }
                     break;
-            }
-        }
 
-/*        private void OnDrag(Vector2 delta)
-        {
-            drag = delta;
-
-            if (nodes != null)
-            {
-                for (int i = 0; i < nodes.Count; i++)
-                {
-                    nodes[i].Drag(delta);
-                }
+                case EventType.ScrollWheel:
+                    Vector2 mouseOldWorldPosition = ScreenToWorld(e.mousePosition);
+                    Scale -= e.delta.y;
+                    Vector2 mouseNewWorldPosition = ScreenToWorld(e.mousePosition);
+                    _offset +=  mouseNewWorldPosition - mouseOldWorldPosition;
+                    break;
             }
 
             GUI.changed = true;
-        }*/
+        }
+
+        private Vector3 WorldToScreen(Vector2 vector, float depth = 0.0f)
+        {
+            Vector2 screenVector = (vector + _offset) * Scale + HalfScreenSize;
+            return new Vector3(screenVector.x, screenVector.y, depth);
+        }
+
+        private Vector2 ScreenToWorld(Vector2 vector)
+        {
+            return ((vector - HalfScreenSize) / Scale) - _offset;
+        }
     }
 }
